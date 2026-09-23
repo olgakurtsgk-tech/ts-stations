@@ -50,7 +50,7 @@ jobs:
           echo "========================================"
           echo "STARTING STATION PARSER"
           echo "========================================"
-
+python -u scripts/debug_pdf.py
           python -u scripts/update_stations.py
 
           echo "========================================"
