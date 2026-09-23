@@ -1,7 +1,6 @@
-```python
 import json
 import re
-import sys
+import time
 from pathlib import Path
 from urllib.parse import urljoin, urlparse, parse_qs, unquote
 
@@ -10,35 +9,310 @@ import requests
 from bs4 import BeautifulSoup
 
 
-# ============================================================
-# НАСТРОЙКИ
-# ============================================================
-
-OSJD_PAGE = "https://osjd.org/ru/8974/page/106077?id=2227"
+OSJD_PAGE = "https://osjd.org/ru/8931/page/106077?id=2227"
 
 OUTPUT = Path("data/stations.json")
 
 HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 "
-        "(Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 "
-        "Chrome/140.0 Safari/537.36"
-    )
+    "User-Agent": "Mozilla/5.0"
 }
 
-# Минимум записей, который считаем нормальным результатом.
-# Российский список намного больше этого числа.
-MIN_STATIONS = 100
+
+# Страны, которые сейчас опубликованы ОСЖД
+COUNTRIES = {
+    "Азербайджан": ("AZ", "Азербайджанские железные дороги"),
+    "Афганистан": ("AF", "Железная дорога Исламской Республики Афганистан"),
+    "Беларусь": ("BY", "Белорусская железная дорога"),
+    "Болгария": ("BG", "Болгарские государственные железные дороги"),
+    "Венгрия": ("HU", "Венгерские государственные железные дороги"),
+    "Вьетнам": ("VN", "Вьетнамская железная дорога"),
+    "Грузия": ("GE", "Грузинская железная дорога"),
+    "Иран": ("IR", "Железная дорога Исламской Республики Иран"),
+    "Казахстан": ("KZ", "железных дорог Казахстана"),
+    "Китай": ("CN", "Китайских железных дорог"),
+    "КНДР": ("KP", "железных дорог КНДР"),
+    "Кыргызстан": ("KG", "Кыргызской железной дороги"),
+    "Республика Корея": ("KR", "железных дорог Республики Корея"),
+    "Лаос": ("LA", "Лаосской национальной железной дороги"),
+    "Латвия": ("LV", "Латвийской железной дороги"),
+    "Литва": ("LT", "Литовских железных дорог"),
+    "Молдова": ("MD", "железной дороги Молдовы"),
+    "Монголия": ("MN", "Улан-Баторской железной дороги"),
+    "Польша": ("PL", "Польских государственных железных дорог"),
+    "Россия": ("RU", "Российских железных дорог"),
+    "Румыния": ("RO", "Румынских ж. д."),
+    "Словакия": ("SK", "железных дорог Словацкой Республики"),
+    "Таджикистан": ("TJ", "Таджикской железной дороги"),
+    "Туркменистан": ("TM", "Туркмендемиреллары"),
+    "Узбекистан": ("UZ", "Узбекских железных дорог"),
+    "Украина": ("UA", "Украинской железной дороги"),
+    "Чехия": ("CZ", "Чешских железных дорог"),
+    "Эстония": ("EE", "Эстонской железной дороги"),
+}
 
 
-# ============================================================
-# ЗАГРУЗКА СТРАНИЦЫ ОСЖД
-# ============================================================
+def clean_text(value):
+    value = value.replace("\u00a0", " ")
+    value = re.sub(r"\s+", " ", value)
+    return value.strip()
 
-def get_osjd_page():
 
-    print("Получаем страницу ОСЖД...")
+def get_pdf_url(href):
+    """
+    ОСЖД сейчас открывает PDF через viewer:
+    /ru/page/...?...file=/api/media/resources/XXXX?action=download
+
+    Извлекаем настоящий URL PDF.
+    """
+    href = urljoin(OSJD_PAGE, href)
+
+    parsed = urlparse(href)
+    query = parse_qs(parsed.query)
+
+    if "file" in query:
+        file_path = unquote(query["file"][0])
+
+        if file_path.startswith("http"):
+            return file_path
+
+        return urljoin("https://osjd.org", file_path)
+
+    return href
+
+
+def identify_country(link_text):
+    text = clean_text(link_text).lower()
+
+    for country, (code, marker) in COUNTRIES.items():
+        if marker.lower() in text:
+            return country, code
+
+    # отдельные варианты названий
+    aliases = {
+        "азербайджанских": ("Азербайджан", "AZ"),
+        "афганистан": ("Афганистан", "AF"),
+        "белорусской": ("Беларусь", "BY"),
+        "болгарских": ("Болгария", "BG"),
+        "венгерских": ("Венгрия", "HU"),
+        "вьетнамской": ("Вьетнам", "VN"),
+        "грузинской": ("Грузия", "GE"),
+        "иран": ("Иран", "IR"),
+        "казахстана": ("Казахстан", "KZ"),
+        "китайских": ("Китай", "CN"),
+        "кндр": ("КНДР", "KP"),
+        "кыргызской": ("Кыргызстан", "KG"),
+        "кореи": ("Республика Корея", "KR"),
+        "лаосской": ("Лаос", "LA"),
+        "латвийской": ("Латвия", "LV"),
+        "литовских": ("Литва", "LT"),
+        "молдовы": ("Молдова", "MD"),
+        "улан-баторской": ("Монголия", "MN"),
+        "польских": ("Польша", "PL"),
+        "российских": ("Россия", "RU"),
+        "румынских": ("Румыния", "RO"),
+        "словацкой": ("Словакия", "SK"),
+        "таджикской": ("Таджикистан", "TJ"),
+        "туркмен": ("Туркменистан", "TM"),
+        "узбекских": ("Узбекистан", "UZ"),
+        "украинской": ("Украина", "UA"),
+        "чешских": ("Чехия", "CZ"),
+        "эстонской": ("Эстония", "EE"),
+    }
+
+    for alias, result in aliases.items():
+        if alias in text:
+            return result
+
+    return None, None
+
+
+def download_pdf(url):
+    print(f"  Download: {url}")
+
+    response = requests.get(
+        url,
+        headers=HEADERS,
+        timeout=120
+    )
+
+    response.raise_for_status()
+
+    if not response.content.startswith(b"%PDF"):
+        raise RuntimeError("Получен не PDF-файл")
+
+    return response.content
+
+
+def parse_station_line(line):
+    """
+    Основная задача:
+    найти 6-значный код станции и разобрать строку вокруг него.
+
+    Пример:
+    АБАКАН 888004 ABAKAN 1,2,3,4,5,8,8Н,9,10
+    """
+
+    line = clean_text(line)
+
+    # Убираем явный мусор страниц
+    if not line:
+        return None
+
+    # Ищем шестизначный код станции
+    match = re.search(r"(?<!\d)(\d{6})(?!\d)", line)
+
+    if not match:
+        return None
+
+    code = match.group(1)
+
+    before = line[:match.start()].strip()
+    after = line[match.end():].strip()
+
+    # До кода должно быть название станции
+    if len(before) < 2:
+        return None
+
+    # Отсекаем заголовки таблиц и служебные строки
+    bad_words = [
+        "наименование",
+        "код станции",
+        "производимые",
+        "коммерческие операции",
+        "код пограничного",
+        "раздел",
+        "таблица",
+        "станций железных дорог",
+    ]
+
+    low = line.lower()
+
+    if any(word in low for word in bad_words):
+        return None
+
+    name = before
+
+    # Иногда PDF склеивает несколько строк.
+    # Для латинского названия ищем начало латинского текста.
+    latin_match = re.search(
+        r"([A-Za-z][A-Za-z0-9 .,\-()'’/]+)",
+        after
+    )
+
+    if not latin_match:
+        return None
+
+    name_lat = latin_match.group(1).strip()
+
+    # Убираем хвост, который явно относится к операциям
+    # и пограничному коду.
+    tail = after[latin_match.end():].strip()
+
+    # Более надёжно: операции ищем в хвосте.
+    operations = []
+
+    op_matches = re.findall(
+        r"(?<![A-Za-zА-Яа-я])"
+        r"(?:1|2|3|4|5|6|7|8|9|10|11|12)"
+        r"(?:Н|н)?"
+        r"(?![A-Za-zА-Яа-я])",
+        tail
+    )
+
+    for op in op_matches:
+        op = op.upper()
+        if op not in operations:
+            operations.append(op)
+
+    # Иногда операции приклеены прямо к латинскому названию:
+    # ABAKAN1,3,4
+    attached = re.search(
+        r"(?:^|[A-Za-z)])"
+        r"((?:1|2|3|4|5|6|7|8|9|10|11|12)(?:Н|н)?"
+        r"(?:,(?:1|2|3|4|5|6|7|8|9|10|11|12)(?:Н|н)?)+)",
+        after
+    )
+
+    if attached:
+        for op in attached.group(1).split(","):
+            op = op.upper()
+            if op not in operations:
+                operations.append(op)
+
+    # Код пограничного перехода — обычно 4 цифры.
+    border_match = re.search(r"(?<!\d)(\d{4})(?!\d)", tail)
+
+    border_code = border_match.group(1) if border_match else ""
+
+    return {
+        "name": name,
+        "name_lat": name_lat,
+        "code": code,
+        "operations": operations,
+        "border_code": border_code,
+    }
+
+
+def parse_pdf(pdf_bytes, country, country_code, railway):
+    stations = []
+
+    document = fitz.open(stream=pdf_bytes, filetype="pdf")
+
+    in_station_section = False
+
+    for page_number, page in enumerate(document):
+        text = page.get_text("text")
+
+        if "Раздел 3." in text or "Алфавитный перечень" in text:
+            in_station_section = True
+
+        if "Раздел 4." in text or "Пограничные переходы" in text:
+            if in_station_section:
+                break
+
+        if not in_station_section:
+            continue
+
+        # Разбираем строки
+        lines = text.splitlines()
+
+        # PDF иногда склеивает две станции в одну строку.
+        # Поэтому сначала пробуем обычные строки.
+        for line in lines:
+            parsed = parse_station_line(line)
+
+            if parsed:
+                parsed["country"] = country
+                parsed["country_code"] = country_code
+                parsed["railway"] = railway
+
+                stations.append(parsed)
+
+    return stations
+
+
+def deduplicate(stations):
+    result = {}
+
+    for station in stations:
+        key = (
+            station["country_code"],
+            station["code"],
+            station["name"]
+        )
+
+        if key not in result:
+            result[key] = station
+
+    return list(result.values())
+
+
+def main():
+    print("========================================")
+    print(" OSJD railway station database updater")
+    print("========================================")
+
+    print("\nПолучаем страницу ОСЖД...")
 
     response = requests.get(
         OSJD_PAGE,
@@ -48,1002 +322,127 @@ def get_osjd_page():
 
     response.raise_for_status()
 
-    print(
-        f"Страница получена: "
-        f"{len(response.text)} символов"
-    )
+    soup = BeautifulSoup(response.text, "html.parser")
 
-    return response.text
+    pdf_links = []
 
+    for link in soup.find_all("a"):
+        text = clean_text(link.get_text(" ", strip=True))
+        href = link.get("href")
 
-# ============================================================
-# ПОИСК PDF-ДОКУМЕНТОВ
-# ============================================================
-
-def find_documents(html):
-
-    soup = BeautifulSoup(
-        html,
-        "html.parser"
-    )
-
-    documents = []
-    seen = set()
-
-    for link in soup.find_all(
-        "a",
-        href=True
-    ):
-
-        href = link["href"]
-
-        title = " ".join(
-            link.stripped_strings
-        )
-
-        if "file=" not in href:
+        if not href:
             continue
 
-        if "api/media/resources" not in href:
+        if "Перечень грузовых станций" not in text:
             continue
 
-        full_url = urljoin(
-            "https://osjd.org",
-            href
-        )
+        country, country_code = identify_country(text)
 
-        parsed = urlparse(
-            full_url
-        )
-
-        params = parse_qs(
-            parsed.query
-        )
-
-        values = params.get(
-            "file"
-        )
-
-        if not values:
+        if not country:
             continue
 
-        pdf_url = unquote(
-            values[0]
-        )
+        pdf_url = get_pdf_url(href)
 
-        if pdf_url.startswith("/"):
-            pdf_url = urljoin(
-                "https://osjd.org",
-                pdf_url
-            )
+        pdf_links.append({
+            "country": country,
+            "country_code": country_code,
+            "title": text,
+            "url": pdf_url,
+        })
 
-        pdf_url = pdf_url.split("?")[0]
+    print(f"\nНайдено перечней ОСЖД: {len(pdf_links)}")
 
-        if pdf_url in seen:
-            continue
-
-        seen.add(pdf_url)
-
-        documents.append(
-            {
-                "name": title,
-                "url": pdf_url
-            }
-        )
-
-    print(
-        f"Найдено PDF-документов: "
-        f"{len(documents)}"
-    )
-
-    return documents
-
-
-# ============================================================
-# ПОИСК РОССИЙСКОГО ДОКУМЕНТА
-# ============================================================
-
-def find_russian_document(documents):
-
-    keywords = [
-        "перечень грузовых станций российских железных дорог",
-        "российских железных дорог"
-    ]
-
-    for document in documents:
-
-        name = document["name"].lower()
-
-        for keyword in keywords:
-
-            if keyword in name:
-
-                print("")
-                print(
-                    "Найден российский PDF:"
-                )
-
-                print(
-                    document["name"]
-                )
-
-                print(
-                    document["url"]
-                )
-
-                return document
-
-    raise RuntimeError(
-        "Российский перечень ОСЖД "
-        "не найден на странице ОСЖД."
-    )
-
-
-# ============================================================
-# СКАЧИВАНИЕ PDF
-# ============================================================
-
-def download_pdf(url):
-
-    print("")
-    print("Скачиваем PDF...")
-
-    response = requests.get(
-        url,
-        headers=HEADERS,
-        timeout=180
-    )
-
-    response.raise_for_status()
-
-    data = response.content
-
-    print(
-        f"Размер PDF: "
-        f"{len(data) / 1024 / 1024:.2f} MB"
-    )
-
-    if not data.startswith(b"%PDF"):
-
+    if len(pdf_links) < 20:
         raise RuntimeError(
-            "ОСЖД вернул файл, "
-            "который не является PDF."
+            f"ОСЖД должно быть около 28 перечней, "
+            f"а найдено только {len(pdf_links)}"
         )
 
-    return data
-
-
-# ============================================================
-# НОРМАЛИЗАЦИЯ ТЕКСТА
-# ============================================================
-
-def clean_text(text):
-
-    text = text.replace(
-        "\xa0",
-        " "
-    )
-
-    text = text.replace(
-        "–",
-        "-"
-    )
-
-    text = text.replace(
-        "—",
-        "-"
-    )
-
-    text = " ".join(
-        text.split()
-    )
-
-    return text.strip()
-
-
-# ============================================================
-# ПРОВЕРКА КОДА СТАНЦИИ
-# ============================================================
-
-def is_station_code(text):
-
-    text = text.strip()
-
-    return bool(
-        re.fullmatch(
-            r"\d{6}",
-            text
-        )
-    )
-
-
-# ============================================================
-# ПРОВЕРКА НАЗВАНИЯ СТАНЦИИ
-# ============================================================
-
-def looks_like_russian_name(text):
-
-    text = clean_text(text)
-
-    if len(text) < 2:
-        return False
-
-    # В названии должна быть кириллица.
-    if not re.search(
-        r"[А-ЯЁ]",
-        text
-    ):
-        return False
-
-    bad = [
-        "раздел",
-        "наименование поля",
-        "содержание поля",
-        "код станции",
-        "производимые коммерческие операции",
-        "код пограничного перехода",
-        "перечень грузовых станций",
-        "общие сведения",
-        "алфавитный перечень"
-    ]
-
-    lower = text.lower()
-
-    for word in bad:
-
-        if word in lower:
-            return False
-
-    return True
-
-
-# ============================================================
-# ПРОВЕРКА ЛАТИНСКОГО НАЗВАНИЯ
-# ============================================================
-
-def looks_like_latin_name(text):
-
-    text = clean_text(text)
-
-    if not text:
-        return False
-
-    return bool(
-        re.search(
-            r"[A-Za-z]",
-            text
-        )
-    )
-
-
-# ============================================================
-# ОПЕРАЦИИ
-# ============================================================
-
-VALID_OPERATIONS = {
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "8Н",
-    "8H",
-    "9",
-    "10",
-    "10Н",
-    "10H",
-    "11",
-    "11Н",
-    "11H",
-    "12",
-    "12Н",
-    "12H",
-    "К",
-    "K"
-}
-
-
-def extract_operations(tokens):
-
-    operations = []
-    border_code = ""
-
-    for token in tokens:
-
-        token = clean_text(
-            token
-        )
-
-        if not token:
-            continue
-
-        # Иногда PDF объединяет:
-        # 1,2,3,5
-        parts = re.split(
-            r"[,;]+",
-            token
-        )
-
-        for part in parts:
-
-            part = part.strip()
-
-            if not part:
-                continue
-
-            # Пограничный код обычно состоит
-            # из 3–4 цифр.
-            if re.fullmatch(
-                r"\d{3,4}",
-                part
-            ):
-
-                if not border_code:
-                    border_code = part
-
-                continue
-
-            # Нормализуем латинскую H
-            # в кириллическую Н.
-            normalized = part.upper()
-
-            if normalized.endswith("H"):
-
-                normalized = (
-                    normalized[:-1] +
-                    "Н"
-                )
-
-            if normalized in VALID_OPERATIONS:
-
-                if normalized not in operations:
-
-                    operations.append(
-                        normalized
-                    )
-
-    return operations, border_code
-
-
-# ============================================================
-# РАЗБОР ОДНОЙ СТРОКИ PDF
-#
-# Используем слова PDF вместе с координатами.
-# Это значительно надёжнее обычного splitlines().
-# ============================================================
-
-def parse_page(page):
-
-    words = page.get_text(
-        "words"
-    )
-
-    if not words:
-        return []
-
-    # Формат слова PyMuPDF:
-    #
-    # x0, y0, x1, y1,
-    # text,
-    # block_no,
-    # line_no,
-    # word_no
-    #
-
-    grouped = {}
-
-    for word in words:
-
-        if len(word) < 8:
-            continue
-
-        x0 = word[0]
-        y0 = word[1]
-        text = clean_text(
-            word[4]
-        )
-
-        block_no = word[5]
-        line_no = word[6]
-
-        if not text:
-            continue
-
-        key = (
-            block_no,
-            line_no
-        )
-
-        grouped.setdefault(
-            key,
-            []
-        ).append(
-            {
-                "x": x0,
-                "text": text
-            }
-        )
-
-    stations = []
-
-    for key, row in grouped.items():
-
-        row.sort(
-            key=lambda item: item["x"]
-        )
-
-        tokens = [
-            item["text"]
-            for item in row
-        ]
-
-        # Ищем 6-значный код.
-        code_index = None
-
-        for index, token in enumerate(
-            tokens
-        ):
-
-            if is_station_code(
-                token
-            ):
-
-                code_index = index
-                break
-
-        if code_index is None:
-            continue
-
-        code = tokens[
-            code_index
-        ]
-
-        # ----------------------------------------------------
-        # Название станции
-        # ----------------------------------------------------
-
-        name_tokens = tokens[
-            :code_index
-        ]
-
-        name = clean_text(
-            " ".join(
-                name_tokens
-            )
-        )
-
-        if not looks_like_russian_name(
-            name
-        ):
-            continue
-
-        # ----------------------------------------------------
-        # Всё после кода
-        # ----------------------------------------------------
-
-        after_code = tokens[
-            code_index + 1:
-        ]
-
-        if not after_code:
-            continue
-
-        # ----------------------------------------------------
-        # Ищем начало латинского названия
-        # ----------------------------------------------------
-
-        latin_tokens = []
-        tail_tokens = []
-
-        latin_started = False
-
-        for token in after_code:
-
-            # Операции/погранкод начинаются
-            # с цифры или одиночной K/К.
-            is_numeric = bool(
-                re.match(
-                    r"^\d",
-                    token
-                )
+    all_stations = []
+
+    for item in pdf_links:
+        print("\n----------------------------------------")
+        print(item["country"])
+        print("----------------------------------------")
+
+        try:
+            pdf = download_pdf(item["url"])
+
+            # Железную дорогу берём из названия документа.
+            railway = item["title"]
+
+            stations = parse_pdf(
+                pdf,
+                item["country"],
+                item["country_code"],
+                railway
             )
 
-            is_operation_k = (
-                token.upper()
-                in {"K", "К"}
-            )
+            print(f"  Найдено станций: {len(stations)}")
 
-            if (
-                latin_started
-                and (
-                    is_numeric
-                    or is_operation_k
-                )
-            ):
+            all_stations.extend(stations)
 
-                tail_tokens.append(
-                    token
-                )
-
-                continue
-
-            if not latin_started:
-
-                if (
-                    re.search(
-                        r"[A-Za-z]",
-                        token
-                    )
-                    and not is_numeric
-                ):
-
-                    latin_started = True
-
-                    latin_tokens.append(
-                        token
-                    )
-
-                    continue
-
-                # Если после кода сразу
-                # цифра — странная строка.
-                continue
-
-            latin_tokens.append(
-                token
-            )
-
-        latin = clean_text(
-            " ".join(
-                latin_tokens
-            )
-        )
-
-        if not looks_like_latin_name(
-            latin
-        ):
-            continue
-
-        # ----------------------------------------------------
-        # Операции и пограничный код
-        # ----------------------------------------------------
-
-        operations, border_code = (
-            extract_operations(
-                tail_tokens
-            )
-        )
-
-        stations.append(
-            {
-                "name": name,
-                "name_lat": latin,
-                "code": code,
-                "country": "Россия",
-                "country_code": "RU",
-                "railway": (
-                    "Российские железные дороги"
-                ),
-                "operations": operations,
-                "border_code": border_code
-            }
-        )
-
-    return stations
-
-
-# ============================================================
-# РАЗБОР ВСЕГО PDF
-# ============================================================
-
-def parse_pdf(pdf_bytes):
-
-    print("")
-    print(
-        "Разбираем PDF по структуре "
-        "таблицы..."
-    )
-
-    document = fitz.open(
-        stream=pdf_bytes,
-        filetype="pdf"
-    )
-
-    stations = []
-
-    for page_number, page in enumerate(
-        document,
-        start=1
-    ):
-
-        text = page.get_text(
-            "text"
-        )
-
-        # ----------------------------------------------------
-        # После Раздела 4 начинается
-        # другая информация.
-        # Нам она не нужна.
-        # ----------------------------------------------------
-
-        if (
-            "Раздел 4." in text
-            and page_number > 4
-        ):
-
+        except Exception as exc:
             print(
-                f"Дошли до Раздела 4 "
-                f"на странице {page_number}."
+                f"  ERROR: {item['country']}: {exc}"
             )
 
-            break
+        time.sleep(1)
 
-        # Станции начинаются с раздела 2.
-        if page_number < 4:
-            continue
+    all_stations = deduplicate(all_stations)
 
-        found = parse_page(
-            page
-        )
-
-        if found:
-
-            stations.extend(
-                found
-            )
-
-            print(
-                f"Страница {page_number}: "
-                f"+{len(found)} станций"
-            )
-
-    document.close()
-
-    return stations
-
-
-# ============================================================
-# УДАЛЕНИЕ ДУБЛИКАТОВ
-# ============================================================
-
-def remove_duplicates(stations):
-
-    unique = {}
-
-    for station in stations:
-
-        code = station["code"]
-
-        if code not in unique:
-
-            unique[code] = station
-
-        else:
-
-            # Если первая запись была
-            # без операций, а вторая
-            # содержит их — объединяем.
-
-            old = unique[code]
-
-            if (
-                not old["operations"]
-                and station["operations"]
-            ):
-
-                old["operations"] = (
-                    station["operations"]
-                )
-
-            if (
-                not old["border_code"]
-                and station["border_code"]
-            ):
-
-                old["border_code"] = (
-                    station["border_code"]
-                )
-
-    return list(
-        unique.values()
-    )
-
-
-# ============================================================
-# ПРОВЕРКА ДАННЫХ
-# ============================================================
-
-def validate(stations):
-
-    print("")
-    print("=" * 60)
-    print("ПРОВЕРКА РЕЗУЛЬТАТА")
-    print("=" * 60)
-
-    print(
-        f"Всего станций: "
-        f"{len(stations)}"
-    )
-
-    if len(stations) < MIN_STATIONS:
-
+    # Проверка качества.
+    # Главное — не позволить GitHub записать пустой/сломанный JSON.
+    if len(all_stations) < 1000:
         raise RuntimeError(
-            "Найдено слишком мало станций: "
-            f"{len(stations)}. "
-            "JSON не будет сохранён."
+            f"Слишком мало станций: {len(all_stations)}. "
+            "JSON НЕ будет перезаписан."
         )
 
-    bad_codes = []
-
-    for station in stations:
-
-        if not is_station_code(
-            station["code"]
-        ):
-
-            bad_codes.append(
-                station["code"]
-            )
-
-    if bad_codes:
-
-        raise RuntimeError(
-            "Обнаружены неправильные "
-            "коды станций."
+    all_stations.sort(
+        key=lambda x: (
+            x["country"],
+            x["name"].upper(),
+            x["code"]
         )
-
-    names_missing = sum(
-        1
-        for station in stations
-        if not station["name"]
     )
-
-    latin_missing = sum(
-        1
-        for station in stations
-        if not station["name_lat"]
-    )
-
-    print(
-        f"Без русского названия: "
-        f"{names_missing}"
-    )
-
-    print(
-        f"Без латинского названия: "
-        f"{latin_missing}"
-    )
-
-    if names_missing > 0:
-
-        raise RuntimeError(
-            "Есть станции без русского "
-            "названия."
-        )
-
-    print(
-        "Проверка пройдена."
-    )
-
-
-# ============================================================
-# ПЕЧАТЬ ПРИМЕРОВ
-# ============================================================
-
-def print_examples(stations):
-
-    print("")
-    print("=" * 60)
-    print("ПЕРВЫЕ 30 СТАНЦИЙ")
-    print("=" * 60)
-
-    for station in stations[:30]:
-
-        print("")
-        print(
-            f'Название: '
-            f'{station["name"]}'
-        )
-
-        print(
-            f'Латиница: '
-            f'{station["name_lat"]}'
-        )
-
-        print(
-            f'Код: '
-            f'{station["code"]}'
-        )
-
-        print(
-            f'Операции: '
-            f'{", ".join(station["operations"])}'
-        )
-
-        print(
-            f'Погранкод: '
-            f'{station["border_code"]}'
-        )
-
-    print("")
-    print("=" * 60)
-
-
-# ============================================================
-# СОХРАНЕНИЕ JSON
-# ============================================================
-
-def save_json(stations):
 
     OUTPUT.parent.mkdir(
         parents=True,
         exist_ok=True
     )
 
-    # Сначала создаём JSON
-    # во временный файл.
-    #
-    # Это дополнительная защита:
-    # если запись оборвётся,
-    # основной stations.json
-    # не будет повреждён.
-
-    temp_file = OUTPUT.with_suffix(
-        ".tmp"
-    )
-
-    with open(
-        temp_file,
+    with OUTPUT.open(
         "w",
         encoding="utf-8"
     ) as file:
-
         json.dump(
-            stations,
+            all_stations,
             file,
             ensure_ascii=False,
             indent=2
         )
 
-    temp_file.replace(
-        OUTPUT
-    )
+    print("\n========================================")
+    print("ГОТОВО")
+    print("========================================")
+    print(f"Всего станций: {len(all_stations)}")
+    print(f"Файл: {OUTPUT}")
 
-    print("")
-    print(
-        f"JSON сохранён: {OUTPUT}"
-    )
+    # Небольшой контрольный вывод
+    print("\nПримеры:")
 
-
-# ============================================================
-# MAIN
-# ============================================================
-
-def main():
-
-    print("")
-    print("=" * 60)
-    print(
-        "ОБНОВЛЕНИЕ СПРАВОЧНИКА "
-        "ЖД-СТАНЦИЙ ОСЖД"
-    )
-    print("=" * 60)
-
-    # --------------------------------------------------------
-    # 1. Получаем страницу ОСЖД
-    # --------------------------------------------------------
-
-    html = get_osjd_page()
-
-    # --------------------------------------------------------
-    # 2. Находим документы
-    # --------------------------------------------------------
-
-    documents = find_documents(
-        html
-    )
-
-    if not documents:
-
-        raise RuntimeError(
-            "На странице ОСЖД "
-            "не найдено документов."
+    for station in all_stations[:10]:
+        print(
+            station["name"],
+            "|",
+            station["code"],
+            "|",
+            station["name_lat"],
+            "|",
+            station["country"]
         )
-
-    # --------------------------------------------------------
-    # 3. Российский PDF
-    # --------------------------------------------------------
-
-    russian = find_russian_document(
-        documents
-    )
-
-    # --------------------------------------------------------
-    # 4. Скачиваем
-    # --------------------------------------------------------
-
-    pdf = download_pdf(
-        russian["url"]
-    )
-
-    # --------------------------------------------------------
-    # 5. Разбираем
-    # --------------------------------------------------------
-
-    stations = parse_pdf(
-        pdf
-    )
-
-    print("")
-    print(
-        f"Получено записей: "
-        f"{len(stations)}"
-    )
-
-    # --------------------------------------------------------
-    # 6. Убираем дубли
-    # --------------------------------------------------------
-
-    stations = remove_duplicates(
-        stations
-    )
-
-    print(
-        f"После удаления дублей: "
-        f"{len(stations)}"
-    )
-
-    # --------------------------------------------------------
-    # 7. Проверяем
-    # --------------------------------------------------------
-
-    validate(
-        stations
-    )
-
-    # --------------------------------------------------------
-    # 8. Показываем примеры
-    # --------------------------------------------------------
-
-    print_examples(
-        stations
-    )
-
-    # --------------------------------------------------------
-    # 9. Сохраняем
-    # --------------------------------------------------------
-
-    save_json(
-        stations
-    )
-
-    print("")
-    print("=" * 60)
-    print("ГОТОВО!")
-    print("=" * 60)
 
 
 if __name__ == "__main__":
-
-    try:
-
-        main()
-
-    except Exception as error:
-
-        print("")
-        print("=" * 60)
-        print("ОШИБКА")
-        print("=" * 60)
-
-        print(
-            str(error)
-        )
-
-        print("=" * 60)
-
-        sys.exit(1)
-```
+    main()
