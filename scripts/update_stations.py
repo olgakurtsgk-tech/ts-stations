@@ -27,11 +27,13 @@ HEADERS = {
     )
 }
 
-MIN_STATIONS = 10
+# Минимум записей, который считаем нормальным результатом.
+# Российский список намного больше этого числа.
+MIN_STATIONS = 100
 
 
 # ============================================================
-# ПОЛУЧЕНИЕ СТРАНИЦЫ ОСЖД
+# ЗАГРУЗКА СТРАНИЦЫ ОСЖД
 # ============================================================
 
 def get_osjd_page():
@@ -66,7 +68,6 @@ def find_documents(html):
     )
 
     documents = []
-
     seen = set()
 
     for link in soup.find_all(
@@ -99,15 +100,15 @@ def find_documents(html):
             parsed.query
         )
 
-        file_values = params.get(
+        values = params.get(
             "file"
         )
 
-        if not file_values:
+        if not values:
             continue
 
         pdf_url = unquote(
-            file_values[0]
+            values[0]
         )
 
         if pdf_url.startswith("/"):
@@ -139,15 +140,14 @@ def find_documents(html):
 
 
 # ============================================================
-# ПОИСК РОССИЙСКОГО PDF
+# ПОИСК РОССИЙСКОГО ДОКУМЕНТА
 # ============================================================
 
 def find_russian_document(documents):
 
     keywords = [
-        "российских железных дорог",
-        "российских ж. д.",
-        "российских железных",
+        "перечень грузовых станций российских железных дорог",
+        "российских железных дорог"
     ]
 
     for document in documents:
@@ -160,7 +160,7 @@ def find_russian_document(documents):
 
                 print("")
                 print(
-                    "Найден российский документ:"
+                    "Найден российский PDF:"
                 )
 
                 print(
@@ -173,7 +173,10 @@ def find_russian_document(documents):
 
                 return document
 
-    return None
+    raise RuntimeError(
+        "Российский перечень ОСЖД "
+        "не найден на странице ОСЖД."
+    )
 
 
 # ============================================================
@@ -193,50 +196,463 @@ def download_pdf(url):
 
     response.raise_for_status()
 
-    content = response.content
+    data = response.content
 
     print(
-        f"Получено: "
-        f"{len(content) / 1024 / 1024:.2f} MB"
+        f"Размер PDF: "
+        f"{len(data) / 1024 / 1024:.2f} MB"
     )
 
-    if not content.startswith(
-        b"%PDF"
-    ):
-
-        print("")
-        print(
-            "ОШИБКА: полученный файл "
-            "не является PDF."
-        )
+    if not data.startswith(b"%PDF"):
 
         raise RuntimeError(
-            "OSJD вернул не PDF"
+            "ОСЖД вернул файл, "
+            "который не является PDF."
         )
 
-    return content
+    return data
 
 
 # ============================================================
-# ИЗВЛЕЧЕНИЕ ТЕКСТА ИЗ PDF
+# НОРМАЛИЗАЦИЯ ТЕКСТА
 # ============================================================
 
-def extract_pdf_pages(pdf_bytes):
+def clean_text(text):
+
+    text = text.replace(
+        "\xa0",
+        " "
+    )
+
+    text = text.replace(
+        "–",
+        "-"
+    )
+
+    text = text.replace(
+        "—",
+        "-"
+    )
+
+    text = " ".join(
+        text.split()
+    )
+
+    return text.strip()
+
+
+# ============================================================
+# ПРОВЕРКА КОДА СТАНЦИИ
+# ============================================================
+
+def is_station_code(text):
+
+    text = text.strip()
+
+    return bool(
+        re.fullmatch(
+            r"\d{6}",
+            text
+        )
+    )
+
+
+# ============================================================
+# ПРОВЕРКА НАЗВАНИЯ СТАНЦИИ
+# ============================================================
+
+def looks_like_russian_name(text):
+
+    text = clean_text(text)
+
+    if len(text) < 2:
+        return False
+
+    # В названии должна быть кириллица.
+    if not re.search(
+        r"[А-ЯЁ]",
+        text
+    ):
+        return False
+
+    bad = [
+        "раздел",
+        "наименование поля",
+        "содержание поля",
+        "код станции",
+        "производимые коммерческие операции",
+        "код пограничного перехода",
+        "перечень грузовых станций",
+        "общие сведения",
+        "алфавитный перечень"
+    ]
+
+    lower = text.lower()
+
+    for word in bad:
+
+        if word in lower:
+            return False
+
+    return True
+
+
+# ============================================================
+# ПРОВЕРКА ЛАТИНСКОГО НАЗВАНИЯ
+# ============================================================
+
+def looks_like_latin_name(text):
+
+    text = clean_text(text)
+
+    if not text:
+        return False
+
+    return bool(
+        re.search(
+            r"[A-Za-z]",
+            text
+        )
+    )
+
+
+# ============================================================
+# ОПЕРАЦИИ
+# ============================================================
+
+VALID_OPERATIONS = {
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "8Н",
+    "8H",
+    "9",
+    "10",
+    "10Н",
+    "10H",
+    "11",
+    "11Н",
+    "11H",
+    "12",
+    "12Н",
+    "12H",
+    "К",
+    "K"
+}
+
+
+def extract_operations(tokens):
+
+    operations = []
+    border_code = ""
+
+    for token in tokens:
+
+        token = clean_text(
+            token
+        )
+
+        if not token:
+            continue
+
+        # Иногда PDF объединяет:
+        # 1,2,3,5
+        parts = re.split(
+            r"[,;]+",
+            token
+        )
+
+        for part in parts:
+
+            part = part.strip()
+
+            if not part:
+                continue
+
+            # Пограничный код обычно состоит
+            # из 3–4 цифр.
+            if re.fullmatch(
+                r"\d{3,4}",
+                part
+            ):
+
+                if not border_code:
+                    border_code = part
+
+                continue
+
+            # Нормализуем латинскую H
+            # в кириллическую Н.
+            normalized = part.upper()
+
+            if normalized.endswith("H"):
+
+                normalized = (
+                    normalized[:-1] +
+                    "Н"
+                )
+
+            if normalized in VALID_OPERATIONS:
+
+                if normalized not in operations:
+
+                    operations.append(
+                        normalized
+                    )
+
+    return operations, border_code
+
+
+# ============================================================
+# РАЗБОР ОДНОЙ СТРОКИ PDF
+#
+# Используем слова PDF вместе с координатами.
+# Это значительно надёжнее обычного splitlines().
+# ============================================================
+
+def parse_page(page):
+
+    words = page.get_text(
+        "words"
+    )
+
+    if not words:
+        return []
+
+    # Формат слова PyMuPDF:
+    #
+    # x0, y0, x1, y1,
+    # text,
+    # block_no,
+    # line_no,
+    # word_no
+    #
+
+    grouped = {}
+
+    for word in words:
+
+        if len(word) < 8:
+            continue
+
+        x0 = word[0]
+        y0 = word[1]
+        text = clean_text(
+            word[4]
+        )
+
+        block_no = word[5]
+        line_no = word[6]
+
+        if not text:
+            continue
+
+        key = (
+            block_no,
+            line_no
+        )
+
+        grouped.setdefault(
+            key,
+            []
+        ).append(
+            {
+                "x": x0,
+                "text": text
+            }
+        )
+
+    stations = []
+
+    for key, row in grouped.items():
+
+        row.sort(
+            key=lambda item: item["x"]
+        )
+
+        tokens = [
+            item["text"]
+            for item in row
+        ]
+
+        # Ищем 6-значный код.
+        code_index = None
+
+        for index, token in enumerate(
+            tokens
+        ):
+
+            if is_station_code(
+                token
+            ):
+
+                code_index = index
+                break
+
+        if code_index is None:
+            continue
+
+        code = tokens[
+            code_index
+        ]
+
+        # ----------------------------------------------------
+        # Название станции
+        # ----------------------------------------------------
+
+        name_tokens = tokens[
+            :code_index
+        ]
+
+        name = clean_text(
+            " ".join(
+                name_tokens
+            )
+        )
+
+        if not looks_like_russian_name(
+            name
+        ):
+            continue
+
+        # ----------------------------------------------------
+        # Всё после кода
+        # ----------------------------------------------------
+
+        after_code = tokens[
+            code_index + 1:
+        ]
+
+        if not after_code:
+            continue
+
+        # ----------------------------------------------------
+        # Ищем начало латинского названия
+        # ----------------------------------------------------
+
+        latin_tokens = []
+        tail_tokens = []
+
+        latin_started = False
+
+        for token in after_code:
+
+            # Операции/погранкод начинаются
+            # с цифры или одиночной K/К.
+            is_numeric = bool(
+                re.match(
+                    r"^\d",
+                    token
+                )
+            )
+
+            is_operation_k = (
+                token.upper()
+                in {"K", "К"}
+            )
+
+            if (
+                latin_started
+                and (
+                    is_numeric
+                    or is_operation_k
+                )
+            ):
+
+                tail_tokens.append(
+                    token
+                )
+
+                continue
+
+            if not latin_started:
+
+                if (
+                    re.search(
+                        r"[A-Za-z]",
+                        token
+                    )
+                    and not is_numeric
+                ):
+
+                    latin_started = True
+
+                    latin_tokens.append(
+                        token
+                    )
+
+                    continue
+
+                # Если после кода сразу
+                # цифра — странная строка.
+                continue
+
+            latin_tokens.append(
+                token
+            )
+
+        latin = clean_text(
+            " ".join(
+                latin_tokens
+            )
+        )
+
+        if not looks_like_latin_name(
+            latin
+        ):
+            continue
+
+        # ----------------------------------------------------
+        # Операции и пограничный код
+        # ----------------------------------------------------
+
+        operations, border_code = (
+            extract_operations(
+                tail_tokens
+            )
+        )
+
+        stations.append(
+            {
+                "name": name,
+                "name_lat": latin,
+                "code": code,
+                "country": "Россия",
+                "country_code": "RU",
+                "railway": (
+                    "Российские железные дороги"
+                ),
+                "operations": operations,
+                "border_code": border_code
+            }
+        )
+
+    return stations
+
+
+# ============================================================
+# РАЗБОР ВСЕГО PDF
+# ============================================================
+
+def parse_pdf(pdf_bytes):
 
     print("")
-    print("Открываем PDF...")
+    print(
+        "Разбираем PDF по структуре "
+        "таблицы..."
+    )
 
     document = fitz.open(
         stream=pdf_bytes,
         filetype="pdf"
     )
 
-    print(
-        f"Страниц в PDF: "
-        f"{len(document)}"
-    )
-
-    pages = []
+    stations = []
 
     for page_number, page in enumerate(
         document,
@@ -247,451 +663,41 @@ def extract_pdf_pages(pdf_bytes):
             "text"
         )
 
-        pages.append(
-            {
-                "number": page_number,
-                "text": text
-            }
-        )
+        # ----------------------------------------------------
+        # После Раздела 4 начинается
+        # другая информация.
+        # Нам она не нужна.
+        # ----------------------------------------------------
 
-    document.close()
-
-    return pages
-
-
-# ============================================================
-# СЛУЖЕБНЫЕ ФУНКЦИИ
-# ============================================================
-
-def normalize_spaces(text):
-
-    return " ".join(
-        text.strip().split()
-    )
-
-
-def is_code(text):
-
-    return bool(
-        re.fullmatch(
-            r"\d{6}",
-            text.strip()
-        )
-    )
-
-
-def looks_like_station_name(text):
-
-    text = normalize_spaces(
-        text
-    )
-
-    if not text:
-        return False
-
-    if len(text) < 2:
-        return False
-
-    lower = text.lower()
-
-    bad_phrases = [
-        "памятка осжд",
-        "регламент",
-        "перечень грузовых станций",
-        "грузовых станций железных дорог",
-        "по состоянию на",
-        "наименование железной дороги",
-        "код станции",
-        "станция",
-    ]
-
-    for phrase in bad_phrases:
-
-        if phrase in lower:
-            return False
-
-    return True
-
-
-# ============================================================
-# ПОПЫТКА №1
-#
-# Ищем строки:
-#
-# 123456 Название станции
-#
-# ============================================================
-
-def parse_same_line(text):
-
-    stations = []
-
-    lines = text.splitlines()
-
-    for line in lines:
-
-        line = normalize_spaces(
-            line
-        )
-
-        if not line:
-            continue
-
-        match = re.match(
-            r"^(\d{6})\s+(.+)$",
-            line
-        )
-
-        if not match:
-            continue
-
-        code = match.group(1)
-
-        name = normalize_spaces(
-            match.group(2)
-        )
-
-        if not looks_like_station_name(
-            name
-        ):
-            continue
-
-        stations.append(
-            {
-                "code": code,
-                "name": name
-            }
-        )
-
-    return stations
-
-
-# ============================================================
-# ПОПЫТКА №2
-#
-# PDF может хранить код и название
-# отдельными текстовыми строками:
-#
-# 657606
-# Самара-Сортировочная
-#
-# Поэтому ищем код, а затем ближайшую
-# подходящую строку.
-# ============================================================
-
-def parse_separate_lines(text):
-
-    stations = []
-
-    raw_lines = text.splitlines()
-
-    lines = []
-
-    for line in raw_lines:
-
-        line = normalize_spaces(
-            line
-        )
-
-        if line:
-
-            lines.append(line)
-
-    for i, line in enumerate(lines):
-
-        if not is_code(line):
-            continue
-
-        code = line
-
-        candidates = []
-
-        for j in range(
-            i + 1,
-            min(
-                i + 6,
-                len(lines)
-            )
+        if (
+            "Раздел 4." in text
+            and page_number > 4
         ):
 
-            candidate = lines[j]
+            print(
+                f"Дошли до Раздела 4 "
+                f"на странице {page_number}."
+            )
 
-            if is_code(candidate):
-                break
+            break
 
-            if looks_like_station_name(
-                candidate
-            ):
-
-                candidates.append(
-                    candidate
-                )
-
-        if not candidates:
+        # Станции начинаются с раздела 2.
+        if page_number < 4:
             continue
 
-        name = candidates[0]
-
-        stations.append(
-            {
-                "code": code,
-                "name": name
-            }
-        )
-
-    return stations
-
-
-# ============================================================
-# ПОПЫТКА №3
-#
-# Используем координаты PDF.
-#
-# Это важно для таблиц, где визуально
-# код и название находятся рядом,
-# но обычный get_text("text")
-# разбивает их по строкам.
-# ============================================================
-
-def parse_pdf_blocks(page):
-
-    stations = []
-
-    blocks = page.get_text(
-        "blocks"
-    )
-
-    rows = []
-
-    for block in blocks:
-
-        if len(block) < 5:
-            continue
-
-        x0 = block[0]
-        y0 = block[1]
-        x1 = block[2]
-        y1 = block[3]
-        text = block[4]
-
-        text = normalize_spaces(
-            text
-        )
-
-        if not text:
-            continue
-
-        rows.append(
-            {
-                "x0": x0,
-                "y0": y0,
-                "x1": x1,
-                "y1": y1,
-                "text": text
-            }
-        )
-
-    for row in rows:
-
-        code_match = re.search(
-            r"\b(\d{6})\b",
-            row["text"]
-        )
-
-        if not code_match:
-            continue
-
-        code = code_match.group(1)
-
-        remaining = (
-            row["text"]
-            .replace(
-                code,
-                "",
-                1
-            )
-            .strip()
-        )
-
-        remaining = normalize_spaces(
-            remaining
-        )
-
-        if looks_like_station_name(
-            remaining
-        ):
-
-            stations.append(
-                {
-                    "code": code,
-                    "name": remaining
-                }
-            )
-
-            continue
-
-        # Ищем ближайший блок
-        # справа от кода.
-
-        candidates = []
-
-        for other in rows:
-
-            if other is row:
-                continue
-
-            vertical_distance = abs(
-                other["y0"] -
-                row["y0"]
-            )
-
-            horizontal_distance = (
-                other["x0"] -
-                row["x1"]
-            )
-
-            if vertical_distance > 12:
-                continue
-
-            if horizontal_distance < -5:
-                continue
-
-            if horizontal_distance > 500:
-                continue
-
-            if not looks_like_station_name(
-                other["text"]
-            ):
-                continue
-
-            candidates.append(
-                (
-                    horizontal_distance,
-                    vertical_distance,
-                    other["text"]
-                )
-            )
-
-        if candidates:
-
-            candidates.sort(
-                key=lambda item: (
-                    item[1],
-                    item[0]
-                )
-            )
-
-            name = candidates[0][2]
-
-            stations.append(
-                {
-                    "code": code,
-                    "name": name
-                }
-            )
-
-    return stations
-
-
-# ============================================================
-# ОБЩИЙ ПАРСЕР РОССИЙСКОГО PDF
-# ============================================================
-
-def parse_russian_pdf(pages):
-
-    print("")
-    print("Разбираем PDF...")
-
-    all_stations = []
-
-    # --------------------------------------------------------
-    # Попытка 1 и 2
-    # --------------------------------------------------------
-
-    for page in pages:
-
-        text = page["text"]
-
-        found = parse_same_line(
-            text
-        )
-
-        if not found:
-
-            found = parse_separate_lines(
-                text
-            )
-
-        for station in found:
-
-            station["_page"] = page["number"]
-
-            all_stations.append(
-                station
-            )
-
-    # --------------------------------------------------------
-    # Попытка 3 — координаты PDF
-    # --------------------------------------------------------
-
-    if len(all_stations) < MIN_STATIONS:
-
-        print("")
-        print(
-            "Обычный разбор дал мало "
-            "станций."
-        )
-
-        print(
-            "Пробуем разобрать PDF "
-            "по координатам таблицы..."
-        )
-
-        document_bytes = None
-
-        # Нам здесь нужен исходный PDF,
-        # поэтому координатный разбор
-        # выполняется отдельно в main().
-        #
-        # Этот блок оставлен для совместимости.
-        #
-        # Реальный координатный разбор
-        # выполняется функцией
-        # parse_pdf_with_coordinates().
-
-    return all_stations
-
-
-# ============================================================
-# КООРДИНАТНЫЙ ПАРСЕР ВСЕГО PDF
-# ============================================================
-
-def parse_pdf_with_coordinates(pdf_bytes):
-
-    document = fitz.open(
-        stream=pdf_bytes,
-        filetype="pdf"
-    )
-
-    stations = []
-
-    for page_number, page in enumerate(
-        document,
-        start=1
-    ):
-
-        found = parse_pdf_blocks(
+        found = parse_page(
             page
         )
 
-        for station in found:
+        if found:
 
-            station["_page"] = (
-                page_number
+            stations.extend(
+                found
             )
 
-            stations.append(
-                station
+            print(
+                f"Страница {page_number}: "
+                f"+{len(found)} станций"
             )
 
     document.close()
@@ -703,74 +709,171 @@ def parse_pdf_with_coordinates(pdf_bytes):
 # УДАЛЕНИЕ ДУБЛИКАТОВ
 # ============================================================
 
-def unique_stations(stations):
+def remove_duplicates(stations):
 
-    result = {}
+    unique = {}
 
     for station in stations:
 
-        code = station.get(
-            "code",
-            ""
-        )
+        code = station["code"]
 
-        if not is_code(code):
-            continue
+        if code not in unique:
 
-        name = normalize_spaces(
-            station.get(
-                "name",
-                ""
-            )
-        )
+            unique[code] = station
 
-        if not name:
-            continue
+        else:
 
-        # Если код уже найден,
-        # оставляем первый вариант.
+            # Если первая запись была
+            # без операций, а вторая
+            # содержит их — объединяем.
 
-        if code not in result:
+            old = unique[code]
 
-            result[code] = {
-                "name": name,
-                "name_lat": "",
-                "code": code,
-                "country": "Россия",
-                "country_code": "RU",
-                "railway": "",
-                "operations": [],
-                "border_code": ""
-            }
+            if (
+                not old["operations"]
+                and station["operations"]
+            ):
+
+                old["operations"] = (
+                    station["operations"]
+                )
+
+            if (
+                not old["border_code"]
+                and station["border_code"]
+            ):
+
+                old["border_code"] = (
+                    station["border_code"]
+                )
 
     return list(
-        result.values()
+        unique.values()
     )
 
 
 # ============================================================
-# ДИАГНОСТИКА
+# ПРОВЕРКА ДАННЫХ
 # ============================================================
 
-def print_sample(stations):
+def validate(stations):
 
     print("")
     print("=" * 60)
-    print("ПЕРВЫЕ НАЙДЕННЫЕ СТАНЦИИ")
+    print("ПРОВЕРКА РЕЗУЛЬТАТА")
+    print("=" * 60)
+
+    print(
+        f"Всего станций: "
+        f"{len(stations)}"
+    )
+
+    if len(stations) < MIN_STATIONS:
+
+        raise RuntimeError(
+            "Найдено слишком мало станций: "
+            f"{len(stations)}. "
+            "JSON не будет сохранён."
+        )
+
+    bad_codes = []
+
+    for station in stations:
+
+        if not is_station_code(
+            station["code"]
+        ):
+
+            bad_codes.append(
+                station["code"]
+            )
+
+    if bad_codes:
+
+        raise RuntimeError(
+            "Обнаружены неправильные "
+            "коды станций."
+        )
+
+    names_missing = sum(
+        1
+        for station in stations
+        if not station["name"]
+    )
+
+    latin_missing = sum(
+        1
+        for station in stations
+        if not station["name_lat"]
+    )
+
+    print(
+        f"Без русского названия: "
+        f"{names_missing}"
+    )
+
+    print(
+        f"Без латинского названия: "
+        f"{latin_missing}"
+    )
+
+    if names_missing > 0:
+
+        raise RuntimeError(
+            "Есть станции без русского "
+            "названия."
+        )
+
+    print(
+        "Проверка пройдена."
+    )
+
+
+# ============================================================
+# ПЕЧАТЬ ПРИМЕРОВ
+# ============================================================
+
+def print_examples(stations):
+
+    print("")
+    print("=" * 60)
+    print("ПЕРВЫЕ 30 СТАНЦИЙ")
     print("=" * 60)
 
     for station in stations[:30]:
 
+        print("")
         print(
-            f'{station["code"]} — '
+            f'Название: '
             f'{station["name"]}'
         )
 
+        print(
+            f'Латиница: '
+            f'{station["name_lat"]}'
+        )
+
+        print(
+            f'Код: '
+            f'{station["code"]}'
+        )
+
+        print(
+            f'Операции: '
+            f'{", ".join(station["operations"])}'
+        )
+
+        print(
+            f'Погранкод: '
+            f'{station["border_code"]}'
+        )
+
+    print("")
     print("=" * 60)
 
 
 # ============================================================
-# СОХРАНЕНИЕ
+# СОХРАНЕНИЕ JSON
 # ============================================================
 
 def save_json(stations):
@@ -780,8 +883,20 @@ def save_json(stations):
         exist_ok=True
     )
 
+    # Сначала создаём JSON
+    # во временный файл.
+    #
+    # Это дополнительная защита:
+    # если запись оборвётся,
+    # основной stations.json
+    # не будет повреждён.
+
+    temp_file = OUTPUT.with_suffix(
+        ".tmp"
+    )
+
     with open(
-        OUTPUT,
+        temp_file,
         "w",
         encoding="utf-8"
     ) as file:
@@ -792,6 +907,10 @@ def save_json(stations):
             ensure_ascii=False,
             indent=2
         )
+
+    temp_file.replace(
+        OUTPUT
+    )
 
     print("")
     print(
@@ -807,17 +926,20 @@ def main():
 
     print("")
     print("=" * 60)
-    print("ОБНОВЛЕНИЕ ЖД-СТАНЦИЙ ОСЖД")
+    print(
+        "ОБНОВЛЕНИЕ СПРАВОЧНИКА "
+        "ЖД-СТАНЦИЙ ОСЖД"
+    )
     print("=" * 60)
 
     # --------------------------------------------------------
-    # 1. Страница ОСЖД
+    # 1. Получаем страницу ОСЖД
     # --------------------------------------------------------
 
     html = get_osjd_page()
 
     # --------------------------------------------------------
-    # 2. Документы
+    # 2. Находим документы
     # --------------------------------------------------------
 
     documents = find_documents(
@@ -827,172 +949,71 @@ def main():
     if not documents:
 
         raise RuntimeError(
-            "Не найдено ни одного PDF ОСЖД."
+            "На странице ОСЖД "
+            "не найдено документов."
         )
 
     # --------------------------------------------------------
-    # 3. Россия
+    # 3. Российский PDF
     # --------------------------------------------------------
 
     russian = find_russian_document(
         documents
     )
 
-    if not russian:
-
-        raise RuntimeError(
-            "Российский PDF ОСЖД "
-            "не найден."
-        )
-
     # --------------------------------------------------------
-    # 4. Скачать PDF
+    # 4. Скачиваем
     # --------------------------------------------------------
 
-    pdf_bytes = download_pdf(
+    pdf = download_pdf(
         russian["url"]
     )
 
     # --------------------------------------------------------
-    # 5. Извлечь текст
+    # 5. Разбираем
     # --------------------------------------------------------
 
-    pages = extract_pdf_pages(
-        pdf_bytes
-    )
-
-    # --------------------------------------------------------
-    # 6. Печатаем небольшой фрагмент
-    #    для диагностики
-    # --------------------------------------------------------
-
-    print("")
-    print("=" * 60)
-    print("ПЕРВЫЙ ФРАГМЕНТ PDF")
-    print("=" * 60)
-
-    preview_lines = []
-
-    for page in pages[:2]:
-
-        for line in page["text"].splitlines():
-
-            line = normalize_spaces(
-                line
-            )
-
-            if line:
-
-                preview_lines.append(
-                    line
-                )
-
-    for line in preview_lines[:80]:
-
-        print(line)
-
-    print("=" * 60)
-
-    # --------------------------------------------------------
-    # 7. Первый парсер
-    # --------------------------------------------------------
-
-    stations = parse_russian_pdf(
-        pages
+    stations = parse_pdf(
+        pdf
     )
 
     print("")
     print(
-        f"После текстового разбора: "
+        f"Получено записей: "
         f"{len(stations)}"
     )
 
     # --------------------------------------------------------
-    # 8. Если мало — координатный разбор
+    # 6. Убираем дубли
     # --------------------------------------------------------
 
-    if len(stations) < MIN_STATIONS:
-
-        print("")
-        print(
-            "Запускаем координатный "
-            "разбор PDF..."
-        )
-
-        coordinate_stations = (
-            parse_pdf_with_coordinates(
-                pdf_bytes
-            )
-        )
-
-        print(
-            "Найдено координатным "
-            "методом: "
-            f"{len(coordinate_stations)}"
-        )
-
-        stations.extend(
-            coordinate_stations
-        )
-
-    # --------------------------------------------------------
-    # 9. Уникальные станции
-    # --------------------------------------------------------
-
-    stations = unique_stations(
+    stations = remove_duplicates(
         stations
     )
 
-    print("")
     print(
-        f"Уникальных станций: "
+        f"После удаления дублей: "
         f"{len(stations)}"
     )
 
     # --------------------------------------------------------
-    # 10. КРИТИЧЕСКАЯ ПРОВЕРКА
+    # 7. Проверяем
     # --------------------------------------------------------
 
-    if len(stations) < MIN_STATIONS:
-
-        print("")
-        print("=" * 60)
-        print("ОШИБКА")
-        print("=" * 60)
-
-        print(
-            "Парсер нашёл слишком мало "
-            "станций."
-        )
-
-        print(
-            f"Найдено: {len(stations)}"
-        )
-
-        print(
-            f"Минимум: {MIN_STATIONS}"
-        )
-
-        print("")
-        print(
-            "Файл stations.json НЕ будет "
-            "перезаписан."
-        )
-
-        print("=" * 60)
-
-        sys.exit(1)
-
-    # --------------------------------------------------------
-    # 11. Показать результат
-    # --------------------------------------------------------
-
-    print_sample(
+    validate(
         stations
     )
 
     # --------------------------------------------------------
-    # 12. Сохранить
+    # 8. Показываем примеры
+    # --------------------------------------------------------
+
+    print_examples(
+        stations
+    )
+
+    # --------------------------------------------------------
+    # 9. Сохраняем
     # --------------------------------------------------------
 
     save_json(
@@ -1001,16 +1022,28 @@ def main():
 
     print("")
     print("=" * 60)
-    print("ГОТОВО")
+    print("ГОТОВО!")
     print("=" * 60)
-
-    print(
-        f"Станций записано: "
-        f"{len(stations)}"
-    )
 
 
 if __name__ == "__main__":
 
-    main()
+    try:
+
+        main()
+
+    except Exception as error:
+
+        print("")
+        print("=" * 60)
+        print("ОШИБКА")
+        print("=" * 60)
+
+        print(
+            str(error)
+        )
+
+        print("=" * 60)
+
+        sys.exit(1)
 ```
