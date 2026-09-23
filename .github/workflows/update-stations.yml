@@ -15,7 +15,7 @@ jobs:
 
     steps:
 
-      - name: Get repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -23,31 +23,149 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install dependencies
+      - name: Install Python packages
         run: |
           python -m pip install --upgrade pip
           python -m pip install requests beautifulsoup4 pymupdf
 
-      - name: Download and process OSJD station lists
+      - name: Show environment
         run: |
-          python scripts/update_stations.py
+          echo "Python version:"
+          python --version
+          echo ""
+          echo "Working directory:"
+          pwd
+          echo ""
+          echo "Repository files:"
+          ls -la
+          echo ""
+          echo "Scripts:"
+          ls -la scripts
+          echo ""
+          echo "Data:"
+          ls -la data
 
-      - name: Check generated file
+      - name: Run station parser
         run: |
-          echo "Checking stations.json..."
+          echo "========================================"
+          echo "STARTING STATION PARSER"
+          echo "========================================"
+
+          python -u scripts/update_stations.py
+
+          echo "========================================"
+          echo "PARSER FINISHED"
+          echo "========================================"
+
+      - name: Check stations.json
+        run: |
+          echo "========================================"
+          echo "CHECKING stations.json"
+          echo "========================================"
+
+          if [ ! -f data/stations.json ]; then
+            echo "ERROR: data/stations.json does not exist"
+            exit 1
+          fi
+
+          echo ""
+          echo "File information:"
           ls -lh data/stations.json
-          python -c "import json; data=json.load(open('data/stations.json', encoding='utf-8')); print('Stations:', len(data)); print('First station:', data[0] if data else 'EMPTY')"
+
+          echo ""
+          echo "JSON validation:"
+
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("data/stations.json")
+
+          with path.open("r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          print("JSON is valid")
+          print("Number of stations:", len(data))
+
+          if not data:
+              print("ERROR: stations.json is empty")
+              raise SystemExit(1)
+
+          print("")
+          print("First station:")
+          print(json.dumps(data[0], ensure_ascii=False, indent=2))
+
+          required = [
+              "name",
+              "name_lat",
+              "code",
+              "country",
+              "country_code",
+              "railway",
+              "operations",
+              "border_code"
+          ]
+
+          missing = [
+              field
+              for field in required
+              if field not in data[0]
+          ]
+
+          if missing:
+              print("")
+              print("ERROR: missing fields:", missing)
+              raise SystemExit(1)
+
+          print("")
+          print("Required fields: OK")
+          PY
+
+      - name: Show station statistics
+        run: |
+          python - <<'PY'
+          import json
+          from collections import Counter
+
+          with open("data/stations.json", encoding="utf-8") as f:
+              data = json.load(f)
+
+          print("========================================")
+          print("STATION DATABASE STATISTICS")
+          print("========================================")
+
+          print("Total stations:", len(data))
+          print("")
+
+          countries = Counter(
+              item.get("country", "")
+              for item in data
+          )
+
+          print("Stations by country:")
+
+          for country, count in countries.most_common():
+              print(f"{country}: {count}")
+
+          print("")
+          print("========================================")
+          PY
 
       - name: Save updated database
         run: |
+          echo "========================================"
+          echo "SAVING DATABASE"
+          echo "========================================"
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add data/stations.json
 
           if git diff --cached --quiet; then
-            echo "No changes"
+            echo "No changes in stations.json"
           else
             git commit -m "Update railway stations from OSJD"
             git push
+            echo "Database successfully updated"
           fi
