@@ -22,8 +22,8 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4 pymupdf
+  run: |
+    pip install requests beautifulsoup4 pymupdf
 
       - name: Download and process OSJD station lists
         run: |
