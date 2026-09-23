@@ -3,6 +3,9 @@ name: Check railway stations
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -18,4 +21,22 @@ jobs:
 
       - name: Check database
         run: |
-          python scripts/check_stations.py
+          python scripts/check_stations.py > station_report.txt
+
+      - name: Show report
+        run: |
+          cat station_report.txt
+
+      - name: Save report
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add station_report.txt
+
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Add station database report"
+            git push
+          fi
