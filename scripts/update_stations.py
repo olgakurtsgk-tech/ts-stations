@@ -2,6 +2,9 @@ import json
 import re
 import requests
 import fitz
+
+from bs4 import BeautifulSoup
+
 from pathlib import Path
 from urllib.parse import urljoin, urlparse, parse_qs, unquote
 
