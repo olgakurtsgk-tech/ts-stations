@@ -32,7 +32,7 @@ HEADERS = {
 
 
 # ============================================================
-# ЗАГРУЖАЕМ НАСТРОЙКИ И ФУНКЦИИ ИЗ update_stations.py
+# ИМПОРТ ОСНОВНОГО ПАРСЕРА
 # ============================================================
 
 try:
@@ -46,6 +46,7 @@ except ImportError:
     print(
         "Не удалось импортировать scripts/update_stations.py"
     )
+    print()
     print(
         "Запускайте этот скрипт из корня репозитория:"
     )
@@ -75,24 +76,10 @@ def clean_text(text):
     return text.strip()
 
 
-def get_pdf_url(href):
-    """
-    Используем ту же логику, что и update_stations.py.
-    """
-
-    return update_stations.get_pdf_url(href)
-
-
 def identify_country(text):
     """
-    Определяем страну по тексту ссылки.
-
-    В новой версии update_stations.py функции
-    identify_country() больше нет, поэтому здесь
-    используем локальное определение.
-
-    Возвращаем:
-        country, country_code
+    Определяет одну из четырёх диагностируемых стран
+    по тексту ссылки ОСЖД.
     """
 
     text_clean = clean_text(text).lower()
@@ -132,7 +119,76 @@ def identify_country(text):
     return None, None
 
 
+def get_pdf_url(href):
+    """
+    Совместимо с текущим update_stations.py.
+
+    В актуальном основном парсере используется
+    функция get_pdf_urls(), поэтому здесь
+    не обращаемся к несуществующей get_pdf_url().
+    """
+
+    # --------------------------------------------------------
+    # Сначала пробуем актуальную функцию get_pdf_urls()
+    # --------------------------------------------------------
+
+    if hasattr(update_stations, "get_pdf_urls"):
+
+        try:
+
+            result = update_stations.get_pdf_urls(
+                href
+            )
+
+            if isinstance(result, str):
+
+                if result:
+                    return result
+
+            if isinstance(result, (list, tuple)):
+
+                for url in result:
+
+                    if url:
+                        return url
+
+        except Exception as error:
+
+            print(
+                "get_pdf_urls ERROR:",
+                repr(error)
+            )
+
+    # --------------------------------------------------------
+    # Если функция вернула ничего,
+    # пытаемся обработать ссылку самостоятельно.
+    # --------------------------------------------------------
+
+    if href.startswith("http://"):
+        return href.replace(
+            "http://",
+            "https://",
+            1
+        )
+
+    if href.startswith("https://"):
+        return href
+
+    if href.startswith("//"):
+        return "https:" + href
+
+    if href.startswith("/"):
+
+        return (
+            "https://osjd.org"
+            + href
+        )
+
+    return href
+
+
 def download_pdf(url):
+
     print()
     print("DOWNLOAD:")
     print(url)
@@ -144,12 +200,16 @@ def download_pdf(url):
     )
 
     print(
-        f"HTTP STATUS: {response.status_code}"
+        "HTTP STATUS:",
+        response.status_code
     )
 
     print(
         "CONTENT TYPE:",
-        response.headers.get("content-type", "")
+        response.headers.get(
+            "content-type",
+            ""
+        )
     )
 
     print(
@@ -160,7 +220,10 @@ def download_pdf(url):
 
     response.raise_for_status()
 
-    if not response.content.startswith(b"%PDF"):
+    if not response.content.startswith(
+        b"%PDF"
+    ):
+
         raise RuntimeError(
             "Полученный файл не является PDF"
         )
@@ -169,7 +232,7 @@ def download_pdf(url):
 
 
 # ============================================================
-# ПОИСК PDF
+# ПОИСК PDF НА СТРАНИЦЕ ОСЖД
 # ============================================================
 
 def find_country_pdfs():
@@ -178,9 +241,11 @@ def find_country_pdfs():
     print("=" * 70)
     print("SEARCHING OSJD PDF SOURCES")
     print("=" * 70)
+
     print()
     print("OSJD PAGE:")
     print(OSJD_PAGE)
+
     print()
 
     response = requests.get(
@@ -203,6 +268,10 @@ def find_country_pdfs():
 
     results = {}
 
+    # --------------------------------------------------------
+    # Ищем все ссылки
+    # --------------------------------------------------------
+
     for link in soup.find_all("a"):
 
         text = clean_text(
@@ -217,7 +286,11 @@ def find_country_pdfs():
         if not href:
             continue
 
-        if "Перечень грузовых станций" not in text:
+        # Основной текст ссылки ОСЖД
+        if (
+            "Перечень грузовых станций"
+            not in text
+        ):
             continue
 
         country, country_code = identify_country(
@@ -230,7 +303,9 @@ def find_country_pdfs():
         if country not in TARGET_COUNTRIES:
             continue
 
-        pdf_url = get_pdf_url(href)
+        pdf_url = get_pdf_url(
+            href
+        )
 
         results[country] = {
             "country": country,
@@ -243,25 +318,40 @@ def find_country_pdfs():
 
 
 # ============================================================
-# ДИАГНОСТИКА PDF
+# ДИАГНОСТИКА ОДНОГО PDF
 # ============================================================
 
-def diagnose_pdf(country, item):
+def diagnose_pdf(
+    country,
+    item
+):
 
     print()
     print()
     print("=" * 70)
-    print(f"COUNTRY: {country}")
-    print(f"CODE: {item['country_code']}")
+    print(
+        f"COUNTRY: {country}"
+    )
+    print(
+        f"CODE: {item['country_code']}"
+    )
     print("=" * 70)
 
     print()
     print("DOCUMENT TITLE:")
-    print(item["title"])
+    print(
+        item["title"]
+    )
 
     print()
     print("PDF URL:")
-    print(item["url"])
+    print(
+        item["url"]
+    )
+
+    # --------------------------------------------------------
+    # Скачивание
+    # --------------------------------------------------------
 
     try:
 
@@ -273,9 +363,15 @@ def diagnose_pdf(country, item):
 
         print()
         print("DOWNLOAD ERROR:")
-        print(repr(error))
+        print(
+            repr(error)
+        )
 
         return
+
+    # --------------------------------------------------------
+    # Открытие PDF
+    # --------------------------------------------------------
 
     try:
 
@@ -288,7 +384,9 @@ def diagnose_pdf(country, item):
 
         print()
         print("PDF OPEN ERROR:")
-        print(repr(error))
+        print(
+            repr(error)
+        )
 
         return
 
@@ -324,17 +422,23 @@ def diagnose_pdf(country, item):
         len(document)
     ):
 
-        page = document[page_index]
+        page = document[
+            page_index
+        ]
 
         text = page.get_text(
             "text"
         )
 
-        total_text_length += len(text)
+        total_text_length += len(
+            text
+        )
 
         lines = text.splitlines()
 
-        total_lines += len(lines)
+        total_lines += len(
+            lines
+        )
 
         codes = re.findall(
             r"(?<!\d)\d{6}(?!\d)",
@@ -343,7 +447,9 @@ def diagnose_pdf(country, item):
 
         if codes:
 
-            total_six_digit_codes += len(codes)
+            total_six_digit_codes += len(
+                codes
+            )
 
             pages_with_codes.append(
                 page_index + 1
@@ -356,10 +462,14 @@ def diagnose_pdf(country, item):
         header_text = text.lower()
 
         if (
-            "наименование станции" in header_text
-            or "код станции" in header_text
-            or "station code" in header_text
-            or "station name" in header_text
+            "наименование станции"
+            in header_text
+            or "код станции"
+            in header_text
+            or "station code"
+            in header_text
+            or "station name"
+            in header_text
         ):
 
             pages_with_station_headers.append(
@@ -401,7 +511,9 @@ def diagnose_pdf(country, item):
         print(
             ", ".join(
                 str(x)
-                for x in pages_with_codes[:100]
+                for x in pages_with_codes[
+                    :100
+                ]
             )
         )
 
@@ -432,7 +544,9 @@ def diagnose_pdf(country, item):
     # ========================================================
 
     unique_codes = sorted(
-        set(all_code_matches)
+        set(
+            all_code_matches
+        )
     )
 
     print()
@@ -455,11 +569,15 @@ def diagnose_pdf(country, item):
                 code
             )
 
-        if len(unique_codes) > MAX_CODE_LINES:
+        if (
+            len(unique_codes)
+            > MAX_CODE_LINES
+        ):
 
             print(
                 "... and",
-                len(unique_codes) - MAX_CODE_LINES,
+                len(unique_codes)
+                - MAX_CODE_LINES,
                 "more"
             )
 
@@ -470,7 +588,7 @@ def diagnose_pdf(country, item):
         )
 
     # ========================================================
-    # ПРОВЕРКА РАЗНЫХ СПОСОБОВ ИЗВЛЕЧЕНИЯ
+    # РАЗНЫЕ СПОСОБЫ ИЗВЛЕЧЕНИЯ
     # ========================================================
 
     print()
@@ -500,7 +618,9 @@ def diagnose_pdf(country, item):
             len(document)
         ):
 
-            page = document[page_index]
+            page = document[
+                page_index
+            ]
 
             try:
 
@@ -591,7 +711,7 @@ def diagnose_pdf(country, item):
         )
 
     # ========================================================
-    # ПЕРВЫЕ СТРАНИЦЫ — СЫРОЙ ТЕКСТ
+    # RAW TEXT
     # ========================================================
 
     print()
@@ -608,7 +728,9 @@ def diagnose_pdf(country, item):
         pages_to_show
     ):
 
-        page = document[page_index]
+        page = document[
+            page_index
+        ]
 
         text = page.get_text(
             "text"
@@ -632,7 +754,9 @@ def diagnose_pdf(country, item):
             continue
 
         for number, line in enumerate(
-            lines[:MAX_SAMPLE_LINES],
+            lines[
+                :MAX_SAMPLE_LINES
+            ],
             start=1
         ):
 
@@ -642,14 +766,19 @@ def diagnose_pdf(country, item):
                 continue
 
             print(
-                f"{number:03d}: {clean_line}"
+                f"{number:03d}: "
+                f"{clean_line}"
             )
 
-        if len(lines) > MAX_SAMPLE_LINES:
+        if (
+            len(lines)
+            > MAX_SAMPLE_LINES
+        ):
 
             print(
-                f"... {len(lines) - MAX_SAMPLE_LINES} "
-                "more lines"
+                f"... "
+                f"{len(lines) - MAX_SAMPLE_LINES} "
+                f"more lines"
             )
 
     # ========================================================
@@ -662,10 +791,15 @@ def diagnose_pdf(country, item):
     print("-" * 70)
 
     for page_index in range(
-        min(len(document), 3)
+        min(
+            len(document),
+            3
+        )
     ):
 
-        page = document[page_index]
+        page = document[
+            page_index
+        ]
 
         print()
         print(
@@ -714,10 +848,15 @@ def diagnose_pdf(country, item):
     print("-" * 70)
 
     for page_index in range(
-        min(len(document), 2)
+        min(
+            len(document),
+            2
+        )
     ):
 
-        page = document[page_index]
+        page = document[
+            page_index
+        ]
 
         print()
         print(
@@ -758,10 +897,15 @@ def diagnose_pdf(country, item):
     print("-" * 70)
 
     for page_index in range(
-        min(len(document), 10)
+        min(
+            len(document),
+            10
+        )
     ):
 
-        page = document[page_index]
+        page = document[
+            page_index
+        ]
 
         try:
 
@@ -802,7 +946,8 @@ def diagnose_pdf(country, item):
                     except Exception as error:
 
                         print(
-                            "    TABLE EXTRACT ERROR:",
+                            "    "
+                            "TABLE EXTRACT ERROR:",
                             repr(error)
                         )
 
@@ -817,7 +962,8 @@ def diagnose_pdf(country, item):
 
             print(
                 f"PAGE {page_index + 1}: "
-                f"table detection error: {error}"
+                f"table detection error: "
+                f"{error}"
             )
 
     # ========================================================
@@ -888,14 +1034,14 @@ def diagnose_pdf(country, item):
         )
 
         print(
-            "Text exists, but no 6-digit station"
-            " codes were detected."
+            "Text exists, but no 6-digit station "
+            "codes were detected."
         )
 
         print(
-            "Likely unusual PDF structure,"
-            " broken text encoding,"
-            " or codes split across PDF objects."
+            "Likely unusual PDF structure, "
+            "broken text encoding, "
+            "or codes split across PDF objects."
         )
 
     else:
@@ -906,8 +1052,8 @@ def diagnose_pdf(country, item):
         )
 
         print(
-            "The problem is probably station-row"
-            " reconstruction rather than PDF access."
+            "The problem is probably station-row "
+            "reconstruction rather than PDF access."
         )
 
     print()
@@ -965,7 +1111,9 @@ def main():
 
         if country in sources:
 
-            item = sources[country]
+            item = sources[
+                country
+            ]
 
             print()
             print(
@@ -1005,10 +1153,13 @@ def main():
     print("=" * 70)
     print("ALL DIAGNOSTICS FINISHED")
     print("=" * 70)
+
     print()
+
     print(
         "This script DOES NOT modify stations.json."
     )
+
     print()
 
 
