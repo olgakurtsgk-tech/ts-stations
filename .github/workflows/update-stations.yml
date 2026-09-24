@@ -13,48 +13,106 @@ jobs:
       contents: write
 
     steps:
+
+      # ============================================================
+      # 1. CHECKOUT
+      # ============================================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
+
+      # ============================================================
+      # 2. PYTHON
+      # ============================================================
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+
+      # ============================================================
+      # 3. DEPENDENCIES
+      # ============================================================
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 pymupdf
+
+
+      # ============================================================
+      # 4. ENVIRONMENT
+      # ============================================================
 
       - name: Show environment
         run: |
           echo "========================================"
           echo "ENVIRONMENT"
           echo "========================================"
+
           python --version
           pip --version
+
           python -c "import fitz; print('PyMuPDF:', fitz.version)"
+
+
+      # ============================================================
+      # 5. DEBUG PDF
+      # ============================================================
 
       - name: Debug PDF parser
         run: |
           echo "========================================"
           echo "DEBUG PDF PARSER"
           echo "========================================"
+
           python scripts/debug_pdf.py
+
+
+      # ============================================================
+      # 6. UPDATE DATABASE
+      # ============================================================
 
       - name: Update stations database
         run: |
           echo "========================================"
           echo "UPDATING STATIONS DATABASE"
           echo "========================================"
+
           python scripts/update_stations.py
+
+
+      # ============================================================
+      # 7. VALIDATE DATABASE
+      # ============================================================
 
       - name: Validate stations database
         run: |
           echo "========================================"
           echo "VALIDATING STATIONS DATABASE"
           echo "========================================"
+
           python scripts/validate_stations.py
+
+
+      # ============================================================
+      # 8. CHECK OSJD COUNTRIES
+      # ============================================================
+
+      - name: Check OSJD countries
+        run: |
+          echo "========================================"
+          echo "CHECKING OSJD COUNTRIES"
+          echo "========================================"
+
+          python scripts/check_countries.py
+
+
+      # ============================================================
+      # 9. CHECK JSON
+      # ============================================================
 
       - name: Check stations JSON
         run: |
@@ -69,24 +127,43 @@ jobs:
           path = Path("data/stations.json")
 
           if not path.exists():
-              raise SystemExit("ERROR: data/stations.json not found")
+              raise SystemExit(
+                  "ERROR: data/stations.json not found"
+              )
 
-          with path.open("r", encoding="utf-8") as f:
+          with path.open(
+              "r",
+              encoding="utf-8"
+          ) as f:
               data = json.load(f)
 
           if not isinstance(data, list):
-              raise SystemExit("ERROR: stations.json must contain a JSON array")
+              raise SystemExit(
+                  "ERROR: stations.json must contain a JSON array"
+              )
 
-          print(f"JSON records: {len(data)}")
-          print(f"File size: {path.stat().st_size:,} bytes")
+          print(
+              f"JSON records: {len(data)}"
+          )
+
+          print(
+              f"File size: {path.stat().st_size:,} bytes"
+          )
 
           if len(data) < 1000:
               raise SystemExit(
                   f"ERROR: too few stations: {len(data)}"
               )
 
-          print("OK: stations.json looks valid")
+          print(
+              "OK: stations.json looks valid"
+          )
           PY
+
+
+      # ============================================================
+      # 10. STATION STATISTICS
+      # ============================================================
 
       - name: Show station statistics
         run: |
@@ -106,39 +183,67 @@ jobs:
               stations = json.load(f)
 
           countries = Counter(
-              station.get("country", "UNKNOWN")
+              station.get(
+                  "country",
+                  "UNKNOWN"
+              )
               for station in stations
           )
 
           country_codes = Counter(
-              station.get("country_code", "UNKNOWN")
+              station.get(
+                  "country_code",
+                  "UNKNOWN"
+              )
               for station in stations
           )
 
           print()
-          print(f"TOTAL STATIONS: {len(stations):,}")
+          print(
+              f"TOTAL STATIONS: {len(stations):,}"
+          )
+
           print()
-          print("STATIONS BY COUNTRY")
-          print("----------------------------------------")
+          print(
+              "STATIONS BY COUNTRY"
+          )
+
+          print(
+              "----------------------------------------"
+          )
 
           for country, count in sorted(
               countries.items(),
               key=lambda x: (-x[1], x[0])
           ):
-              print(f"{country}: {count:,}")
+              print(
+                  f"{country}: {count:,}"
+              )
 
           print()
-          print("COUNTRY CODES")
-          print("----------------------------------------")
+          print(
+              "COUNTRY CODES"
+          )
+
+          print(
+              "----------------------------------------"
+          )
 
           for code, count in sorted(
               country_codes.items()
           ):
-              print(f"{code}: {count:,}")
+              print(
+                  f"{code}: {count:,}"
+              )
 
           print()
-          print("FIRST 10 RECORDS")
-          print("----------------------------------------")
+          print(
+              "FIRST 10 RECORDS"
+          )
+
+          print(
+              "----------------------------------------"
+          )
 
           for number, station in enumerate(
               stations[:10],
@@ -151,6 +256,11 @@ jobs:
                   f"{station.get('country')}"
               )
           PY
+
+
+      # ============================================================
+      # 11. CHECK STATION CODES
+      # ============================================================
 
       - name: Check station codes
         run: |
@@ -172,8 +282,12 @@ jobs:
           invalid = []
 
           for station in stations:
+
               code = str(
-                  station.get("code", "")
+                  station.get(
+                      "code",
+                      ""
+                  )
               )
 
               if not re.fullmatch(
@@ -191,11 +305,18 @@ jobs:
           )
 
           if invalid:
+
               print()
-              print("FIRST INVALID RECORDS")
-              print("----------------------------------------")
+              print(
+                  "FIRST INVALID RECORDS"
+              )
+
+              print(
+                  "----------------------------------------"
+              )
 
               for station in invalid[:20]:
+
                   print(
                       f"{station.get('name')} "
                       f"| {station.get('code')} "
@@ -207,8 +328,15 @@ jobs:
               )
 
           print()
-          print("OK: all station codes have 6 digits")
+          print(
+              "OK: all station codes have 6 digits"
+          )
           PY
+
+
+      # ============================================================
+      # 12. GIT STATUS
+      # ============================================================
 
       - name: Check git changes
         run: |
@@ -218,6 +346,11 @@ jobs:
 
           git status --short
 
+
+      # ============================================================
+      # 13. COMMIT DATABASE
+      # ============================================================
+
       - name: Commit updated database
         run: |
           git config user.name "github-actions[bot]"
@@ -226,12 +359,17 @@ jobs:
           git add data/stations.json
 
           if git diff --cached --quiet; then
+
             echo "No changes to stations.json"
+
           else
+
             git commit -m "Update railway stations database"
+
             git push
 
             echo "========================================"
             echo "DATABASE UPDATED"
             echo "========================================"
+
           fi
