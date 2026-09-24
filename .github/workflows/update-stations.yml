@@ -15,47 +15,95 @@ jobs:
 
     steps:
 
+      # ========================================
+      # 1. Получаем репозиторий
+      # ========================================
+
       - name: Checkout repository
         uses: actions/checkout@v4
+
+
+      # ========================================
+      # 2. Устанавливаем Python
+      # ========================================
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+
+      # ========================================
+      # 3. Устанавливаем необходимые библиотеки
+      # ========================================
+
       - name: Install Python packages
         run: |
           python -m pip install --upgrade pip
           python -m pip install requests beautifulsoup4 pymupdf
 
+
+      # ========================================
+      # 4. Проверяем окружение
+      # ========================================
+
       - name: Show environment
         run: |
+          echo "========================================"
+          echo "ENVIRONMENT"
+          echo "========================================"
+
           echo "Python version:"
           python --version
+
           echo ""
           echo "Working directory:"
           pwd
+
           echo ""
           echo "Repository files:"
           ls -la
+
           echo ""
           echo "Scripts:"
           ls -la scripts
+
           echo ""
           echo "Data:"
           ls -la data
+
+
+      # ========================================
+      # 5. Запускаем парсер
+      # ========================================
 
       - name: Run station parser
         run: |
           echo "========================================"
           echo "STARTING STATION PARSER"
           echo "========================================"
-python -u scripts/debug_pdf.py
+
+          echo ""
+          echo "STEP 1: DEBUG PDF"
+          echo "----------------------------------------"
+
+          python -u scripts/debug_pdf.py
+
+          echo ""
+          echo "STEP 2: UPDATE STATIONS"
+          echo "----------------------------------------"
+
           python -u scripts/update_stations.py
 
+          echo ""
           echo "========================================"
           echo "PARSER FINISHED"
           echo "========================================"
+
+
+      # ========================================
+      # 6. Проверяем stations.json
+      # ========================================
 
       - name: Check stations.json
         run: |
@@ -64,6 +112,7 @@ python -u scripts/debug_pdf.py
           echo "========================================"
 
           if [ ! -f data/stations.json ]; then
+            echo ""
             echo "ERROR: data/stations.json does not exist"
             exit 1
           fi
@@ -74,6 +123,7 @@ python -u scripts/debug_pdf.py
 
           echo ""
           echo "JSON validation:"
+          echo "----------------------------------------"
 
           python - <<'PY'
           import json
@@ -81,11 +131,20 @@ python -u scripts/debug_pdf.py
 
           path = Path("data/stations.json")
 
-          with path.open("r", encoding="utf-8") as f:
-              data = json.load(f)
+          try:
+              with path.open("r", encoding="utf-8") as f:
+                  data = json.load(f)
+          except Exception as e:
+              print("ERROR: JSON is invalid")
+              print(e)
+              raise SystemExit(1)
 
           print("JSON is valid")
           print("Number of stations:", len(data))
+
+          if not isinstance(data, list):
+              print("ERROR: stations.json must contain a list")
+              raise SystemExit(1)
 
           if not data:
               print("ERROR: stations.json is empty")
@@ -121,18 +180,23 @@ python -u scripts/debug_pdf.py
           print("Required fields: OK")
           PY
 
+
+      # ========================================
+      # 7. Статистика по станциям
+      # ========================================
+
       - name: Show station statistics
         run: |
+          echo "========================================"
+          echo "STATION DATABASE STATISTICS"
+          echo "========================================"
+
           python - <<'PY'
           import json
           from collections import Counter
 
           with open("data/stations.json", encoding="utf-8") as f:
               data = json.load(f)
-
-          print("========================================")
-          print("STATION DATABASE STATISTICS")
-          print("========================================")
 
           print("Total stations:", len(data))
           print("")
@@ -143,6 +207,7 @@ python -u scripts/debug_pdf.py
           )
 
           print("Stations by country:")
+          print("----------------------------------------")
 
           for country, count in countries.most_common():
               print(f"{country}: {count}")
@@ -150,6 +215,57 @@ python -u scripts/debug_pdf.py
           print("")
           print("========================================")
           PY
+
+
+      # ========================================
+      # 8. Дополнительная проверка кодов станций
+      # ========================================
+
+      - name: Check station codes
+        run: |
+          echo "========================================"
+          echo "CHECKING STATION CODES"
+          echo "========================================"
+
+          python - <<'PY'
+          import json
+          import re
+
+          with open("data/stations.json", encoding="utf-8") as f:
+              data = json.load(f)
+
+          total = len(data)
+          missing_code = 0
+          numeric_code = 0
+          non_numeric_code = 0
+
+          for item in data:
+              code = str(item.get("code", "")).strip()
+
+              if not code:
+                  missing_code += 1
+              elif re.fullmatch(r"\d+", code):
+                  numeric_code += 1
+              else:
+                  non_numeric_code += 1
+
+          print("Total stations:", total)
+          print("Stations with numeric code:", numeric_code)
+          print("Stations with non-numeric code:", non_numeric_code)
+          print("Stations without code:", missing_code)
+
+          print("")
+
+          if missing_code > 0:
+              print("WARNING: some stations have no code")
+
+          print("Station code check finished")
+          PY
+
+
+      # ========================================
+      # 9. Сохраняем обновлённую базу
+      # ========================================
 
       - name: Save updated database
         run: |
@@ -163,9 +279,31 @@ python -u scripts/debug_pdf.py
           git add data/stations.json
 
           if git diff --cached --quiet; then
+            echo ""
             echo "No changes in stations.json"
           else
+            echo ""
+            echo "Changes detected:"
+            git diff --cached --stat
+
             git commit -m "Update railway stations from OSJD"
             git push
+
+            echo ""
             echo "Database successfully updated"
           fi
+
+
+      # ========================================
+      # 10. Финальное сообщение
+      # ========================================
+
+      - name: Finish
+        run: |
+          echo ""
+          echo "========================================"
+          echo "UPDATE COMPLETED"
+          echo "========================================"
+          echo ""
+          echo "Railway station database processing finished."
+          echo ""
