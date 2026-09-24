@@ -1,238 +1,276 @@
 import json
 from pathlib import Path
-
-
-INPUT = Path("data/stations.json")
+from collections import Counter
 
 
 # ============================================================
-# ОЖИДАЕМЫЕ СТРАНЫ ОСЖД
+# OSJD — список стран, которые должны быть в базе
 # ============================================================
 
 EXPECTED_COUNTRIES = {
-    "Азербайджан": "AZ",
-    "Афганистан": "AF",
-    "Беларусь": "BY",
-    "Болгария": "BG",
-    "Венгрия": "HU",
-    "Вьетнам": "VN",
-    "Грузия": "GE",
-    "Иран": "IR",
-    "Казахстан": "KZ",
-    "Китай": "CN",
-    "КНДР": "KP",
-    "Кыргызстан": "KG",
-    "Республика Корея": "KR",
-    "Лаос": "LA",
-    "Латвия": "LV",
-    "Литва": "LT",
-    "Молдова": "MD",
-    "Монголия": "MN",
-    "Польша": "PL",
-    "Россия": "RU",
-    "Румыния": "RO",
-    "Словакия": "SK",
-    "Таджикистан": "TJ",
-    "Туркменистан": "TM",
-    "Узбекистан": "UZ",
-    "Украина": "UA",
-    "Чехия": "CZ",
-    "Эстония": "EE",
+    "AZ": "Азербайджан",
+    "AF": "Афганистан",
+    "BY": "Беларусь",
+    "BG": "Болгария",
+    "HU": "Венгрия",
+    "VN": "Вьетнам",
+    "GE": "Грузия",
+    "IR": "Иран",
+    "KZ": "Казахстан",
+    "CN": "Китай",
+    "KP": "КНДР",
+    "KG": "Кыргызстан",
+    "KR": "Республика Корея",
+    "LA": "Лаос",
+    "LV": "Латвия",
+    "LT": "Литва",
+    "MD": "Молдова",
+    "MN": "Монголия",
+    "PL": "Польша",
+    "RU": "Россия",
+    "RO": "Румыния",
+    "SK": "Словакия",
+    "TJ": "Таджикистан",
+    "TM": "Туркменистан",
+    "UZ": "Узбекистан",
+    "UA": "Украина",
+    "CZ": "Чехия",
+    "EE": "Эстония",
 }
 
 
-def main():
+# ============================================================
+# Путь к базе
+# ============================================================
 
-    print()
-    print("=" * 70)
-    print("ПРОВЕРКА СТРАН В БАЗЕ СТАНЦИЙ")
-    print("=" * 70)
+BASE_DIR = Path(__file__).resolve().parent.parent
+STATIONS_FILE = BASE_DIR / "data" / "stations.json"
 
-    if not INPUT.exists():
 
-        raise RuntimeError(
-            f"Файл не найден: {INPUT}"
-        )
+# ============================================================
+# Заголовок
+# ============================================================
 
-    with INPUT.open(
+print()
+print("=" * 60)
+print("OSJD COUNTRY CHECK")
+print("=" * 60)
+print()
+
+
+# ============================================================
+# Проверяем наличие файла
+# ============================================================
+
+if not STATIONS_FILE.exists():
+    raise SystemExit(
+        f"ERROR: file not found: {STATIONS_FILE}"
+    )
+
+
+print(f"Database: {STATIONS_FILE}")
+print()
+
+
+# ============================================================
+# Загружаем JSON
+# ============================================================
+
+try:
+    with STATIONS_FILE.open(
         "r",
         encoding="utf-8"
     ) as f:
-
         stations = json.load(f)
 
-    print()
-    print(
-        f"Всего записей в stations.json: "
-        f"{len(stations)}"
+except Exception as error:
+    raise SystemExit(
+        f"ERROR: cannot read stations.json: {error}"
     )
 
-    # --------------------------------------------------------
-    # Считаем станции по country_code
-    # --------------------------------------------------------
 
-    country_counts = {}
+# ============================================================
+# Проверяем структуру
+# ============================================================
 
-    for station in stations:
+if not isinstance(stations, list):
+    raise SystemExit(
+        "ERROR: stations.json must contain a JSON array"
+    )
 
-        code = station.get(
-            "country_code",
-            ""
+
+print(f"Total station records: {len(stations):,}")
+print()
+
+
+# ============================================================
+# Считаем страны по country_code
+# ============================================================
+
+country_codes = Counter()
+
+for station in stations:
+    code = str(
+        station.get("country_code", "")
+    ).strip().upper()
+
+    if code:
+        country_codes[code] += 1
+
+
+# ============================================================
+# Проверяем страны
+# ============================================================
+
+print("EXPECTED OSJD COUNTRIES")
+print("-" * 60)
+
+missing_countries = []
+present_countries = []
+
+for code, country_name in EXPECTED_COUNTRIES.items():
+
+    count = country_codes.get(code, 0)
+
+    if count > 0:
+        print(
+            f"✓ {code:2} | "
+            f"{country_name:<20} | "
+            f"{count:,} stations"
         )
-
-        country_counts[code] = (
-            country_counts.get(
-                code,
-                0
-            )
-            + 1
-        )
-
-    print()
-    print("=" * 70)
-    print("ВСЕ 28 СТРАН ОСЖД")
-    print("=" * 70)
-
-    missing = []
-    present = []
-
-    for country, code in sorted(
-        EXPECTED_COUNTRIES.items()
-    ):
-
-        count = country_counts.get(
-            code,
-            0
-        )
-
-        if count > 0:
-
-            print(
-                f"✓ {country:25} "
-                f"{code:2} "
-                f"{count:6} станций"
-            )
-
-            present.append(
-                country
-            )
-
-        else:
-
-            print(
-                f"✗ {country:25} "
-                f"{code:2} "
-                f"НЕТ"
-            )
-
-            missing.append(
-                country
-            )
-
-    # --------------------------------------------------------
-    # Страны, которых нет в нашем ожидаемом списке
-    # --------------------------------------------------------
-
-    expected_codes = set(
-        EXPECTED_COUNTRIES.values()
-    )
-
-    unexpected = []
-
-    for code, count in sorted(
-        country_counts.items()
-    ):
-
-        if code not in expected_codes:
-
-            unexpected.append(
-                (code, count)
-            )
-
-    if unexpected:
-
-        print()
-        print("=" * 70)
-        print("НЕОЖИДАННЫЕ КОДЫ СТРАН")
-        print("=" * 70)
-
-        for code, count in unexpected:
-
-            print(
-                f"? {code}: "
-                f"{count} станций"
-            )
-
-    # --------------------------------------------------------
-    # Итог
-    # --------------------------------------------------------
-
-    print()
-    print("=" * 70)
-    print("ИТОГ")
-    print("=" * 70)
-
-    print(
-        f"Ожидаемых стран ОСЖД: "
-        f"{len(EXPECTED_COUNTRIES)}"
-    )
-
-    print(
-        f"Стран найдены: "
-        f"{len(present)}"
-    )
-
-    print(
-        f"Стран отсутствуют: "
-        f"{len(missing)}"
-    )
-
-    if missing:
-
-        print()
-        print("ОТСУТСТВУЮТ:")
-
-        for country in missing:
-
-            code = EXPECTED_COUNTRIES[country]
-
-            print(
-                f"  ✗ {country} ({code})"
-            )
+        present_countries.append(code)
 
     else:
-
-        print()
         print(
-            "🎉 ВСЕ 28 СТРАН ПРИСУТСТВУЮТ В БАЗЕ!"
+            f"✗ {code:2} | "
+            f"{country_name:<20} | "
+            f"NOT FOUND"
+        )
+        missing_countries.append(code)
+
+
+# ============================================================
+# Неожиданные коды стран
+# ============================================================
+
+unexpected_codes = sorted(
+    code
+    for code in country_codes
+    if code not in EXPECTED_COUNTRIES
+)
+
+
+print()
+print("=" * 60)
+print("SUMMARY")
+print("=" * 60)
+
+print(
+    f"Expected OSJD countries : {len(EXPECTED_COUNTRIES)}"
+)
+
+print(
+    f"Countries found         : {len(present_countries)}"
+)
+
+print(
+    f"Countries missing       : {len(missing_countries)}"
+)
+
+print()
+
+
+# ============================================================
+# Отсутствующие страны
+# ============================================================
+
+if missing_countries:
+
+    print("MISSING COUNTRIES")
+    print("-" * 60)
+
+    for code in missing_countries:
+        print(
+            f"{code} — {EXPECTED_COUNTRIES[code]}"
         )
 
-    if unexpected:
+else:
 
-        print()
+    print("✓ ALL EXPECTED OSJD COUNTRIES ARE PRESENT")
+
+
+# ============================================================
+# Неизвестные коды
+# ============================================================
+
+print()
+
+if unexpected_codes:
+
+    print("UNEXPECTED COUNTRY CODES")
+    print("-" * 60)
+
+    for code in unexpected_codes:
         print(
-            "ВНИМАНИЕ: найдены неизвестные "
-            "коды стран."
+            f"{code} — {country_codes[code]:,} stations"
         )
 
+else:
+
+    print("✓ NO UNEXPECTED COUNTRY CODES")
+
+
+# ============================================================
+# Статистика по всем кодам
+# ============================================================
+
+print()
+print("ALL COUNTRY CODES IN DATABASE")
+print("-" * 60)
+
+for code, count in sorted(
+    country_codes.items(),
+    key=lambda item: (-item[1], item[0])
+):
+
+    country_name = EXPECTED_COUNTRIES.get(
+        code,
+        "UNKNOWN COUNTRY"
+    )
+
+    print(
+        f"{code:2} | "
+        f"{country_name:<20} | "
+        f"{count:,}"
+    )
+
+
+# ============================================================
+# Итог
+# ============================================================
+
+print()
+print("=" * 60)
+
+if missing_countries:
+
+    print(
+        "RESULT: DATABASE IS MISSING "
+        f"{len(missing_countries)} OSJD COUNTRIES"
+    )
+
+    print("=" * 60)
     print()
-    print("=" * 70)
 
-    if missing:
+    # ВАЖНО:
+    # На этом этапе мы НЕ останавливаем GitHub Actions.
+    # Нам нужно сначала увидеть, какие страны отсутствуют.
 
-        print(
-            "РЕЗУЛЬТАТ: НУЖНО ПРОВЕРИТЬ "
-            "ОТСУТСТВУЮЩИЕ СТРАНЫ"
-        )
+else:
 
-    else:
+    print(
+        "RESULT: ALL EXPECTED OSJD COUNTRIES FOUND"
+    )
 
-        print(
-            "РЕЗУЛЬТАТ: ПРОВЕРКА СТРАН ПРОЙДЕНА"
-        )
-
-    print("=" * 70)
-
-
-if __name__ == "__main__":
-    main()
+    print("=" * 60)
+    print()
