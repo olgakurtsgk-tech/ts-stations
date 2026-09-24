@@ -93,9 +93,16 @@ jobs:
           echo "========================================"
           echo "VALIDATING STATIONS DATABASE"
           echo "========================================"
-
+          
           python scripts/validate_stations.py
+               
+        - name: Diagnose OSJD sources
+        run: |
+          echo "========================================"
+          echo "DIAGNOSING OSJD SOURCES"
+          echo "========================================"
 
+          python scripts/check_osjd_sources.py
 
       # ============================================================
       # 8. CHECK OSJD COUNTRIES
