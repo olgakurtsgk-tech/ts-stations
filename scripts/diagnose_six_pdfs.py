@@ -1,10 +1,10 @@
 import re
 import sys
-from pathlib import Path
 
 import pymupdf
 import requests
 from bs4 import BeautifulSoup
+
 
 # ============================================================
 # НАСТРОЙКИ
@@ -13,8 +13,6 @@ from bs4 import BeautifulSoup
 TARGET_COUNTRIES = {
     "Иран": "IR",
     "Китай": "CN",
-    "Республика Корея": "KR",
-    "Румыния": "RO",
     "Чехия": "CZ",
     "Эстония": "EE",
 }
@@ -31,6 +29,7 @@ HEADERS = {
         "Chrome/140.0 Safari/537.36"
     )
 }
+
 
 # ============================================================
 # ЗАГРУЖАЕМ НАСТРОЙКИ И ФУНКЦИИ ИЗ update_stations.py
@@ -86,11 +85,51 @@ def get_pdf_url(href):
 
 def identify_country(text):
     """
-    Используем ту же функцию определения страны,
-    что и основной парсер.
+    Определяем страну по тексту ссылки.
+
+    В новой версии update_stations.py функции
+    identify_country() больше нет, поэтому здесь
+    используем локальное определение.
+
+    Возвращаем:
+        country, country_code
     """
 
-    return update_stations.identify_country(text)
+    text_clean = clean_text(text).lower()
+
+    country_aliases = {
+        "Иран": [
+            "иран",
+            "iran",
+        ],
+        "Китай": [
+            "китай",
+            "china",
+        ],
+        "Чехия": [
+            "чехия",
+            "czech",
+            "czechia",
+            "чешск",
+        ],
+        "Эстония": [
+            "эстония",
+            "estonia",
+        ],
+    }
+
+    for country, aliases in country_aliases.items():
+
+        for alias in aliases:
+
+            if alias.lower() in text_clean:
+
+                return (
+                    country,
+                    TARGET_COUNTRIES[country],
+                )
+
+    return None, None
 
 
 def download_pdf(url):
@@ -134,6 +173,7 @@ def download_pdf(url):
 # ============================================================
 
 def find_country_pdfs():
+
     print()
     print("=" * 70)
     print("SEARCHING OSJD PDF SOURCES")
@@ -207,6 +247,7 @@ def find_country_pdfs():
 # ============================================================
 
 def diagnose_pdf(country, item):
+
     print()
     print()
     print("=" * 70)
@@ -223,24 +264,32 @@ def diagnose_pdf(country, item):
     print(item["url"])
 
     try:
+
         pdf_bytes = download_pdf(
             item["url"]
         )
+
     except Exception as error:
+
         print()
         print("DOWNLOAD ERROR:")
         print(repr(error))
+
         return
 
     try:
+
         document = pymupdf.open(
             stream=pdf_bytes,
             filetype="pdf"
         )
+
     except Exception as error:
+
         print()
         print("PDF OPEN ERROR:")
         print(repr(error))
+
         return
 
     print()
@@ -293,6 +342,7 @@ def diagnose_pdf(country, item):
         )
 
         if codes:
+
             total_six_digit_codes += len(codes)
 
             pages_with_codes.append(
@@ -311,6 +361,7 @@ def diagnose_pdf(country, item):
             or "station code" in header_text
             or "station name" in header_text
         ):
+
             pages_with_station_headers.append(
                 page_index + 1
             )
@@ -346,13 +397,16 @@ def diagnose_pdf(country, item):
     )
 
     if pages_with_codes:
+
         print(
             ", ".join(
                 str(x)
                 for x in pages_with_codes[:100]
             )
         )
+
     else:
+
         print("NONE")
 
     print()
@@ -361,13 +415,16 @@ def diagnose_pdf(country, item):
     )
 
     if pages_with_station_headers:
+
         print(
             ", ".join(
                 str(x)
                 for x in pages_with_station_headers
             )
         )
+
     else:
+
         print("NONE")
 
     # ========================================================
@@ -393,11 +450,13 @@ def diagnose_pdf(country, item):
         for code in unique_codes[
             :MAX_CODE_LINES
         ]:
+
             print(
                 code
             )
 
         if len(unique_codes) > MAX_CODE_LINES:
+
             print(
                 "... and",
                 len(unique_codes) - MAX_CODE_LINES,
@@ -405,6 +464,7 @@ def diagnose_pdf(country, item):
             )
 
     else:
+
         print(
             "NO 6-DIGIT CODES FOUND"
         )
@@ -452,6 +512,7 @@ def diagnose_pdf(country, item):
                     data,
                     str
                 ):
+
                     total_items += len(
                         data.splitlines()
                     )
@@ -471,6 +532,7 @@ def diagnose_pdf(country, item):
                     data,
                     list
                 ):
+
                     total_items += len(
                         data
                     )
@@ -490,6 +552,7 @@ def diagnose_pdf(country, item):
                     data,
                     dict
                 ):
+
                     total_items += len(
                         data
                     )
@@ -555,14 +618,17 @@ def diagnose_pdf(country, item):
         print(
             f"### PAGE {page_index + 1}"
         )
+
         print()
 
         lines = text.splitlines()
 
         if not lines:
+
             print(
                 "[NO TEXT EXTRACTED]"
             )
+
             continue
 
         for number, line in enumerate(
@@ -861,7 +927,7 @@ def main():
 
     print()
     print("=" * 70)
-    print("OSJD SIX-COUNTRY PDF DIAGNOSTIC")
+    print("OSJD FOUR-COUNTRY PDF DIAGNOSTIC")
     print("=" * 70)
 
     print()
