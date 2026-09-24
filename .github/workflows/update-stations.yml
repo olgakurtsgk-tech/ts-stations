@@ -57,6 +57,14 @@ jobs:
           echo "========================================"
           python scripts/update_stations.py
 
+      - name: Diagnose six missing OSJD PDFs
+        if: always()
+        run: |
+          echo "========================================"
+          echo "DIAGNOSING SIX MISSING OSJD PDFS"
+          echo "========================================"
+          python scripts/diagnose_six_pdfs.py
+
       - name: Validate stations database
         run: |
           echo "========================================"
