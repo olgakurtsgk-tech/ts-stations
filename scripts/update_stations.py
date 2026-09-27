@@ -8,9 +8,6 @@ OSJD railway freight stations parser.
 извлекает станции несколькими способами и обновляет
 data/stations.json только после успешной проверки всех
 28 стран.
-
-Основная страница ОСЖД:
-https://osjd.org/ru/8974/page/106077?id=2227
 """
 
 from __future__ import annotations
