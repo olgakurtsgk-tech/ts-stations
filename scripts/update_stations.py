@@ -377,7 +377,105 @@ def score_name(value: str) -> int:
 # HTTP
 # ============================================================
 
+def normalize_osjd_pdf_url(url: str) -> str:
+    """
+    Преобразует ссылку ОСЖД-обёртку в прямую ссылку на PDF.
+
+    Например:
+    https://osjd.org/ru/page/2101101?file=/api/media/resources/9608?action=download
+
+    превращается в:
+    https://osjd.org/api/media/resources/9608?action=download
+    """
+    if not url:
+        return ""
+
+    from urllib.parse import unquote, urljoin
+
+    url = unquote(str(url).strip())
+    url = url.split("#", 1)[0]
+
+    match = re.search(
+        r"(?:[?&])file=([^#]+)",
+        url,
+        flags=re.IGNORECASE,
+    )
+
+    if match:
+        file_part = unquote(match.group(1))
+
+        if file_part.startswith(("http://", "https://")):
+            url = file_part
+        elif file_part.startswith("/"):
+            url = urljoin("https://osjd.org", file_part)
+        else:
+            url = urljoin("https://osjd.org/", file_part)
+
+        url = url.split("#", 1)[0]
+
+    if url.startswith("/api/media/resources/"):
+        url = urljoin("https://osjd.org", url)
+
+    return url
+
+
+def _is_pdf_response(response: requests.Response) -> bool:
+    content_type = response.headers.get("content-type", "").lower()
+    return (
+        "pdf" in content_type
+        or response.content.startswith(b"%PDF")
+    )
+
+
+def _find_direct_pdf_url_from_html(
+    html: str,
+    base_url: str,
+) -> str | None:
+    """Ищет /api/media/resources/... внутри HTML ОСЖД."""
+
+    from urllib.parse import unquote, urljoin
+
+    html = unquote(html or "")
+
+    # Самый надёжный вариант: в HTML/JS часто присутствует
+    # прямой путь к media resource.
+    match = re.search(
+        r"(?:https?://[^\"'<> ]*)?/api/media/resources/\d+"
+        r"(?:\?[^\"'<> ]*)?",
+        html,
+        flags=re.IGNORECASE,
+    )
+
+    if match:
+        found = match.group(0)
+        if found.startswith("/"):
+            found = urljoin("https://osjd.org", found)
+        return found.split("#", 1)[0]
+
+    # Дополнительный вариант — file=/api/...
+    match = re.search(
+        r"[?&]file=([^\"'<> ]*?/api/media/resources/\d+[^\"'<> ]*)",
+        html,
+        flags=re.IGNORECASE,
+    )
+
+    if match:
+        return normalize_osjd_pdf_url(match.group(1))
+
+    return None
+
+
 def download_pdf(url: str) -> bytes:
+    """
+    Надёжно скачивает PDF ОСЖД.
+
+    ОСЖД может отдавать HTML-страницу вместо самого PDF,
+    поэтому сначала нормализуем ссылку, а если всё же получили
+    HTML — пытаемся найти настоящий /api/media/resources/... URL.
+    """
+
+    url = normalize_osjd_pdf_url(url)
+
     print()
     print("-" * 70)
     print("DOWNLOAD")
@@ -387,28 +485,58 @@ def download_pdf(url: str) -> bytes:
         url,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,
+        allow_redirects=True,
     )
 
     print("HTTP STATUS:", response.status_code)
+    print("FINAL URL:", response.url)
     print("CONTENT TYPE:", response.headers.get("content-type"))
     print("SIZE:", len(response.content))
 
     response.raise_for_status()
 
-    content_type = (
-        response.headers.get("content-type", "")
-        .lower()
-    )
+    if _is_pdf_response(response):
+        print("✓ PDF RECEIVED")
+        return response.content
+
+    # Если пришёл HTML, пробуем найти прямой PDF URL.
+    content_type = response.headers.get("content-type", "").lower()
 
     if (
-        "pdf" not in content_type
-        and not response.content.startswith(b"%PDF")
+        "html" in content_type
+        or response.content.lstrip().startswith(b"<")
     ):
-        raise RuntimeError(
-            f"URL did not return PDF: {url}"
+        direct_url = _find_direct_pdf_url_from_html(
+            response.text,
+            response.url,
         )
 
-    return response.content
+        if direct_url and direct_url != url:
+            print("FOUND DIRECT PDF URL:")
+            print(direct_url)
+
+            pdf_response = requests.get(
+                direct_url,
+                headers=HEADERS,
+                timeout=REQUEST_TIMEOUT,
+                allow_redirects=True,
+            )
+
+            print("PDF HTTP STATUS:", pdf_response.status_code)
+            print("PDF FINAL URL:", pdf_response.url)
+            print("PDF CONTENT TYPE:", pdf_response.headers.get("content-type"))
+            print("PDF SIZE:", len(pdf_response.content))
+
+            pdf_response.raise_for_status()
+
+            if _is_pdf_response(pdf_response):
+                print("✓ PDF RECEIVED AFTER HTML RECOVERY")
+                return pdf_response.content
+
+    raise RuntimeError(
+        "Полученный файл не является PDF: "
+        f"{url}"
+    )
 
 
 # ============================================================
@@ -490,18 +618,40 @@ def discover_osjd_links() -> dict[str, str]:
     return result
 
 
-def get_pdf_urls() -> dict[str, str]:
+def get_pdf_urls(
+    country_code: str | None = None,
+) -> dict[str, str] | str | None:
+    """
+    Получает PDF-ссылки ОСЖД.
+
+    Без аргумента возвращает словарь для всех стран:
+        get_pdf_urls()
+
+    С кодом страны возвращает URL только этой страны:
+        get_pdf_urls("IR")
+
+    Такая форма нужна и основному парсеру, и отдельной диагностике.
+    """
+
     discovered = discover_osjd_links()
 
     result = dict(discovered)
 
-    # Для шести проблемных стран fallback обязателен.
+    # Нормализуем найденные ссылки.
+    for code, url in list(result.items()):
+        result[code] = normalize_osjd_pdf_url(url)
+
+    # Для проблемных стран используем проверенные fallback URL.
     for code, url in FALLBACK_PDFS.items():
-        if code not in result:
+        if not result.get(code):
+            normalized = normalize_osjd_pdf_url(url)
             print(
-                f"FALLBACK {code}: {url}"
+                f"FALLBACK {code}: {normalized}"
             )
-            result[code] = url
+            result[code] = normalized
+
+    if country_code is not None:
+        return result.get(country_code)
 
     return result
 
