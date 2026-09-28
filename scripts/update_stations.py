@@ -13,6 +13,9 @@ data/stations.json только после успешной проверки в�
 from __future__ import annotations
 
 import io
+import shutil
+import subprocess
+import tempfile
 import json
 import re
 import sys
@@ -659,6 +662,237 @@ def get_pdf_urls(
 # ============================================================
 # PDF EXTRACTION
 # ============================================================
+
+def extract_text_with_pdftotext(pdf_bytes: bytes) -> list[str]:
+    """
+    Резервное извлечение текста через Poppler pdftotext.
+
+    Некоторые PDF ОСЖД (в частности Иран) имеют текстовый слой,
+    который PyMuPDF не видит, хотя обычный PDF text extractor его
+    читает. В таком случае используем системную утилиту pdftotext.
+    """
+    executable = shutil.which("pdftotext")
+
+    if not executable:
+        print("pdftotext: NOT INSTALLED — trying to install poppler-utils")
+        try:
+            subprocess.run(
+                ["sudo", "apt-get", "update"],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+            )
+            subprocess.run(
+                ["sudo", "apt-get", "install", "-y", "poppler-utils"],
+                capture_output=True,
+                text=True,
+                timeout=120,
+                check=False,
+            )
+            executable = shutil.which("pdftotext")
+        except Exception as exc:
+            print("pdftotext auto-install error:", repr(exc))
+
+    if not executable:
+        print("pdftotext: STILL NOT INSTALLED")
+        return []
+
+    temp_dir = Path(tempfile.mkdtemp(prefix="osjd_pdf_"))
+    pdf_path = temp_dir / "source.pdf"
+    txt_path = temp_dir / "source.txt"
+
+    try:
+        pdf_path.write_bytes(pdf_bytes)
+
+        result = subprocess.run(
+            [
+                executable,
+                "-layout",
+                str(pdf_path),
+                str(txt_path),
+            ],
+            capture_output=True,
+            text=True,
+            timeout=REQUEST_TIMEOUT,
+            check=False,
+        )
+
+        if result.returncode != 0:
+            print(
+                "pdftotext ERROR:",
+                result.stderr.strip()[:500],
+            )
+            return []
+
+        if not txt_path.exists():
+            return []
+
+        text = txt_path.read_text(
+            encoding="utf-8",
+            errors="replace",
+        )
+
+        if not text.strip():
+            return []
+
+        pages = text.split("\f")
+        print(
+            "pdftotext extracted characters:",
+            len(text),
+        )
+        print(
+            "pdftotext pages:",
+            len(pages),
+        )
+
+        return pages
+
+    except Exception as exc:
+        print(
+            "pdftotext exception:",
+            repr(exc),
+        )
+        return []
+
+    finally:
+        shutil.rmtree(
+            temp_dir,
+            ignore_errors=True,
+        )
+
+
+def parse_pdftotext_page(
+    text: str,
+    country_code: str,
+) -> list[dict[str, Any]]:
+    """
+    Парсер строкового текста Poppler.
+
+    Для Ирана ОСЖД публикует станционный код как 3-4 цифры.
+    Полный 6-значный код формируется как:
+        код железной дороги 96 + 4-значный код станции.
+
+    Для остальных стран функция также умеет читать обычные 6-значные
+    коды, если они присутствуют в текстовом слое.
+    """
+    records = []
+
+    if not text:
+        return records
+
+    lines = [
+        normalize_space(line)
+        for line in text.splitlines()
+    ]
+
+    # Для Ирана станционные коды в разделе 3 идут как 3-4 цифры.
+    # Берём только строки с латинским названием справа.
+    if country_code == "IR":
+        in_station_section = False
+
+        for line in lines:
+            lower = line.lower()
+
+            if "раздел 3" in lower:
+                in_station_section = True
+                continue
+
+            if "раздел 4" in lower:
+                in_station_section = False
+
+            if not in_station_section:
+                continue
+
+            # Удаляем номера страниц/мусор в начале и конце.
+            line = normalize_space(line)
+
+            match = re.match(
+                r"^(.+?)\s+(\d{3,4})\s+([A-Za-z][A-Za-z0-9 .()'\-]+?)(?:\s+(.*))?$",
+                line,
+            )
+
+            if not match:
+                continue
+
+            russian = clean_station_name(
+                match.group(1)
+            )
+            local_code = match.group(2)
+            latin = clean_station_name(
+                match.group(3)
+            )
+            operations = normalize_space(
+                match.group(4) or ""
+            )
+
+            # Исключаем заголовки и строки таблиц.
+            if not valid_name(russian):
+                continue
+
+            if not valid_name(latin):
+                continue
+
+            # Полный код Ирана: 96 + 4 цифры.
+            station_code = local_code.zfill(4)
+            full_code = "96" + station_code
+
+            # В некоторых строках операции начинаются сразу после
+            # латинского названия; отделяем их от названия.
+            operation_match = re.search(
+                r"\s+(\d+(?:\s*[,./]\s*\d+)*(?:\s*[A-Za-zА-Яа-яHKNK]+)?)$",
+                latin,
+            )
+
+            if operation_match:
+                latin = normalize_space(
+                    latin[:operation_match.start()]
+                )
+
+            record = make_record(
+                country_code=country_code,
+                code=full_code,
+                russian_name=russian,
+                latin_name=latin,
+                operations=operations,
+            )
+
+            if record:
+                records.append(record)
+
+        return deduplicate_records(records)
+
+    # Универсальный fallback для стран, где Poppler увидел 6-значные коды.
+    for line in lines:
+        match = re.search(
+            r"(.+?)\s+(\d{6})\s+([A-Za-z][A-Za-z0-9 .()'\-]+?)(?:\s+(.*))?$",
+            line,
+        )
+
+        if not match:
+            continue
+
+        russian = clean_station_name(match.group(1))
+        code = match.group(2)
+        latin = clean_station_name(match.group(3))
+        operations = normalize_space(match.group(4) or "")
+
+        if not valid_name(russian) or not valid_name(latin):
+            continue
+
+        record = make_record(
+            country_code=country_code,
+            code=code,
+            russian_name=russian,
+            latin_name=latin,
+            operations=operations,
+        )
+
+        if record:
+            records.append(record)
+
+    return deduplicate_records(records)
+
 
 def extract_text_methods(
     pdf_bytes: bytes,
@@ -1590,6 +1824,45 @@ def parse_pdf(
     methods = extract_text_methods(
         pdf_bytes
     )
+
+    # Если PyMuPDF не видит ни одного кода, пробуем Poppler.
+    # Это необходимо для некоторых старых PDF ОСЖД.
+    poppler_pages = []
+    poppler_records = []
+
+    if count_codes(methods) == 0:
+        print()
+        print("PyMuPDF found 0 station codes.")
+        print("TRYING POPPLER pdftotext FALLBACK...")
+
+        poppler_pages = extract_text_with_pdftotext(
+            pdf_bytes
+        )
+
+        if poppler_pages:
+            for page_text in poppler_pages:
+                poppler_records.extend(
+                    parse_pdftotext_page(
+                        page_text,
+                        country_code,
+                    )
+                )
+
+            poppler_records = deduplicate_records(
+                poppler_records
+            )
+
+            print(
+                "POPPLER PARSER RECORDS:",
+                len(poppler_records),
+            )
+
+            if poppler_records:
+                print("FIRST POPPLER RECORDS:")
+                for record in poppler_records[:10]:
+                    print("  ", record)
+
+                return poppler_records
 
     method_counts = {}
 
