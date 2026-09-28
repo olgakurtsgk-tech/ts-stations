@@ -13,12 +13,13 @@ data/stations.json только после успешной проверки в�
 from __future__ import annotations
 
 import io
+import json
+import os
+import re
 import shutil
 import subprocess
-import tempfile
-import json
-import re
 import sys
+import tempfile
 import time
 from collections import Counter
 from pathlib import Path
@@ -377,19 +378,11 @@ def score_name(value: str) -> int:
 
 
 # ============================================================
-# HTTP
+# OSJD URL NORMALIZATION
 # ============================================================
 
 def normalize_osjd_pdf_url(url: str) -> str:
-    """
-    Преобразует ссылку ОСЖД-обёртку в прямую ссылку на PDF.
-
-    Например:
-    https://osjd.org/ru/page/2101101?file=/api/media/resources/9608?action=download
-
-    превращается в:
-    https://osjd.org/api/media/resources/9608?action=download
-    """
+    """Convert OSJD viewer URLs to direct /api/media/resources URLs."""
     if not url:
         return ""
 
@@ -406,77 +399,47 @@ def normalize_osjd_pdf_url(url: str) -> str:
 
     if match:
         file_part = unquote(match.group(1))
-
         if file_part.startswith(("http://", "https://")):
             url = file_part
         elif file_part.startswith("/"):
             url = urljoin("https://osjd.org", file_part)
         else:
             url = urljoin("https://osjd.org/", file_part)
-
         url = url.split("#", 1)[0]
 
-    if url.startswith("/api/media/resources/"):
+    if url.startswith("/"):
         url = urljoin("https://osjd.org", url)
 
     return url
 
 
-def _is_pdf_response(response: requests.Response) -> bool:
-    content_type = response.headers.get("content-type", "").lower()
-    return (
-        "pdf" in content_type
-        or response.content.startswith(b"%PDF")
-    )
-
-
-def _find_direct_pdf_url_from_html(
-    html: str,
-    base_url: str,
-) -> str | None:
-    """Ищет /api/media/resources/... внутри HTML ОСЖД."""
-
-    from urllib.parse import unquote, urljoin
+def find_direct_pdf_url_in_html(html: str) -> str | None:
+    """Find a real OSJD media resource inside an HTML wrapper."""
+    from urllib.parse import unquote
 
     html = unquote(html or "")
 
-    # Самый надёжный вариант: в HTML/JS часто присутствует
-    # прямой путь к media resource.
-    match = re.search(
-        r"(?:https?://[^\"'<> ]*)?/api/media/resources/\d+"
-        r"(?:\?[^\"'<> ]*)?",
-        html,
-        flags=re.IGNORECASE,
-    )
+    patterns = [
+        r"https?://osjd\.org/api/media/resources/\d+(?:\?[^\"'<>\s]*)?",
+        r"/api/media/resources/\d+(?:\?[^\"'<>\s]*)?",
+        r"[?&]file=(/api/media/resources/\d+(?:\?[^\"'<>\s]*)?)",
+    ]
 
-    if match:
-        found = match.group(0)
-        if found.startswith("/"):
-            found = urljoin("https://osjd.org", found)
-        return found.split("#", 1)[0]
-
-    # Дополнительный вариант — file=/api/...
-    match = re.search(
-        r"[?&]file=([^\"'<> ]*?/api/media/resources/\d+[^\"'<> ]*)",
-        html,
-        flags=re.IGNORECASE,
-    )
-
-    if match:
-        return normalize_osjd_pdf_url(match.group(1))
+    for pattern in patterns:
+        match = re.search(pattern, html, flags=re.IGNORECASE)
+        if match:
+            value = match.group(1) if match.lastindex else match.group(0)
+            return normalize_osjd_pdf_url(value)
 
     return None
 
 
+# ============================================================
+# HTTP
+# ============================================================
+
 def download_pdf(url: str) -> bytes:
-    """
-    Надёжно скачивает PDF ОСЖД.
-
-    ОСЖД может отдавать HTML-страницу вместо самого PDF,
-    поэтому сначала нормализуем ссылку, а если всё же получили
-    HTML — пытаемся найти настоящий /api/media/resources/... URL.
-    """
-
+    """Download an OSJD PDF, recovering direct media URLs from HTML wrappers."""
     url = normalize_osjd_pdf_url(url)
 
     print()
@@ -498,47 +461,40 @@ def download_pdf(url: str) -> bytes:
 
     response.raise_for_status()
 
-    if _is_pdf_response(response):
+    if (
+        "pdf" in response.headers.get("content-type", "").lower()
+        or response.content.startswith(b"%PDF")
+    ):
         print("✓ PDF RECEIVED")
         return response.content
 
-    # Если пришёл HTML, пробуем найти прямой PDF URL.
-    content_type = response.headers.get("content-type", "").lower()
+    direct_url = find_direct_pdf_url_in_html(response.text)
+    if direct_url and direct_url != url:
+        print("RECOVERED DIRECT PDF URL:")
+        print(direct_url)
 
-    if (
-        "html" in content_type
-        or response.content.lstrip().startswith(b"<")
-    ):
-        direct_url = _find_direct_pdf_url_from_html(
-            response.text,
-            response.url,
+        pdf_response = requests.get(
+            direct_url,
+            headers=HEADERS,
+            timeout=REQUEST_TIMEOUT,
+            allow_redirects=True,
         )
 
-        if direct_url and direct_url != url:
-            print("FOUND DIRECT PDF URL:")
-            print(direct_url)
+        print("PDF HTTP STATUS:", pdf_response.status_code)
+        print("PDF CONTENT TYPE:", pdf_response.headers.get("content-type"))
+        print("PDF SIZE:", len(pdf_response.content))
 
-            pdf_response = requests.get(
-                direct_url,
-                headers=HEADERS,
-                timeout=REQUEST_TIMEOUT,
-                allow_redirects=True,
-            )
+        pdf_response.raise_for_status()
 
-            print("PDF HTTP STATUS:", pdf_response.status_code)
-            print("PDF FINAL URL:", pdf_response.url)
-            print("PDF CONTENT TYPE:", pdf_response.headers.get("content-type"))
-            print("PDF SIZE:", len(pdf_response.content))
-
-            pdf_response.raise_for_status()
-
-            if _is_pdf_response(pdf_response):
-                print("✓ PDF RECEIVED AFTER HTML RECOVERY")
-                return pdf_response.content
+        if (
+            "pdf" in pdf_response.headers.get("content-type", "").lower()
+            or pdf_response.content.startswith(b"%PDF")
+        ):
+            print("✓ PDF RECEIVED AFTER HTML RECOVERY")
+            return pdf_response.content
 
     raise RuntimeError(
-        "Полученный файл не является PDF: "
-        f"{url}"
+        f"URL did not return PDF: {url}"
     )
 
 
@@ -605,7 +561,7 @@ def discover_osjd_links() -> dict[str, str]:
                 alias in combined
                 for alias in aliases
             ):
-                result[country_code] = href
+                result[country_code] = normalize_osjd_pdf_url(href)
 
                 print(
                     f"FOUND {country_code}: "
@@ -624,34 +580,20 @@ def discover_osjd_links() -> dict[str, str]:
 def get_pdf_urls(
     country_code: str | None = None,
 ) -> dict[str, str] | str | None:
-    """
-    Получает PDF-ссылки ОСЖД.
-
-    Без аргумента возвращает словарь для всех стран:
-        get_pdf_urls()
-
-    С кодом страны возвращает URL только этой страны:
-        get_pdf_urls("IR")
-
-    Такая форма нужна и основному парсеру, и отдельной диагностике.
-    """
-
+    """Return all PDF URLs, or one country URL when country_code is supplied."""
     discovered = discover_osjd_links()
-
     result = dict(discovered)
 
-    # Нормализуем найденные ссылки.
-    for code, url in list(result.items()):
-        result[code] = normalize_osjd_pdf_url(url)
-
-    # Для проблемных стран используем проверенные fallback URL.
     for code, url in FALLBACK_PDFS.items():
         if not result.get(code):
             normalized = normalize_osjd_pdf_url(url)
-            print(
-                f"FALLBACK {code}: {normalized}"
-            )
+            print(f"FALLBACK {code}: {normalized}")
             result[code] = normalized
+        else:
+            result[code] = normalize_osjd_pdf_url(result[code])
+
+    for code in list(result):
+        result[code] = normalize_osjd_pdf_url(result[code])
 
     if country_code is not None:
         return result.get(country_code)
@@ -660,72 +602,44 @@ def get_pdf_urls(
 
 
 # ============================================================
-# PDF EXTRACTION
+# POPPLER / PDFTOTEXT FALLBACK
 # ============================================================
 
-def extract_text_with_pdftotext(pdf_bytes: bytes) -> list[str]:
-    """
-    Резервное извлечение текста через Poppler pdftotext.
-
-    Некоторые PDF ОСЖД (в частности Иран) имеют текстовый слой,
-    который PyMuPDF не видит, хотя обычный PDF text extractor его
-    читает. В таком случае используем системную утилиту pdftotext.
-    """
+def extract_pdftotext_pages(pdf_bytes: bytes) -> list[str]:
+    """Use Poppler pdftotext when PyMuPDF cannot extract text."""
     executable = shutil.which("pdftotext")
-
     if not executable:
-        print("pdftotext: NOT INSTALLED — trying to install poppler-utils")
-        try:
-            subprocess.run(
-                ["sudo", "apt-get", "update"],
-                capture_output=True,
-                text=True,
-                timeout=120,
-                check=False,
-            )
-            subprocess.run(
-                ["sudo", "apt-get", "install", "-y", "poppler-utils"],
-                capture_output=True,
-                text=True,
-                timeout=120,
-                check=False,
-            )
-            executable = shutil.which("pdftotext")
-        except Exception as exc:
-            print("pdftotext auto-install error:", repr(exc))
-
-    if not executable:
-        print("pdftotext: STILL NOT INSTALLED")
+        print("pdftotext is not installed; Poppler fallback unavailable.")
         return []
 
-    temp_dir = Path(tempfile.mkdtemp(prefix="osjd_pdf_"))
-    pdf_path = temp_dir / "source.pdf"
-    txt_path = temp_dir / "source.txt"
-
-    try:
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        pdf_path = Path(tmp_dir) / "source.pdf"
+        txt_path = Path(tmp_dir) / "source.txt"
         pdf_path.write_bytes(pdf_bytes)
 
-        result = subprocess.run(
-            [
-                executable,
-                "-layout",
-                str(pdf_path),
-                str(txt_path),
-            ],
-            capture_output=True,
-            text=True,
-            timeout=REQUEST_TIMEOUT,
-            check=False,
-        )
+        commands = [
+            [executable, "-layout", "-enc", "UTF-8", str(pdf_path), str(txt_path)],
+            [executable, "-enc", "UTF-8", str(pdf_path), str(txt_path)],
+        ]
 
-        if result.returncode != 0:
-            print(
-                "pdftotext ERROR:",
-                result.stderr.strip()[:500],
-            )
-            return []
+        success = False
+        for command in commands:
+            try:
+                result = subprocess.run(
+                    command,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
+                    timeout=120,
+                )
+                if result.returncode == 0 and txt_path.exists():
+                    success = True
+                    break
+            except Exception as exc:
+                print("pdftotext ERROR:", repr(exc))
 
-        if not txt_path.exists():
+        if not success:
+            print("pdftotext failed to extract text.")
             return []
 
         text = txt_path.read_text(
@@ -733,166 +647,108 @@ def extract_text_with_pdftotext(pdf_bytes: bytes) -> list[str]:
             errors="replace",
         )
 
-        if not text.strip():
-            return []
-
-        pages = text.split("\f")
-        print(
-            "pdftotext extracted characters:",
-            len(text),
-        )
-        print(
-            "pdftotext pages:",
-            len(pages),
-        )
-
-        return pages
-
-    except Exception as exc:
-        print(
-            "pdftotext exception:",
-            repr(exc),
-        )
-        return []
-
-    finally:
-        shutil.rmtree(
-            temp_dir,
-            ignore_errors=True,
-        )
+    print("pdftotext extracted characters:", len(text))
+    pages = re.split(r"\f", text)
+    return pages
 
 
-def parse_pdftotext_page(
-    text: str,
+def parse_pdftotext_line(
+    line: str,
     country_code: str,
-) -> list[dict[str, Any]]:
-    """
-    Парсер строкового текста Poppler.
+) -> dict[str, Any] | None:
+    """Parse a single table line from Poppler text output."""
+    line = line.replace("\xa0", " ").strip()
+    if not line:
+        return None
 
-    Для Ирана ОСЖД публикует станционный код как 3-4 цифры.
-    Полный 6-значный код формируется как:
-        код железной дороги 96 + 4-значный код станции.
+    # Remove obvious header lines.
+    lower = line.lower()
+    if "наименование" in lower and "код" in lower:
+        return None
 
-    Для остальных стран функция также умеет читать обычные 6-значные
-    коды, если они присутствуют в текстовом слое.
-    """
-    records = []
+    # Standard OSJD rows usually contain a 6-digit code.
+    match6 = re.search(r"(?<!\d)(\d{6})(?!\d)", line)
+    if match6:
+        code = match6.group(1)
+        left = line[:match6.start()].strip(" |;:")
+        right = line[match6.end():].strip(" |;:")
+    else:
+        # Iran's OSJD list uses a 4-digit station code while the railway
+        # code is 96. Build the six-digit station code as 96 + XXXX.
+        match4 = re.search(r"(?<!\d)(\d{4})(?!\d)", line)
+        if not match4:
+            return None
+        code4 = match4.group(1)
+        if country_code != "IR":
+            return None
+        code = "96" + code4
+        left = line[:match4.start()].strip(" |;:")
+        right = line[match4.end():].strip(" |;:")
 
-    if not text:
-        return records
-
-    lines = [
-        normalize_space(line)
-        for line in text.splitlines()
+    # Prefer columns separated by 2+ spaces, because pdftotext -layout
+    # preserves table spacing.
+    columns = [
+        normalize_space(x)
+        for x in re.split(r"\s{2,}|\t+", line)
+        if normalize_space(x)
     ]
 
-    # Для Ирана станционные коды в разделе 3 идут как 3-4 цифры.
-    # Берём только строки с латинским названием справа.
-    if country_code == "IR":
-        in_station_section = False
+    russian = left
+    latin = right
 
-        for line in lines:
-            lower = line.lower()
+    # If the row has clear columns, use them.
+    if columns:
+        code_index = None
+        for i, col in enumerate(columns):
+            if code in col or (country_code == "IR" and code[2:] in col):
+                code_index = i
+                break
+        if code_index is not None:
+            if code_index > 0:
+                russian = columns[code_index - 1]
+            if code_index + 1 < len(columns):
+                latin = columns[code_index + 1]
 
-            if "раздел 3" in lower:
-                in_station_section = True
-                continue
+    russian = clean_station_name(russian)
+    latin = clean_station_name(latin)
 
-            if "раздел 4" in lower:
-                in_station_section = False
+    if not valid_name(russian):
+        return None
 
-            if not in_station_section:
-                continue
+    # Some documents have only one station-name column. In that case do not
+    # invent a Latin transliteration; use the same source name as a fallback.
+    if not valid_name(latin):
+        latin = russian
 
-            # Удаляем номера страниц/мусор в начале и конце.
-            line = normalize_space(line)
+    return make_record(
+        country_code=country_code,
+        code=code,
+        russian_name=russian,
+        latin_name=latin,
+    )
 
-            match = re.match(
-                r"^(.+?)\s+(\d{3,4})\s+([A-Za-z][A-Za-z0-9 .()'\-]+?)(?:\s+(.*))?$",
+
+def parse_pdftotext_pages(
+    pages: list[str],
+    country_code: str,
+) -> list[dict[str, Any]]:
+    records: list[dict[str, Any]] = []
+
+    for page in pages:
+        for line in page.splitlines():
+            record = parse_pdftotext_line(
                 line,
+                country_code,
             )
-
-            if not match:
-                continue
-
-            russian = clean_station_name(
-                match.group(1)
-            )
-            local_code = match.group(2)
-            latin = clean_station_name(
-                match.group(3)
-            )
-            operations = normalize_space(
-                match.group(4) or ""
-            )
-
-            # Исключаем заголовки и строки таблиц.
-            if not valid_name(russian):
-                continue
-
-            if not valid_name(latin):
-                continue
-
-            # Полный код Ирана: 96 + 4 цифры.
-            station_code = local_code.zfill(4)
-            full_code = "96" + station_code
-
-            # В некоторых строках операции начинаются сразу после
-            # латинского названия; отделяем их от названия.
-            operation_match = re.search(
-                r"\s+(\d+(?:\s*[,./]\s*\d+)*(?:\s*[A-Za-zА-Яа-яHKNK]+)?)$",
-                latin,
-            )
-
-            if operation_match:
-                latin = normalize_space(
-                    latin[:operation_match.start()]
-                )
-
-            record = make_record(
-                country_code=country_code,
-                code=full_code,
-                russian_name=russian,
-                latin_name=latin,
-                operations=operations,
-            )
-
             if record:
                 records.append(record)
 
-        return deduplicate_records(records)
-
-    # Универсальный fallback для стран, где Poppler увидел 6-значные коды.
-    for line in lines:
-        match = re.search(
-            r"(.+?)\s+(\d{6})\s+([A-Za-z][A-Za-z0-9 .()'\-]+?)(?:\s+(.*))?$",
-            line,
-        )
-
-        if not match:
-            continue
-
-        russian = clean_station_name(match.group(1))
-        code = match.group(2)
-        latin = clean_station_name(match.group(3))
-        operations = normalize_space(match.group(4) or "")
-
-        if not valid_name(russian) or not valid_name(latin):
-            continue
-
-        record = make_record(
-            country_code=country_code,
-            code=code,
-            russian_name=russian,
-            latin_name=latin,
-            operations=operations,
-        )
-
-        if record:
-            records.append(record)
-
     return deduplicate_records(records)
 
+
+# ============================================================
+# PDF EXTRACTION
+# ============================================================
 
 def extract_text_methods(
     pdf_bytes: bytes,
@@ -1825,45 +1681,6 @@ def parse_pdf(
         pdf_bytes
     )
 
-    # Если PyMuPDF не видит ни одного кода, пробуем Poppler.
-    # Это необходимо для некоторых старых PDF ОСЖД.
-    poppler_pages = []
-    poppler_records = []
-
-    if count_codes(methods) == 0:
-        print()
-        print("PyMuPDF found 0 station codes.")
-        print("TRYING POPPLER pdftotext FALLBACK...")
-
-        poppler_pages = extract_text_with_pdftotext(
-            pdf_bytes
-        )
-
-        if poppler_pages:
-            for page_text in poppler_pages:
-                poppler_records.extend(
-                    parse_pdftotext_page(
-                        page_text,
-                        country_code,
-                    )
-                )
-
-            poppler_records = deduplicate_records(
-                poppler_records
-            )
-
-            print(
-                "POPPLER PARSER RECORDS:",
-                len(poppler_records),
-            )
-
-            if poppler_records:
-                print("FIRST POPPLER RECORDS:")
-                for record in poppler_records[:10]:
-                    print("  ", record)
-
-                return poppler_records
-
     method_counts = {}
 
     for method_name, pages in methods.items():
@@ -2012,6 +1829,43 @@ def parse_pdf(
             "TEXT CODES:",
             len(text_codes),
         )
+
+    # --------------------------------------------------------
+    # 5. POPPLER / PDFTOTEXT FALLBACK
+    # --------------------------------------------------------
+
+    if len(candidates) < 3:
+        print()
+        print("PyMuPDF found too few station records.")
+        print("TRYING POPPLER pdftotext FALLBACK...")
+
+        poppler_pages = extract_pdftotext_pages(
+            pdf_bytes
+        )
+
+        print(
+            "pdftotext pages:",
+            len(poppler_pages),
+        )
+
+        if poppler_pages:
+            poppler_candidates = parse_pdftotext_pages(
+                poppler_pages,
+                country_code,
+            )
+
+            print(
+                "POPPLER PARSER RECORDS:",
+                len(poppler_candidates),
+            )
+
+            candidates.extend(
+                poppler_candidates
+            )
+
+            candidates = deduplicate_records(
+                candidates
+            )
 
     # --------------------------------------------------------
     # FINAL
@@ -2468,10 +2322,71 @@ def save_database(
 
 
 # ============================================================
+# FOUR-COUNTRY PDF DIAGNOSTIC
+# ============================================================
+
+def run_four_country_diagnostic() -> None:
+    targets = {
+        "IR": "Иран",
+        "CN": "Китай",
+        "CZ": "Чехия",
+        "EE": "Эстония",
+    }
+
+    print()
+    print("=" * 70)
+    print("OSJD FOUR-COUNTRY PDF DIAGNOSTIC")
+    print("=" * 70)
+
+    sources = get_pdf_urls()
+
+    for code, name in targets.items():
+        print()
+        print("-" * 70)
+        print(f"COUNTRY: {name}")
+        print(f"CODE: {code}")
+        url = sources.get(code)
+        print("PDF URL:")
+        print(url or "SOURCE NOT FOUND")
+
+        if not url:
+            continue
+
+        try:
+            pdf_bytes = download_pdf(url)
+            print("PDF OK:", len(pdf_bytes), "bytes")
+            methods = extract_text_methods(pdf_bytes)
+            print("PyMuPDF text codes:", count_codes(methods["text"]))
+            print("PyMuPDF word codes:", count_codes(methods["words"]))
+            print("PyMuPDF block codes:", count_codes(methods["blocks"]))
+            print("PyMuPDF dict codes:", count_codes(methods["dict"]))
+
+            if max(
+                count_codes(methods["text"]),
+                count_codes(methods["words"]),
+                count_codes(methods["blocks"]),
+                count_codes(methods["dict"]),
+            ) == 0:
+                pages = extract_pdftotext_pages(pdf_bytes)
+                print("pdftotext pages:", len(pages))
+                records = parse_pdftotext_pages(pages, code)
+                print("pdftotext records:", len(records))
+                for record in records[:10]:
+                    print("  ", record)
+
+        except Exception as exc:
+            print("DIAGNOSTIC ERROR:", repr(exc))
+
+
+# ============================================================
 # MAIN
 # ============================================================
 
 def main() -> None:
+
+    if os.environ.get("OSJD_FOUR_COUNTRY_DIAGNOSTIC") == "1":
+        run_four_country_diagnostic()
+        return
 
     print("=" * 70)
     print("OSJD RAILWAY STATION DATABASE UPDATE")
@@ -2519,7 +2434,7 @@ def main() -> None:
     missing_sources = [
         code
         for code in COUNTRIES
-        if code not in pdf_urls
+        if not pdf_urls.get(code)
     ]
 
     if missing_sources:
