@@ -1,973 +1,276 @@
-import re
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+"""
+OSJD SIX PDF DIAGNOSTIC
+
+Диагностирует источники PDF для шести стран,
+которые ранее не удалось нормально обработать.
+
+Важно:
+Этот файл НЕ импортирует OSJD_PAGE из update_stations.py.
+Он полностью самостоятельный.
+
+Проверяем:
+IR - Иран
+CN - Китай
+KR - Республика Корея
+RO - Румыния
+CZ - Чехия
+EE - Эстония
+"""
+
+from __future__ import annotations
+
 import sys
+from pathlib import Path
 
-import pymupdf
 import requests
-from bs4 import BeautifulSoup
 
 
 # ============================================================
-# НАСТРОЙКИ
+# SETTINGS
 # ============================================================
 
-TARGET_COUNTRIES = {
-    "Иран": "IR",
-    "Китай": "CN",
-    "Чехия": "CZ",
-    "Эстония": "EE",
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+TIMEOUT = 30
+
+PDF_RESOURCES = {
+    "IR": {
+        "country": "Иран",
+        "resource_id": "9608",
+    },
+    "CN": {
+        "country": "Китай",
+        "resource_id": "1537",
+    },
+    "KR": {
+        "country": "Республика Корея",
+        "resource_id": "1637529",
+    },
+    "RO": {
+        "country": "Румыния",
+        "resource_id": "2813",
+    },
+    "CZ": {
+        "country": "Чехия",
+        "resource_id": "3904",
+    },
+    "EE": {
+        "country": "Эстония",
+        "resource_id": "1671839",
+    },
 }
 
-MAX_SAMPLE_LINES = 80
-MAX_CODE_LINES = 100
-MAX_PAGES_TO_SHOW = 8
 
-HEADERS = {
-    "User-Agent": (
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 "
-        "(KHTML, like Gecko) "
-        "Chrome/140.0 Safari/537.36"
+# ============================================================
+# URL BUILDERS
+# ============================================================
+
+def build_api_url(resource_id: str) -> str:
+    return (
+        "https://osjd.org/api/media/resources/"
+        f"{resource_id}?action=download"
     )
-}
+
+
+def build_page_url(resource_id: str) -> str:
+    return (
+        "https://osjd.org/ru/page/2101101"
+        f"?file=/api/media/resources/"
+        f"{resource_id}?action=download"
+        "#zoom=page-height"
+    )
 
 
 # ============================================================
-# ИМПОРТ ОСНОВНОГО ПАРСЕРА
+# DIAGNOSTIC
 # ============================================================
 
-try:
-    import update_stations
-except ImportError:
+def diagnose_country(
+    code: str,
+    country_data: dict,
+) -> bool:
+
+    country = country_data["country"]
+    resource_id = country_data["resource_id"]
+
+    api_url = build_api_url(resource_id)
+    page_url = build_page_url(resource_id)
+
     print()
-    print("=" * 70)
-    print("ОШИБКА")
-    print("=" * 70)
+    print("-" * 70)
+    print(f"{code} - {country}")
+    print("-" * 70)
+
     print()
-    print(
-        "Не удалось импортировать scripts/update_stations.py"
-    )
+    print("Resource ID:")
+    print(resource_id)
+
     print()
-    print(
-        "Запускайте этот скрипт из корня репозитория:"
-    )
+    print("API URL:")
+    print(api_url)
+
     print()
-    print(
-        "python scripts/diagnose_six_pdfs.py"
-    )
-    print()
-    sys.exit(1)
+    print("Page URL:")
+    print(page_url)
 
+    try:
 
-OSJD_PAGE = update_stations.OSJD_PAGE
+        response = requests.get(
+            api_url,
+            timeout=TIMEOUT,
+            allow_redirects=True,
+        )
 
+        print()
+        print("HTTP status:")
+        print(response.status_code)
 
-# ============================================================
-# ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-# ============================================================
+        print()
+        print("Final URL:")
+        print(response.url)
 
-def clean_text(text):
-    if not text:
-        return ""
+        content_type = response.headers.get(
+            "Content-Type",
+            "",
+        )
 
-    text = text.replace("\u00a0", " ")
-    text = text.replace("\u200b", "")
-    text = re.sub(r"\s+", " ", text)
+        print()
+        print("Content-Type:")
+        print(content_type)
 
-    return text.strip()
+        content_length = response.headers.get(
+            "Content-Length",
+            "",
+        )
 
+        print()
+        print("Content-Length:")
+        print(content_length)
 
-def identify_country(text):
-    """
-    Определяет одну из четырёх диагностируемых стран
-    по тексту ссылки ОСЖД.
-    """
+        data = response.content
 
-    text_clean = clean_text(text).lower()
+        print()
+        print("Downloaded bytes:")
+        print(len(data))
 
-    country_aliases = {
-        "Иран": [
-            "иран",
-            "iran",
-        ],
-        "Китай": [
-            "китай",
-            "china",
-        ],
-        "Чехия": [
-            "чехия",
-            "czech",
-            "czechia",
-            "чешск",
-        ],
-        "Эстония": [
-            "эстония",
-            "estonia",
-        ],
-    }
+        if response.status_code != 200:
+            print()
+            print(
+                "✗ HTTP ERROR"
+            )
+            return False
 
-    for country, aliases in country_aliases.items():
+        if not data:
+            print()
+            print(
+                "✗ EMPTY RESPONSE"
+            )
+            return False
 
-        for alias in aliases:
+        # ----------------------------------------------------
+        # PDF SIGNATURE
+        # ----------------------------------------------------
 
-            if alias.lower() in text_clean:
+        if data[:4] == b"%PDF":
 
-                return (
-                    country,
-                    TARGET_COUNTRIES[country],
-                )
-
-    return None, None
-
-
-def get_pdf_url(href):
-    """
-    Совместимо с текущим update_stations.py.
-
-    В актуальном основном парсере используется
-    функция get_pdf_urls(), поэтому здесь
-    не обращаемся к несуществующей get_pdf_url().
-    """
-
-    # --------------------------------------------------------
-    # Сначала пробуем актуальную функцию get_pdf_urls()
-    # --------------------------------------------------------
-
-    if hasattr(update_stations, "get_pdf_urls"):
-
-        try:
-
-            result = update_stations.get_pdf_urls(
-                href
+            print()
+            print(
+                "✓ PDF SIGNATURE DETECTED"
             )
 
-            if isinstance(result, str):
+            return True
 
-                if result:
-                    return result
+        # ----------------------------------------------------
+        # HTML RESPONSE
+        # ----------------------------------------------------
 
-            if isinstance(result, (list, tuple)):
+        text_start = data[:500].decode(
+            "utf-8",
+            errors="replace",
+        )
 
-                for url in result:
+        print()
+        print("First response bytes:")
+        print(
+            text_start[:500]
+        )
 
-                    if url:
-                        return url
+        print()
 
-        except Exception as error:
+        if "<html" in text_start.lower():
 
             print(
-                "get_pdf_urls ERROR:",
-                repr(error)
+                "⚠ RESPONSE IS HTML, NOT PDF"
             )
 
-    # --------------------------------------------------------
-    # Если функция вернула ничего,
-    # пытаемся обработать ссылку самостоятельно.
-    # --------------------------------------------------------
+        else:
 
-    if href.startswith("http://"):
-        return href.replace(
-            "http://",
-            "https://",
-            1
+            print(
+                "⚠ RESPONSE IS NOT A PDF"
+            )
+
+        return False
+
+    except requests.RequestException as exc:
+
+        print()
+        print(
+            "✗ REQUEST ERROR:"
         )
 
-    if href.startswith("https://"):
-        return href
-
-    if href.startswith("//"):
-        return "https:" + href
-
-    if href.startswith("/"):
-
-        return (
-            "https://osjd.org"
-            + href
+        print(
+            repr(exc)
         )
 
-    return href
+        return False
 
+    except Exception as exc:
 
-def download_pdf(url):
-
-    print()
-    print("DOWNLOAD:")
-    print(url)
-
-    response = requests.get(
-        url,
-        headers=HEADERS,
-        timeout=180
-    )
-
-    print(
-        "HTTP STATUS:",
-        response.status_code
-    )
-
-    print(
-        "CONTENT TYPE:",
-        response.headers.get(
-            "content-type",
-            ""
-        )
-    )
-
-    print(
-        "SIZE:",
-        f"{len(response.content):,}",
-        "bytes"
-    )
-
-    response.raise_for_status()
-
-    if not response.content.startswith(
-        b"%PDF"
-    ):
-
-        raise RuntimeError(
-            "Полученный файл не является PDF"
+        print()
+        print(
+            "✗ UNEXPECTED ERROR:"
         )
 
-    return response.content
+        print(
+            repr(exc)
+        )
+
+        return False
 
 
 # ============================================================
-# ПОИСК PDF НА СТРАНИЦЕ ОСЖД
+# MAIN
 # ============================================================
 
-def find_country_pdfs():
+def main() -> int:
 
     print()
     print("=" * 70)
-    print("SEARCHING OSJD PDF SOURCES")
+    print("DIAGNOSING SIX MISSING OSJD PDFS")
     print("=" * 70)
 
     print()
-    print("OSJD PAGE:")
-    print(OSJD_PAGE)
-
-    print()
-
-    response = requests.get(
-        OSJD_PAGE,
-        headers=HEADERS,
-        timeout=120
-    )
-
     print(
-        "HTTP STATUS:",
-        response.status_code
+        "Working directory:"
     )
-
-    response.raise_for_status()
-
-    soup = BeautifulSoup(
-        response.text,
-        "html.parser"
+    print(
+        BASE_DIR
     )
 
     results = {}
 
-    # --------------------------------------------------------
-    # Ищем все ссылки
-    # --------------------------------------------------------
-
-    for link in soup.find_all("a"):
-
-        text = clean_text(
-            link.get_text(
-                " ",
-                strip=True
-            )
-        )
-
-        href = link.get("href")
-
-        if not href:
-            continue
-
-        # Основной текст ссылки ОСЖД
-        if (
-            "Перечень грузовых станций"
-            not in text
-        ):
-            continue
-
-        country, country_code = identify_country(
-            text
-        )
-
-        if not country:
-            continue
-
-        if country not in TARGET_COUNTRIES:
-            continue
-
-        pdf_url = get_pdf_url(
-            href
-        )
-
-        results[country] = {
-            "country": country,
-            "country_code": country_code,
-            "title": text,
-            "url": pdf_url,
-        }
-
-    return results
-
-
-# ============================================================
-# ДИАГНОСТИКА ОДНОГО PDF
-# ============================================================
-
-def diagnose_pdf(
-    country,
-    item
-):
-
-    print()
-    print()
-    print("=" * 70)
-    print(
-        f"COUNTRY: {country}"
-    )
-    print(
-        f"CODE: {item['country_code']}"
-    )
-    print("=" * 70)
-
-    print()
-    print("DOCUMENT TITLE:")
-    print(
-        item["title"]
-    )
-
-    print()
-    print("PDF URL:")
-    print(
-        item["url"]
-    )
-
-    # --------------------------------------------------------
-    # Скачивание
-    # --------------------------------------------------------
-
-    try:
-
-        pdf_bytes = download_pdf(
-            item["url"]
-        )
-
-    except Exception as error:
-
-        print()
-        print("DOWNLOAD ERROR:")
-        print(
-            repr(error)
-        )
-
-        return
-
-    # --------------------------------------------------------
-    # Открытие PDF
-    # --------------------------------------------------------
-
-    try:
-
-        document = pymupdf.open(
-            stream=pdf_bytes,
-            filetype="pdf"
-        )
-
-    except Exception as error:
-
-        print()
-        print("PDF OPEN ERROR:")
-        print(
-            repr(error)
-        )
-
-        return
-
-    print()
-    print("-" * 70)
-    print("PDF INFORMATION")
-    print("-" * 70)
-
-    print(
-        "Pages:",
-        len(document)
-    )
-
-    print(
-        "Metadata:",
-        document.metadata
-    )
-
-    total_text_length = 0
-    total_lines = 0
-    total_six_digit_codes = 0
-
-    pages_with_codes = []
-    pages_with_station_headers = []
-
-    all_code_matches = []
-
-    # ========================================================
-    # ПРОХОДИМ ПО СТРАНИЦАМ
-    # ========================================================
-
-    for page_index in range(
-        len(document)
-    ):
-
-        page = document[
-            page_index
-        ]
-
-        text = page.get_text(
-            "text"
-        )
-
-        total_text_length += len(
-            text
-        )
-
-        lines = text.splitlines()
-
-        total_lines += len(
-            lines
-        )
-
-        codes = re.findall(
-            r"(?<!\d)\d{6}(?!\d)",
-            text
-        )
-
-        if codes:
-
-            total_six_digit_codes += len(
-                codes
-            )
-
-            pages_with_codes.append(
-                page_index + 1
-            )
-
-            all_code_matches.extend(
-                codes
-            )
-
-        header_text = text.lower()
-
-        if (
-            "наименование станции"
-            in header_text
-            or "код станции"
-            in header_text
-            or "station code"
-            in header_text
-            or "station name"
-            in header_text
-        ):
-
-            pages_with_station_headers.append(
-                page_index + 1
-            )
-
-    # ========================================================
-    # ОБЩАЯ СТАТИСТИКА
-    # ========================================================
-
-    print()
-    print("-" * 70)
-    print("TEXT EXTRACTION")
-    print("-" * 70)
-
-    print(
-        "Total extracted text:",
-        f"{total_text_length:,}",
-        "characters"
-    )
-
-    print(
-        "Total lines:",
-        f"{total_lines:,}"
-    )
-
-    print(
-        "6-digit codes:",
-        f"{total_six_digit_codes:,}"
-    )
-
-    print()
-    print(
-        "Pages containing 6-digit codes:"
-    )
-
-    if pages_with_codes:
-
-        print(
-            ", ".join(
-                str(x)
-                for x in pages_with_codes[
-                    :100
-                ]
-            )
-        )
-
-    else:
-
-        print("NONE")
-
-    print()
-    print(
-        "Pages containing station-table headers:"
-    )
-
-    if pages_with_station_headers:
-
-        print(
-            ", ".join(
-                str(x)
-                for x in pages_with_station_headers
-            )
-        )
-
-    else:
-
-        print("NONE")
-
-    # ========================================================
-    # УНИКАЛЬНЫЕ КОДЫ
-    # ========================================================
-
-    unique_codes = sorted(
-        set(
-            all_code_matches
-        )
-    )
-
-    print()
-    print("-" * 70)
-    print("UNIQUE 6-DIGIT CODES")
-    print("-" * 70)
-
-    print(
-        "Unique codes:",
-        len(unique_codes)
-    )
-
-    if unique_codes:
-
-        for code in unique_codes[
-            :MAX_CODE_LINES
-        ]:
-
-            print(
-                code
-            )
-
-        if (
-            len(unique_codes)
-            > MAX_CODE_LINES
-        ):
-
-            print(
-                "... and",
-                len(unique_codes)
-                - MAX_CODE_LINES,
-                "more"
-            )
-
-    else:
-
-        print(
-            "NO 6-DIGIT CODES FOUND"
+    for code, country_data in PDF_RESOURCES.items():
+
+        results[code] = diagnose_country(
+            code,
+            country_data,
         )
 
     # ========================================================
-    # РАЗНЫЕ СПОСОБЫ ИЗВЛЕЧЕНИЯ
-    # ========================================================
-
-    print()
-    print("-" * 70)
-    print("PYMUPDF EXTRACTION METHODS")
-    print("-" * 70)
-
-    methods = [
-        "text",
-        "blocks",
-        "words",
-        "dict",
-    ]
-
-    for method in methods:
-
-        print()
-        print(
-            f"METHOD: {method}"
-        )
-
-        total_items = 0
-        total_chars = 0
-        total_codes = 0
-
-        for page_index in range(
-            len(document)
-        ):
-
-            page = document[
-                page_index
-            ]
-
-            try:
-
-                data = page.get_text(
-                    method
-                )
-
-                if isinstance(
-                    data,
-                    str
-                ):
-
-                    total_items += len(
-                        data.splitlines()
-                    )
-
-                    total_chars += len(
-                        data
-                    )
-
-                    total_codes += len(
-                        re.findall(
-                            r"(?<!\d)\d{6}(?!\d)",
-                            data
-                        )
-                    )
-
-                elif isinstance(
-                    data,
-                    list
-                ):
-
-                    total_items += len(
-                        data
-                    )
-
-                    total_chars += len(
-                        str(data)
-                    )
-
-                    total_codes += len(
-                        re.findall(
-                            r"(?<!\d)\d{6}(?!\d)",
-                            str(data)
-                        )
-                    )
-
-                elif isinstance(
-                    data,
-                    dict
-                ):
-
-                    total_items += len(
-                        data
-                    )
-
-                    total_chars += len(
-                        str(data)
-                    )
-
-                    total_codes += len(
-                        re.findall(
-                            r"(?<!\d)\d{6}(?!\d)",
-                            str(data)
-                        )
-                    )
-
-            except Exception as error:
-
-                print(
-                    "  ERROR:",
-                    repr(error)
-                )
-
-        print(
-            "  items:",
-            total_items
-        )
-
-        print(
-            "  characters:",
-            total_chars
-        )
-
-        print(
-            "  6-digit codes:",
-            total_codes
-        )
-
-    # ========================================================
-    # RAW TEXT
-    # ========================================================
-
-    print()
-    print("-" * 70)
-    print("RAW TEXT SAMPLE")
-    print("-" * 70)
-
-    pages_to_show = min(
-        len(document),
-        MAX_PAGES_TO_SHOW
-    )
-
-    for page_index in range(
-        pages_to_show
-    ):
-
-        page = document[
-            page_index
-        ]
-
-        text = page.get_text(
-            "text"
-        )
-
-        print()
-        print(
-            f"### PAGE {page_index + 1}"
-        )
-
-        print()
-
-        lines = text.splitlines()
-
-        if not lines:
-
-            print(
-                "[NO TEXT EXTRACTED]"
-            )
-
-            continue
-
-        for number, line in enumerate(
-            lines[
-                :MAX_SAMPLE_LINES
-            ],
-            start=1
-        ):
-
-            clean_line = line.strip()
-
-            if not clean_line:
-                continue
-
-            print(
-                f"{number:03d}: "
-                f"{clean_line}"
-            )
-
-        if (
-            len(lines)
-            > MAX_SAMPLE_LINES
-        ):
-
-            print(
-                f"... "
-                f"{len(lines) - MAX_SAMPLE_LINES} "
-                f"more lines"
-            )
-
-    # ========================================================
-    # BLOCKS
-    # ========================================================
-
-    print()
-    print("-" * 70)
-    print("TEXT BLOCK SAMPLE")
-    print("-" * 70)
-
-    for page_index in range(
-        min(
-            len(document),
-            3
-        )
-    ):
-
-        page = document[
-            page_index
-        ]
-
-        print()
-        print(
-            f"### PAGE {page_index + 1}"
-        )
-
-        try:
-
-            blocks = page.get_text(
-                "blocks"
-            )
-
-            print(
-                "Blocks:",
-                len(blocks)
-            )
-
-            for block_number, block in enumerate(
-                blocks[:30],
-                start=1
-            ):
-
-                print()
-                print(
-                    f"BLOCK {block_number}"
-                )
-
-                print(
-                    repr(block)
-                )
-
-        except Exception as error:
-
-            print(
-                "BLOCK ERROR:",
-                repr(error)
-            )
-
-    # ========================================================
-    # WORDS
-    # ========================================================
-
-    print()
-    print("-" * 70)
-    print("WORD SAMPLE")
-    print("-" * 70)
-
-    for page_index in range(
-        min(
-            len(document),
-            2
-        )
-    ):
-
-        page = document[
-            page_index
-        ]
-
-        print()
-        print(
-            f"### PAGE {page_index + 1}"
-        )
-
-        try:
-
-            words = page.get_text(
-                "words"
-            )
-
-            print(
-                "Words:",
-                len(words)
-            )
-
-            for word in words[:100]:
-
-                print(
-                    repr(word)
-                )
-
-        except Exception as error:
-
-            print(
-                "WORDS ERROR:",
-                repr(error)
-            )
-
-    # ========================================================
-    # ТАБЛИЦЫ
-    # ========================================================
-
-    print()
-    print("-" * 70)
-    print("TABLE DETECTION")
-    print("-" * 70)
-
-    for page_index in range(
-        min(
-            len(document),
-            10
-        )
-    ):
-
-        page = document[
-            page_index
-        ]
-
-        try:
-
-            finder = page.find_tables()
-
-            tables = finder.tables
-
-            if tables:
-
-                print()
-                print(
-                    f"PAGE {page_index + 1}: "
-                    f"{len(tables)} table(s)"
-                )
-
-                for table_number, table in enumerate(
-                    tables,
-                    start=1
-                ):
-
-                    print(
-                        f"  Table {table_number}: "
-                        f"{table.row_count} rows x "
-                        f"{table.col_count} columns"
-                    )
-
-                    try:
-
-                        extracted = table.extract()
-
-                        for row in extracted[:10]:
-
-                            print(
-                                "   ",
-                                repr(row)
-                            )
-
-                    except Exception as error:
-
-                        print(
-                            "    "
-                            "TABLE EXTRACT ERROR:",
-                            repr(error)
-                        )
-
-            else:
-
-                print(
-                    f"PAGE {page_index + 1}: "
-                    "no tables detected"
-                )
-
-        except Exception as error:
-
-            print(
-                f"PAGE {page_index + 1}: "
-                f"table detection error: "
-                f"{error}"
-            )
-
-    # ========================================================
-    # ИТОГ
+    # SUMMARY
     # ========================================================
 
     print()
@@ -976,192 +279,66 @@ def diagnose_pdf(
     print("=" * 70)
 
     print()
-    print(
-        "Country:",
-        country
-    )
 
-    print(
-        "Country code:",
-        item["country_code"]
-    )
+    for code, success in results.items():
 
-    print(
-        "PDF pages:",
-        len(document)
-    )
+        country = PDF_RESOURCES[
+            code
+        ]["country"]
 
-    print(
-        "Extracted characters:",
-        f"{total_text_length:,}"
-    )
-
-    print(
-        "Extracted lines:",
-        f"{total_lines:,}"
-    )
-
-    print(
-        "6-digit codes:",
-        f"{total_six_digit_codes:,}"
-    )
-
-    print(
-        "Unique 6-digit codes:",
-        len(unique_codes)
-    )
-
-    if not total_text_length:
-
-        print()
-        print(
-            "!!! IMPORTANT !!!"
-        )
-
-        print(
-            "PDF contains no extractable text."
-        )
-
-        print(
-            "Likely scanned/image PDF."
-        )
-
-    elif not total_six_digit_codes:
-
-        print()
-        print(
-            "!!! IMPORTANT !!!"
-        )
-
-        print(
-            "Text exists, but no 6-digit station "
-            "codes were detected."
-        )
-
-        print(
-            "Likely unusual PDF structure, "
-            "broken text encoding, "
-            "or codes split across PDF objects."
-        )
-
-    else:
-
-        print()
-        print(
-            "6-digit codes ARE PRESENT."
-        )
-
-        print(
-            "The problem is probably station-row "
-            "reconstruction rather than PDF access."
-        )
-
-    print()
-    print("=" * 70)
-    print(
-        "END OF DIAGNOSTIC:",
-        country
-    )
-    print("=" * 70)
-
-
-# ============================================================
-# MAIN
-# ============================================================
-
-def main():
-
-    print()
-    print("=" * 70)
-    print("OSJD FOUR-COUNTRY PDF DIAGNOSTIC")
-    print("=" * 70)
-
-    print()
-    print(
-        "Target countries:"
-    )
-
-    for country, code in TARGET_COUNTRIES.items():
-
-        print(
-            f"  {code} | {country}"
-        )
-
-    sources = find_country_pdfs()
-
-    print()
-    print("=" * 70)
-    print("FOUND SOURCES")
-    print("=" * 70)
-
-    if not sources:
-
-        print()
-        print(
-            "NO TARGET PDF SOURCES FOUND."
-        )
-
-        raise SystemExit(1)
-
-    for country in TARGET_COUNTRIES:
-
-        code = TARGET_COUNTRIES[
-            country
-        ]
-
-        if country in sources:
-
-            item = sources[
-                country
-            ]
-
-            print()
-            print(
-                f"✓ {code} | {country}"
-            )
+        if success:
 
             print(
-                item["url"]
+                f"✓ {code} "
+                f"{country}"
             )
 
         else:
 
-            print()
             print(
-                f"✗ {code} | {country}"
+                f"✗ {code} "
+                f"{country}"
             )
 
-            print(
-                "SOURCE NOT FOUND"
-            )
+    successful = sum(
+        1
+        for value in results.values()
+        if value
+    )
 
-    # ========================================================
-    # ДИАГНОСТИРУЕМ КАЖДУЮ НАЙДЕННУЮ СТРАНУ
-    # ========================================================
-
-    for country in TARGET_COUNTRIES:
-
-        if country not in sources:
-            continue
-
-        diagnose_pdf(
-            country,
-            sources[country]
-        )
+    failed = len(results) - successful
 
     print()
-    print("=" * 70)
-    print("ALL DIAGNOSTICS FINISHED")
-    print("=" * 70)
-
-    print()
+    print(
+        "Successful:",
+        successful,
+    )
 
     print(
-        "This script DOES NOT modify stations.json."
+        "Failed:",
+        failed,
     )
 
     print()
 
+    # --------------------------------------------------------
+    # IMPORTANT:
+    # Diagnostic itself should NOT fail GitHub Actions
+    # merely because a PDF is unavailable.
+    # --------------------------------------------------------
+
+    print("=" * 70)
+    print("DIAGNOSTIC COMPLETED")
+    print("=" * 70)
+
+    return 0
+
+
+# ============================================================
+# ENTRY POINT
+# ============================================================
 
 if __name__ == "__main__":
-    main()
+    sys.exit(
+        main()
+    )
