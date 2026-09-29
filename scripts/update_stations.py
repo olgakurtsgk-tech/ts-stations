@@ -252,12 +252,49 @@ def normalize_space(value: Any) -> str:
     return text.strip()
 
 
+def normalize_multiline(value: Any) -> str:
+    """
+    Normalize OCR/text while PRESERVING line breaks.
+    This is critical for scanned tables.
+    """
+
+    if value is None:
+        return ""
+
+    text = str(value)
+
+    text = text.replace("\r\n", "\n")
+    text = text.replace("\r", "\n")
+
+    text = text.replace("\xa0", " ")
+    text = text.replace("\u200b", "")
+    text = text.replace("\ufeff", "")
+
+    lines = []
+
+    for line in text.splitlines():
+
+        line = re.sub(
+            r"[ \t]+",
+            " ",
+            line,
+        )
+
+        line = line.strip()
+
+        if line:
+            lines.append(line)
+
+    return "\n".join(lines)
+
+
 def normalize_code(value: Any) -> str | None:
     if value is None:
         return None
 
     text = normalize_space(value)
 
+    # Normal six-digit code.
     match = re.search(
         r"(?<!\d)(\d{6})(?!\d)",
         text,
@@ -266,12 +303,54 @@ def normalize_code(value: Any) -> str | None:
     if match:
         return match.group(1)
 
-    digits = re.sub(r"\D", "", text)
+    # OCR sometimes produces 3+3 digits:
+    # 085 600
+    match = re.search(
+        r"(?<!\d)(\d{3})[\s\-–—./]+(\d{3})(?!\d)",
+        text,
+    )
+
+    if match:
+        return (
+            match.group(1)
+            + match.group(2)
+        )
+
+    digits = re.sub(
+        r"\D",
+        "",
+        text,
+    )
 
     if len(digits) == 6:
         return digits
 
     return None
+
+
+def normalize_ocr_codes(text: str) -> str:
+    """
+    Convert OCR variants such as:
+
+        085 600
+        085-600
+        085.600
+
+    into:
+
+        085600
+    """
+
+    if not text:
+        return ""
+
+    text = re.sub(
+        r"(?<!\d)(\d{3})[\s\-–—./]+(\d{3})(?!\d)",
+        r"\1\2",
+        text,
+    )
+
+    return text
 
 
 def clean_name(value: Any) -> str:
@@ -657,13 +736,17 @@ def count_codes(
 
     for page in pages:
 
+        text = normalize_ocr_codes(
+            page.get(
+                "text",
+                "",
+            )
+        )
+
         total += len(
             re.findall(
                 r"(?<!\d)\d{6}(?!\d)",
-                page.get(
-                    "text",
-                    "",
-                ),
+                text,
             )
         )
 
@@ -679,6 +762,10 @@ def remove_code_noise(
 ) -> str:
 
     text = normalize_space(
+        text
+    )
+
+    text = normalize_ocr_codes(
         text
     )
 
@@ -705,6 +792,22 @@ def remove_code_noise(
     )
 
 
+def extract_code_matches(
+    line: str,
+) -> list[re.Match]:
+
+    line = normalize_ocr_codes(
+        line
+    )
+
+    return list(
+        re.finditer(
+            r"(?<!\d)(\d{6})(?!\d)",
+            line,
+        )
+    )
+
+
 def parse_text(
     text: str,
     country_code: str,
@@ -712,28 +815,29 @@ def parse_text(
 
     records = []
 
-    lines = [
-        normalize_space(line)
-        for line in (
-            text or ""
-        ).splitlines()
-    ]
+    text = normalize_multiline(
+        text
+    )
 
-    lines = [
-        line
-        for line in lines
-        if line
-    ]
+    lines = text.splitlines()
 
-    for index, line in enumerate(
+    for index, raw_line in enumerate(
         lines
     ):
 
-        matches = list(
-            re.finditer(
-                r"(?<!\d)(\d{6})(?!\d)",
-                line,
-            )
+        line = normalize_ocr_codes(
+            raw_line
+        )
+
+        line = normalize_space(
+            line
+        )
+
+        if not line:
+            continue
+
+        matches = extract_code_matches(
+            line
         )
 
         if not matches:
@@ -763,67 +867,305 @@ def parse_text(
             latin = ""
 
             if valid_name(before):
-                russian = before
+                if is_cyrillic_name(
+                    before
+                ):
+                    russian = before
+                elif is_latin_name(
+                    before
+                ):
+                    latin = before
 
             if valid_name(after):
-                if is_latin_name(after):
+
+                if is_cyrillic_name(
+                    after
+                ) and not russian:
+                    russian = after
+
+                elif is_latin_name(
+                    after
+                ) and not latin:
                     latin = after
 
-            # Swap if columns are reversed.
-            if (
-                is_latin_name(russian)
-                and is_cyrillic_name(after)
+            # ------------------------------------------------
+            # Neighbouring OCR lines.
+            # This is common when the station name,
+            # code and Latin name are split into columns.
+            # ------------------------------------------------
+
+            neighbour_candidates = []
+
+            for offset in (
+                -3,
+                -2,
+                -1,
+                1,
+                2,
+                3,
             ):
 
-                russian = after
-                latin = before
+                pos = index + offset
 
-            # Look around neighbouring lines.
-            if not russian or not latin:
+                if (
+                    pos < 0
+                    or pos >= len(lines)
+                ):
+                    continue
 
-                for offset in (
-                    -2,
-                    -1,
-                    1,
-                    2,
+                candidate = remove_code_noise(
+                    lines[pos]
+                )
+
+                if not valid_name(
+                    candidate
+                ):
+                    continue
+
+                neighbour_candidates.append(
+                    candidate
+                )
+
+            # Prefer Cyrillic as Russian name.
+            if not russian:
+
+                for candidate in (
+                    neighbour_candidates
                 ):
 
-                    pos = (
-                        index + offset
-                    )
-
-                    if (
-                        pos < 0
-                        or pos >= len(lines)
-                    ):
-                        continue
-
-                    candidate = (
-                        remove_code_noise(
-                            lines[pos]
-                        )
-                    )
-
-                    if not valid_name(
+                    if is_cyrillic_name(
                         candidate
                     ):
-                        continue
+                        russian = candidate
+                        break
+
+            # Prefer Latin as Latin name.
+            if not latin:
+
+                for candidate in (
+                    neighbour_candidates
+                ):
 
                     if (
-                        not russian
-                        and is_cyrillic_name(
+                        is_latin_name(
                             candidate
                         )
-                    ):
-                        russian = candidate
-
-                    if (
-                        not latin
-                        and is_latin_name(
+                        and not is_cyrillic_name(
                             candidate
                         )
                     ):
                         latin = candidate
+                        break
+
+            # If both languages appear in one candidate,
+            # use the same candidate as fallback.
+            if not russian:
+
+                for candidate in (
+                    neighbour_candidates
+                ):
+
+                    if is_cyrillic_name(
+                        candidate
+                    ):
+                        russian = candidate
+                        break
+
+            if not russian:
+                continue
+
+            if not latin:
+                latin = russian
+
+            record = make_record(
+                country_code,
+                code,
+                russian,
+                latin,
+            )
+
+            if record:
+                records.append(
+                    record
+                )
+
+    return deduplicate_records(
+        records
+    )
+
+
+# ============================================================
+# OCR-SPECIFIC TABLE PARSER
+# ============================================================
+
+def parse_ocr_table(
+    text: str,
+    country_code: str,
+) -> list[dict[str, Any]]:
+
+    """
+    Dedicated parser for scanned OSJD tables.
+
+    OCR may produce layouts such as:
+
+        Antsla
+        085600
+        Antsla
+
+    or:
+
+        Антсла 085600 Antsla
+
+    or:
+
+        Антсла 085 600 Antsla
+
+    The parser preserves line structure and looks around
+    every six-digit station code.
+    """
+
+    records = []
+
+    text = normalize_multiline(
+        text
+    )
+
+    text = normalize_ocr_codes(
+        text
+    )
+
+    lines = text.splitlines()
+
+    for index, raw_line in enumerate(
+        lines
+    ):
+
+        line = normalize_space(
+            raw_line
+        )
+
+        if not line:
+            continue
+
+        matches = extract_code_matches(
+            line
+        )
+
+        if not matches:
+            continue
+
+        for match in matches:
+
+            code = match.group(1)
+
+            left = clean_name(
+                remove_code_noise(
+                    line[
+                        :match.start()
+                    ]
+                )
+            )
+
+            right = clean_name(
+                remove_code_noise(
+                    line[
+                        match.end():
+                    ]
+                )
+            )
+
+            candidates = []
+
+            if valid_name(left):
+                candidates.append(
+                    left
+                )
+
+            if valid_name(right):
+                candidates.append(
+                    right
+                )
+
+            # Look at neighbouring lines.
+            for offset in (
+                -1,
+                1,
+                -2,
+                2,
+                -3,
+                3,
+            ):
+
+                pos = index + offset
+
+                if (
+                    pos < 0
+                    or pos >= len(lines)
+                ):
+                    continue
+
+                candidate = clean_name(
+                    remove_code_noise(
+                        lines[pos]
+                    )
+                )
+
+                if valid_name(
+                    candidate
+                ):
+                    candidates.append(
+                        candidate
+                    )
+
+            # Remove obvious headers.
+            candidates = [
+                candidate
+                for candidate in candidates
+                if candidate.lower()
+                not in {
+                    "станция",
+                    "станции",
+                    "station",
+                    "stations",
+                    "наименование",
+                    "название",
+                }
+            ]
+
+            russian = ""
+            latin = ""
+
+            for candidate in candidates:
+
+                if (
+                    not russian
+                    and is_cyrillic_name(
+                        candidate
+                    )
+                ):
+                    russian = candidate
+
+                if (
+                    not latin
+                    and is_latin_name(
+                        candidate
+                    )
+                    and not is_cyrillic_name(
+                        candidate
+                    )
+                ):
+                    latin = candidate
+
+            # OCR sometimes produces a mixed string.
+            if not russian:
+
+                for candidate in candidates:
+
+                    if is_cyrillic_name(
+                        candidate
+                    ):
+                        russian = candidate
+                        break
 
             if not russian:
                 continue
@@ -977,7 +1319,7 @@ def parse_blocks(
         if len(block) < 5:
             continue
 
-        text = normalize_space(
+        text = normalize_multiline(
             block[4]
         )
 
@@ -1108,7 +1450,7 @@ def tesseract_available() -> bool:
 
 def render_page_for_ocr(
     page: Any,
-    dpi: int = 250,
+    dpi: int = 300,
 ):
     matrix = pymupdf.Matrix(
         dpi / 72,
@@ -1134,6 +1476,8 @@ def run_tesseract(
     if not executable:
         return ""
 
+    # Several OCR modes.
+    # The first one is best for tables.
     commands = [
         [
             executable,
@@ -1153,7 +1497,18 @@ def run_tesseract(
             "--psm",
             "11",
         ],
+        [
+            executable,
+            str(image_path),
+            "stdout",
+            "-l",
+            "rus+eng",
+            "--psm",
+            "4",
+        ],
     ]
+
+    best_text = ""
 
     for command in commands:
 
@@ -1167,14 +1522,21 @@ def run_tesseract(
                 timeout=180,
             )
 
-            if result.returncode == 0:
+            if result.returncode != 0:
+                continue
 
-                text = normalize_space(
-                    result.stdout
-                )
+            # IMPORTANT:
+            # Do NOT use normalize_space() here.
+            # It destroys line breaks needed by
+            # the table parser.
+            text = normalize_multiline(
+                result.stdout
+            )
 
-                if text:
-                    return text
+            if len(text) > len(
+                best_text
+            ):
+                best_text = text
 
         except Exception as exc:
 
@@ -1183,7 +1545,7 @@ def run_tesseract(
                 repr(exc),
             )
 
-    return ""
+    return best_text
 
 
 def extract_ocr_text(
@@ -1225,7 +1587,7 @@ def extract_ocr_text(
                 pixmap = (
                     render_page_for_ocr(
                         page,
-                        dpi=250,
+                        dpi=300,
                     )
                 )
 
@@ -1248,6 +1610,15 @@ def extract_ocr_text(
                         "  OCR chars:",
                         len(text),
                     )
+
+                    # Print first lines for diagnostics.
+                    preview = text.splitlines()
+
+                    for preview_line in preview[:5]:
+                        print(
+                            "   OCR:",
+                            preview_line[:160]
+                        )
 
                     all_text.append(
                         text
@@ -1574,14 +1945,19 @@ def parse_pdf(
 
         if ocr_text:
 
-            ocr_records = parse_text(
-                ocr_text,
-                country_code,
+            # First: normal OCR table parser.
+            ocr_records = (
+                parse_ocr_table(
+                    ocr_text,
+                    country_code,
+                )
             )
 
             print(
-                "OCR PARSER:",
-                len(ocr_records),
+                "OCR TABLE PARSER:",
+                len(
+                    ocr_records
+                ),
             )
 
             records.extend(
@@ -1593,6 +1969,31 @@ def parse_pdf(
                     records
                 )
             )
+
+            # Second fallback parser.
+            if len(records) < 3:
+
+                ocr_records = parse_text(
+                    ocr_text,
+                    country_code,
+                )
+
+                print(
+                    "OCR TEXT PARSER:",
+                    len(
+                        ocr_records
+                    ),
+                )
+
+                records.extend(
+                    ocr_records
+                )
+
+                records = (
+                    deduplicate_records(
+                        records
+                    )
+                )
 
     # --------------------------------------------------------
     # FINAL
