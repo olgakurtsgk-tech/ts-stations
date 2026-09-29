@@ -1,0 +1,25 @@
+name: Validate railway stations
+
+on:
+  workflow_dispatch:
+
+jobs:
+  validate-stations:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate stations database
+        run: |
+          echo "========================================"
+          echo "VALIDATING STATIONS DATABASE"
+          echo "========================================"
+
+          python scripts/validate_stations.py
