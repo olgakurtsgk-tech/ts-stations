@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-OSJD railway freight stations parser.
+OSJD railway station database updater.
 
-Обновляет базу грузовых железнодорожных станций ОСЖД.
+Обрабатываются 22 страны.
 
-В этой версии исключены:
+ИСКЛЮЧЕНЫ:
 IR — Иран
 CN — Китай
 CZ — Чехия
@@ -14,16 +14,14 @@ KR — Республика Корея
 RO — Румыния
 LA — Лаос
 
-Итого обрабатываются 22 страны.
-
-stations.json изменяется только после успешной проверки
-всех 22 стран.
+Главный принцип:
+stations.json изменяется только после успешного получения
+и проверки данных по всем 22 странам.
 """
 
 from __future__ import annotations
 
 import json
-import os
 import re
 import shutil
 import subprocess
@@ -35,9 +33,13 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import unquote, urljoin
 
-import fitz
 import requests
 from bs4 import BeautifulSoup
+
+try:
+    import pymupdf
+except ImportError:
+    import fitz as pymupdf
 
 
 # ============================================================
@@ -50,17 +52,22 @@ OUTPUT_FILE = DATA_DIR / "stations.json"
 
 OSJD_PAGE = "https://osjd.org/ru/8974/page/106077?id=2227"
 
+REQUEST_TIMEOUT = 90
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 "
         "(Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 "
         "(KHTML, like Gecko) "
-        "Chrome/153.0 Safari/537.36"
-    )
+        "Chrome/154.0 Safari/537.36"
+    ),
+    "Accept": (
+        "text/html,application/xhtml+xml,"
+        "application/xml;q=0.9,*/*;q=0.8"
+    ),
 }
 
-REQUEST_TIMEOUT = 60
 
 # ============================================================
 # EXCLUDED COUNTRIES
@@ -77,7 +84,7 @@ EXCLUDED_COUNTRIES = {
 
 
 # ============================================================
-# 22 COUNTRIES
+# TARGET COUNTRIES
 # ============================================================
 
 COUNTRIES = {
@@ -114,120 +121,165 @@ COUNTRY_ALIASES = {
     "AZ": [
         "азербайджан",
         "азербайджанских железных дорог",
+        "azerbaijan",
     ],
     "AF": [
         "афганистан",
         "железной дороги исламской республики афганистан",
+        "afghanistan",
     ],
     "BY": [
         "беларус",
         "белорусской железной дороги",
+        "belarus",
     ],
     "BG": [
         "болгар",
         "болгарских государственных железных дорог",
+        "bulgaria",
     ],
     "HU": [
         "венгр",
         "венгерских государственных железных дорог",
+        "hungary",
     ],
     "VN": [
         "вьетнам",
         "вьетнамской железной дороги",
+        "vietnam",
     ],
     "GE": [
         "груз",
         "грузинской железной дороги",
+        "georgia",
     ],
     "KZ": [
         "казахстан",
         "железных дорог казахстан",
+        "kazakhstan",
     ],
     "KP": [
         "кндр",
         "корейской народно-демократической республики",
+        "dprk",
     ],
     "KG": [
         "кыргыз",
         "кыргызской железной дороги",
+        "kyrgyzstan",
     ],
     "LV": [
         "латв",
         "латвийской железной дороги",
+        "latvia",
     ],
     "LT": [
         "литв",
         "литовских железных дорог",
+        "lithuania",
     ],
     "MD": [
         "молдов",
         "железной дороги молдовы",
+        "moldova",
     ],
     "MN": [
         "монгол",
         "улан-баторской железной дороги",
+        "mongolia",
     ],
     "PL": [
         "поль",
         "польских государственных железных дорог",
+        "poland",
     ],
     "RU": [
         "россий",
         "российских железных дорог",
+        "russia",
     ],
     "SK": [
         "словац",
         "словацкой республики",
+        "slovakia",
     ],
     "TJ": [
         "таджик",
         "таджикской железной дороги",
+        "tajikistan",
     ],
     "TM": [
         "туркмен",
         "туркмендемиреллары",
+        "turkmenistan",
     ],
     "UZ": [
         "узбек",
         "узбекистан",
         "узбекских железных дорог",
+        "uzbekistan",
     ],
     "UA": [
         "украин",
         "украинской железной дороги",
+        "ukraine",
     ],
     "EE": [
         "эстон",
         "эстонской железной дороги",
+        "estonia",
     ],
 }
 
 
 # ============================================================
-# HELPERS
+# KNOWN OSJD PDF RESOURCES
 # ============================================================
 
-def normalize_space(value: str) -> str:
-    if not value:
+KNOWN_RESOURCES = {
+    "IR": 9608,
+    "CN": 1537,
+    "KR": 1637529,
+    "RO": 2813,
+    "CZ": 3904,
+    "EE": 1671839,
+}
+
+
+# ============================================================
+# TEXT HELPERS
+# ============================================================
+
+def normalize_space(value: Any) -> str:
+    if value is None:
         return ""
 
-    value = value.replace("\xa0", " ")
-    value = value.replace("\u200b", "")
-    value = re.sub(r"\s+", " ", value)
+    text = str(value)
 
-    return value.strip()
+    text = text.replace("\xa0", " ")
+    text = text.replace("\u200b", "")
+    text = text.replace("\ufeff", "")
+
+    text = re.sub(r"\s+", " ", text)
+
+    return text.strip()
 
 
-def normalize_code(value: str) -> str | None:
-    if not value:
+def normalize_code(value: Any) -> str | None:
+    if value is None:
         return None
 
-    value = str(value).strip()
+    text = normalize_space(value)
 
-    if re.fullmatch(r"\d{6}", value):
-        return value
+    match = re.search(
+        r"(?<!\d)(\d{6})(?!\d)",
+        text,
+    )
 
-    digits = re.sub(r"\D", "", value)
+    if match:
+        return match.group(1)
+
+    digits = re.sub(r"\D", "", text)
 
     if len(digits) == 6:
         return digits
@@ -235,192 +287,223 @@ def normalize_code(value: str) -> str | None:
     return None
 
 
-def is_noise_name(value: str) -> bool:
-    if not value:
-        return True
-
+def clean_name(value: Any) -> str:
     text = normalize_space(value)
+
+    text = re.sub(
+        r"^[|;,:.\-–—]+",
+        "",
+        text,
+    )
+
+    text = re.sub(
+        r"[|;,:.\-–—]+$",
+        "",
+        text,
+    )
+
+    text = normalize_space(text)
+
+    return text
+
+
+def contains_letters(value: str) -> bool:
+    return bool(
+        re.search(
+            r"[A-Za-zА-Яа-яЁё]",
+            value,
+        )
+    )
+
+
+def is_noise_name(value: str) -> bool:
+    text = clean_name(value)
+
+    if not text:
+        return True
 
     if len(text) < 2:
         return True
 
     lower = text.lower()
 
-    bad_fragments = [
+    noise_fragments = [
         "наименование станции",
         "код станции",
         "код погранич",
         "производимые коммерческие",
+        "коммерческие операции",
+        "коммерческими операциями",
         "операции",
         "страница",
         "содержание",
-        "раздел ",
         "перечень грузовых станций",
+        "перечень станций",
         "железной дороги",
         "железных дорог",
+        "железная дорога",
         "код ",
         "наименование",
+        "station name",
+        "station code",
+        "commercial operations",
+        "railway station",
+        "railway",
     ]
 
-    if any(fragment in lower for fragment in bad_fragments):
+    if any(
+        fragment in lower
+        for fragment in noise_fragments
+    ):
         return True
-
-    if re.fullmatch(r"[\d\s.,;:/()\-]+", text):
-        return True
-
-    return False
-
-
-def clean_station_name(value: str) -> str:
-    value = normalize_space(value)
-
-    value = re.sub(r"^[|;:,]+", "", value)
-    value = re.sub(r"[|;:,]+$", "", value)
-
-    return normalize_space(value)
-
-
-def looks_like_operations(value: str) -> bool:
-    if not value:
-        return False
-
-    text = normalize_space(value)
 
     if re.fullmatch(
-        r"[\d,\s./()«»\"'А-Яа-яA-Za-z№#*КкНн\-]+",
+        r"[\d\s.,;:/()\-–—]+",
         text,
     ):
-        digits = re.findall(r"\d+", text)
+        return True
 
-        if digits:
-            return True
+    if len(text) > 180:
+        return True
 
     return False
 
 
-def valid_name(value: str) -> bool:
-    value = clean_station_name(value)
+def valid_name(value: Any) -> bool:
+    text = clean_name(value)
 
-    if is_noise_name(value):
+    if is_noise_name(text):
         return False
 
-    if len(value) > 150:
+    if not contains_letters(text):
         return False
 
-    if not re.search(r"[A-Za-zА-Яа-яЁё]", value):
+    if len(text) > 180:
         return False
 
     return True
 
 
-def score_name(value: str) -> int:
-    value = clean_station_name(value)
+def latin_score(value: str) -> int:
+    text = clean_name(value)
 
-    if not valid_name(value):
+    if not text:
         return -100
 
     score = 0
 
-    if 2 <= len(value) <= 80:
-        score += 10
+    if re.search(
+        r"[A-Za-z]",
+        text,
+    ):
+        score += 20
 
-    if re.search(r"[А-Яа-яЁё]", value):
+    if re.search(
+        r"[А-Яа-яЁё]",
+        text,
+    ):
         score += 5
 
-    if re.search(r"[A-Za-z]", value):
-        score += 3
+    if 2 <= len(text) <= 100:
+        score += 10
 
-    if "(" in value or ")" in value:
-        score += 1
+    if any(
+        word in text.lower()
+        for word in [
+            "railway",
+            "station",
+            "stantsiya",
+        ]
+    ):
+        score -= 10
 
     return score
 
 
 # ============================================================
-# OSJD URL NORMALIZATION
+# URL HELPERS
 # ============================================================
 
 def normalize_osjd_pdf_url(url: str) -> str:
     if not url:
         return ""
 
-    url = unquote(str(url).strip())
-    url = url.split("#", 1)[0]
+    value = unquote(
+        str(url).strip()
+    )
+
+    value = value.split("#", 1)[0]
 
     match = re.search(
-        r"(?:[?&])file=([^#]+)",
-        url,
+        r"[?&]file=([^&#]+)",
+        value,
         flags=re.IGNORECASE,
     )
 
     if match:
-        file_part = unquote(match.group(1))
+        file_part = unquote(
+            match.group(1)
+        )
 
-        if file_part.startswith(("http://", "https://")):
-            url = file_part
+        if file_part.startswith(
+            (
+                "http://",
+                "https://",
+            )
+        ):
+            value = file_part
 
         elif file_part.startswith("/"):
-            url = urljoin(
+            value = urljoin(
                 "https://osjd.org",
                 file_part,
             )
 
         else:
-            url = urljoin(
+            value = urljoin(
                 "https://osjd.org/",
                 file_part,
             )
 
-        url = url.split("#", 1)[0]
-
-    if url.startswith("/"):
-        url = urljoin(
+    if value.startswith("/"):
+        value = urljoin(
             "https://osjd.org",
-            url,
+            value,
         )
 
-    return url
+    return value
 
 
-def find_direct_pdf_url_in_html(html: str) -> str | None:
-    html = unquote(html or "")
+def resource_url(resource_id: int) -> str:
+    return (
+        "https://osjd.org/api/media/resources/"
+        f"{resource_id}?action=download"
+    )
 
-    patterns = [
-        r"https?://osjd\.org/api/media/resources/\d+(?:\?[^\"'<>\s]*)?",
-        r"/api/media/resources/\d+(?:\?[^\"'<>\s]*)?",
-        r"[?&]file=(/api/media/resources/\d+(?:\?[^\"'<>\s]*)?)",
-    ]
 
-    for pattern in patterns:
-        match = re.search(
-            pattern,
-            html,
-            flags=re.IGNORECASE,
-        )
+def extract_resource_id(
+    value: str,
+) -> str | None:
 
-        if match:
-            value = (
-                match.group(1)
-                if match.lastindex
-                else match.group(0)
-            )
+    match = re.search(
+        r"/api/media/resources/(\d+)",
+        value or "",
+        flags=re.IGNORECASE,
+    )
 
-            return normalize_osjd_pdf_url(value)
+    if match:
+        return match.group(1)
 
     return None
 
 
 # ============================================================
-# HTTP
+# HTTP DOWNLOAD
 # ============================================================
 
-def download_pdf(url: str) -> bytes:
-    url = normalize_osjd_pdf_url(url)
-
-    print()
-    print("-" * 70)
-    print("DOWNLOAD")
-    print(url)
+def request_url(
+    url: str,
+) -> requests.Response:
 
     response = requests.get(
         url,
@@ -429,89 +512,157 @@ def download_pdf(url: str) -> bytes:
         allow_redirects=True,
     )
 
-    print("HTTP STATUS:", response.status_code)
-    print("FINAL URL:", response.url)
-    print(
-        "CONTENT TYPE:",
-        response.headers.get("content-type"),
-    )
-    print("SIZE:", len(response.content))
-
     response.raise_for_status()
 
-    content_type = response.headers.get(
-        "content-type",
-        "",
-    ).lower()
+    return response
 
-    if (
-        "pdf" in content_type
-        or response.content.startswith(b"%PDF")
-    ):
-        print("✓ PDF RECEIVED")
-        return response.content
 
-    direct_url = find_direct_pdf_url_in_html(
-        response.text
+def download_pdf(
+    url: str,
+) -> bytes:
+
+    url = normalize_osjd_pdf_url(url)
+
+    print()
+    print("-" * 70)
+    print("DOWNLOAD PDF")
+    print(url)
+
+    response = request_url(url)
+
+    print(
+        "HTTP STATUS:",
+        response.status_code,
     )
 
-    if direct_url and direct_url != url:
+    print(
+        "FINAL URL:",
+        response.url,
+    )
 
-        print("RECOVERED DIRECT PDF URL:")
-        print(direct_url)
+    content_type = (
+        response.headers
+        .get(
+            "content-type",
+            "",
+        )
+        .lower()
+    )
 
-        pdf_response = requests.get(
-            direct_url,
-            headers=HEADERS,
-            timeout=REQUEST_TIMEOUT,
-            allow_redirects=True,
+    print(
+        "CONTENT TYPE:",
+        content_type,
+    )
+
+    print(
+        "SIZE:",
+        len(response.content),
+    )
+
+    if (
+        response.content.startswith(
+            b"%PDF"
+        )
+        or "pdf" in content_type
+    ):
+        print("✓ PDF RECEIVED")
+
+        return response.content
+
+    # --------------------------------------------------------
+    # TRY TO FIND PDF URL INSIDE HTML
+    # --------------------------------------------------------
+
+    html = response.text
+
+    patterns = [
+        r"https?://osjd\.org/api/media/resources/\d+(?:\?[^\"'<>\s]*)?",
+        r"/api/media/resources/\d+(?:\?[^\"'<>\s]*)?",
+        r"[?&]file=(/api/media/resources/\d+(?:\?[^\"'<>\s]*)?)",
+    ]
+
+    for pattern in patterns:
+
+        match = re.search(
+            pattern,
+            html,
+            flags=re.IGNORECASE,
+        )
+
+        if not match:
+            continue
+
+        direct = (
+            match.group(1)
+            if match.lastindex
+            else match.group(0)
+        )
+
+        direct = normalize_osjd_pdf_url(
+            direct
+        )
+
+        if not direct:
+            continue
+
+        if direct == url:
+            continue
+
+        print(
+            "RECOVERED PDF URL:"
+        )
+
+        print(direct)
+
+        pdf_response = request_url(
+            direct
+        )
+
+        pdf_type = (
+            pdf_response
+            .headers
+            .get(
+                "content-type",
+                "",
+            )
+            .lower()
         )
 
         print(
-            "PDF HTTP STATUS:",
+            "RECOVERED STATUS:",
             pdf_response.status_code,
         )
 
         print(
-            "PDF CONTENT TYPE:",
-            pdf_response.headers.get(
-                "content-type"
-            ),
+            "RECOVERED TYPE:",
+            pdf_type,
         )
 
         print(
-            "PDF SIZE:",
+            "RECOVERED SIZE:",
             len(pdf_response.content),
         )
 
-        pdf_response.raise_for_status()
-
-        pdf_content_type = (
-            pdf_response
-            .headers
-            .get("content-type", "")
-            .lower()
-        )
-
         if (
-            "pdf" in pdf_content_type
-            or pdf_response.content.startswith(
+            pdf_response.content.startswith(
                 b"%PDF"
             )
+            or "pdf" in pdf_type
         ):
             print(
-                "✓ PDF RECEIVED AFTER HTML RECOVERY"
+                "✓ PDF RECEIVED AFTER RECOVERY"
             )
 
             return pdf_response.content
 
     raise RuntimeError(
-        f"URL did not return PDF: {url}"
+        "OSJD URL did not return a PDF: "
+        + url
     )
 
 
 # ============================================================
-# OSJD PAGE DISCOVERY
+# DISCOVER OSJD PDF LINKS
 # ============================================================
 
 def discover_osjd_links() -> dict[str, str]:
@@ -521,12 +672,13 @@ def discover_osjd_links() -> dict[str, str]:
     print("DISCOVERING OSJD PDF LINKS")
     print("=" * 70)
 
-    print(OSJD_PAGE)
-
-    response = requests.get(
+    print(
+        "OSJD PAGE:",
         OSJD_PAGE,
-        headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
+    )
+
+    response = request_url(
+        OSJD_PAGE
     )
 
     print(
@@ -534,14 +686,16 @@ def discover_osjd_links() -> dict[str, str]:
         response.status_code,
     )
 
-    response.raise_for_status()
-
     soup = BeautifulSoup(
         response.text,
         "html.parser",
     )
 
     result: dict[str, str] = {}
+
+    # --------------------------------------------------------
+    # NORMAL LINKS
+    # --------------------------------------------------------
 
     for link in soup.find_all("a"):
 
@@ -557,83 +711,776 @@ def discover_osjd_links() -> dict[str, str]:
             )
         )
 
+        full_href = urljoin(
+            "https://osjd.org",
+            href,
+        )
+
         combined = (
-            f"{text} {href}"
+            f"{text} {href} {full_href}"
         ).lower()
 
         if (
-            "api/media/resources" not in combined
-            and ".pdf" not in combined
+            "api/media/resources"
+            not in combined
+            and ".pdf"
+            not in combined
+            and "file=" not in combined
         ):
             continue
 
-        if href.startswith("/"):
-            href = (
-                "https://osjd.org"
-                + href
-            )
-
-        for country_code, aliases in (
+        for code, aliases in (
             COUNTRY_ALIASES.items()
         ):
 
-            if country_code in result:
+            if code in result:
                 continue
 
             if any(
                 alias in combined
                 for alias in aliases
             ):
-                result[country_code] = (
+
+                normalized = (
                     normalize_osjd_pdf_url(
-                        href
+                        full_href
                     )
                 )
 
-                print(
-                    f"FOUND {country_code}: "
-                    f"{text[:100]}"
-                )
+                if normalized:
 
-                print(
-                    f"       {href}"
-                )
+                    result[code] = normalized
 
-                break
+                    print(
+                        f"FOUND {code}: "
+                        f"{COUNTRIES[code]}"
+                    )
+
+                    print(
+                        f"  {normalized}"
+                    )
+
+                    break
+
+    # --------------------------------------------------------
+    # SEARCH RAW HTML FOR RESOURCE IDS
+    # --------------------------------------------------------
+
+    raw_html = unquote(
+        response.text
+    )
+
+    resource_matches = re.findall(
+        r"(?:/api/media/resources/|resources/)(\d+)",
+        raw_html,
+        flags=re.IGNORECASE,
+    )
+
+    resource_matches = list(
+        dict.fromkeys(
+            resource_matches
+        )
+    )
+
+    print()
+    print(
+        "RESOURCE IDS FOUND IN HTML:",
+        len(resource_matches),
+    )
 
     return result
 
 
+# ============================================================
+# GET PDF URLS
+# ============================================================
+
 def get_pdf_urls() -> dict[str, str]:
 
-    discovered = discover_osjd_links()
+    discovered = (
+        discover_osjd_links()
+    )
 
-    result = dict(discovered)
+    result: dict[str, str] = {}
 
-    # Только страны из COUNTRIES.
-    result = {
-        code: url
-        for code, url in result.items()
-        if code in COUNTRIES
-    }
+    for code in COUNTRIES:
 
-    for code in list(result):
-        result[code] = (
-            normalize_osjd_pdf_url(
-                result[code]
+        if code in discovered:
+
+            result[code] = (
+                normalize_osjd_pdf_url(
+                    discovered[code]
+                )
             )
+
+    # --------------------------------------------------------
+    # KNOWN RESOURCE FALLBACK
+    # --------------------------------------------------------
+
+    for code, resource_id in (
+        KNOWN_RESOURCES.items()
+    ):
+
+        if code not in COUNTRIES:
+            continue
+
+        if code in result:
+            continue
+
+        result[code] = resource_url(
+            resource_id
+        )
+
+        print()
+        print(
+            f"FALLBACK {code}: "
+            f"resource {resource_id}"
+        )
+
+        print(
+            result[code]
         )
 
     return result
 
 
 # ============================================================
-# POPPLER / PDFTOTEXT FALLBACK
+# PDF TEXT EXTRACTION
 # ============================================================
 
-def extract_pdftotext_pages(
+def extract_pages(
     pdf_bytes: bytes,
+) -> list[dict[str, Any]]:
+
+    document = pymupdf.open(
+        stream=pdf_bytes,
+        filetype="pdf",
+    )
+
+    pages = []
+
+    for page_number, page in enumerate(
+        document,
+        start=1,
+    ):
+
+        page_text = ""
+
+        try:
+            page_text = page.get_text(
+                "text"
+            )
+        except Exception:
+            page_text = ""
+
+        blocks = []
+
+        try:
+            blocks = page.get_text(
+                "blocks"
+            )
+        except Exception:
+            blocks = []
+
+        words = []
+
+        try:
+            words = page.get_text(
+                "words"
+            )
+        except Exception:
+            words = []
+
+        dictionary = {}
+
+        try:
+            dictionary = page.get_text(
+                "dict"
+            )
+        except Exception:
+            dictionary = {}
+
+        pages.append(
+            {
+                "number": page_number,
+                "text": page_text,
+                "blocks": blocks,
+                "words": words,
+                "dict": dictionary,
+            }
+        )
+
+    document.close()
+
+    return pages
+
+
+# ============================================================
+# CODE EXTRACTION
+# ============================================================
+
+CODE_RE = re.compile(
+    r"(?<!\d)\d{6}(?!\d)"
+)
+
+
+def find_codes(
+    text: str,
 ) -> list[str]:
+
+    return [
+        match.group(1)
+        for match in re.finditer(
+            r"(?<!\d)(\d{6})(?!\d)",
+            text or "",
+        )
+    ]
+
+
+# ============================================================
+# WORD LINES
+# ============================================================
+
+def words_to_lines(
+    words: list[tuple],
+) -> list[dict[str, Any]]:
+
+    if not words:
+        return []
+
+    prepared = []
+
+    for word in words:
+
+        if len(word) < 5:
+            continue
+
+        x0, y0, x1, y1, text = word[:5]
+
+        text = normalize_space(
+            text
+        )
+
+        if not text:
+            continue
+
+        prepared.append(
+            (
+                float(x0),
+                float(y0),
+                float(x1),
+                float(y1),
+                text,
+            )
+        )
+
+    prepared.sort(
+        key=lambda item: (
+            round(item[1], 1),
+            item[0],
+        )
+    )
+
+    groups: list[list[tuple]] = []
+
+    for word in prepared:
+
+        placed = False
+
+        for group in reversed(
+            groups[-10:]
+        ):
+
+            avg_y = sum(
+                item[1]
+                for item in group
+            ) / len(group)
+
+            if abs(
+                word[1] - avg_y
+            ) <= 4.0:
+
+                group.append(word)
+                placed = True
+                break
+
+        if not placed:
+            groups.append(
+                [word]
+            )
+
+    result = []
+
+    for group in groups:
+
+        group.sort(
+            key=lambda item: item[0]
+        )
+
+        text = normalize_space(
+            " ".join(
+                item[4]
+                for item in group
+            )
+        )
+
+        result.append(
+            {
+                "words": group,
+                "text": text,
+            }
+        )
+
+    return result
+
+
+# ============================================================
+# NAME CANDIDATES
+# ============================================================
+
+def remove_table_noise(
+    text: str,
+) -> str:
+
+    text = normalize_space(text)
+
+    text = re.sub(
+        r"(?<!\d)\d{6}(?!\d)",
+        " ",
+        text,
+    )
+
+    text = re.sub(
+        r"(?<!\d)\d{4}(?!\d)",
+        " ",
+        text,
+    )
+
+    text = re.sub(
+        r"\b\d+(?:[.,/]\d+)+\b",
+        " ",
+        text,
+    )
+
+    text = normalize_space(text)
+
+    return text
+
+
+def candidate_name_from_text(
+    text: str,
+) -> str:
+
+    text = remove_table_noise(
+        text
+    )
+
+    text = clean_name(text)
+
+    if not valid_name(text):
+        return ""
+
+    # Не берём слишком длинные куски.
+    words = text.split()
+
+    if len(words) > 10:
+        words = words[-10:]
+
+        text = normalize_space(
+            " ".join(words)
+        )
+
+    return text
+
+
+# ============================================================
+# PARSER: WORDS
+# ============================================================
+
+def parse_words(
+    words: list[tuple],
+    country_code: str,
+) -> list[dict[str, Any]]:
+
+    records = []
+
+    lines = words_to_lines(
+        words
+    )
+
+    for line_index, line in enumerate(
+        lines
+    ):
+
+        row = line["words"]
+
+        full_text = line["text"]
+
+        codes = find_codes(
+            full_text
+        )
+
+        if not codes:
+            continue
+
+        # ----------------------------------------------------
+        # FIRST TRY: SAME LINE
+        # ----------------------------------------------------
+
+        for code in codes:
+
+            code_pos = full_text.find(
+                code
+            )
+
+            left = full_text[
+                :code_pos
+            ]
+
+            right = full_text[
+                code_pos + len(code):
+            ]
+
+            left_name = (
+                candidate_name_from_text(
+                    left
+                )
+            )
+
+            right_name = (
+                candidate_name_from_text(
+                    right
+                )
+            )
+
+            russian = ""
+            latin = ""
+
+            if left_name:
+                russian = left_name
+
+            if right_name:
+
+                if re.search(
+                    r"[A-Za-z]",
+                    right_name,
+                ):
+                    latin = right_name
+
+            # ------------------------------------------------
+            # IF LEFT IS LATIN AND RIGHT IS RUSSIAN,
+            # SWAP THEM
+            # ------------------------------------------------
+
+            if (
+                russian
+                and re.search(
+                    r"[A-Za-z]",
+                    russian,
+                )
+                and re.search(
+                    r"[А-Яа-яЁё]",
+                    right_name,
+                )
+            ):
+
+                russian = right_name
+                latin = left_name
+
+            # ------------------------------------------------
+            # LOOK AROUND NEIGHBOURING LINES
+            # ------------------------------------------------
+
+            if (
+                not russian
+                or not latin
+            ):
+
+                nearby = []
+
+                start = max(
+                    0,
+                    line_index - 2,
+                )
+
+                end = min(
+                    len(lines),
+                    line_index + 3,
+                )
+
+                for idx in range(
+                    start,
+                    end,
+                ):
+
+                    if idx == line_index:
+                        continue
+
+                    nearby.append(
+                        lines[idx]["text"]
+                    )
+
+                for neighbour in nearby:
+
+                    neighbour_clean = (
+                        candidate_name_from_text(
+                            neighbour
+                        )
+                    )
+
+                    if not neighbour_clean:
+                        continue
+
+                    if (
+                        not russian
+                        and re.search(
+                            r"[А-Яа-яЁё]",
+                            neighbour_clean,
+                        )
+                    ):
+                        russian = neighbour_clean
+
+                    if (
+                        not latin
+                        and re.search(
+                            r"[A-Za-z]",
+                            neighbour_clean,
+                        )
+                    ):
+                        latin = neighbour_clean
+
+            if not russian:
+                continue
+
+            if not latin:
+                latin = russian
+
+            record = make_record(
+                country_code,
+                code,
+                russian,
+                latin,
+            )
+
+            if record:
+                records.append(
+                    record
+                )
+
+    return deduplicate_records(
+        records
+    )
+
+
+# ============================================================
+# PARSER: RAW TEXT
+# ============================================================
+
+def parse_text(
+    text: str,
+    country_code: str,
+) -> list[dict[str, Any]]:
+
+    records = []
+
+    lines = [
+        normalize_space(line)
+        for line in (
+            text or ""
+        ).splitlines()
+    ]
+
+    lines = [
+        line
+        for line in lines
+        if line
+    ]
+
+    for index, line in enumerate(
+        lines
+    ):
+
+        matches = list(
+            re.finditer(
+                r"(?<!\d)(\d{6})(?!\d)",
+                line,
+            )
+        )
+
+        if not matches:
+            continue
+
+        for match in matches:
+
+            code = match.group(1)
+
+            before = line[
+                :match.start()
+            ]
+
+            after = line[
+                match.end():
+            ]
+
+            before_name = (
+                candidate_name_from_text(
+                    before
+                )
+            )
+
+            after_name = (
+                candidate_name_from_text(
+                    after
+                )
+            )
+
+            russian = ""
+            latin = ""
+
+            if before_name:
+                russian = before_name
+
+            if after_name:
+                if re.search(
+                    r"[A-Za-z]",
+                    after_name,
+                ):
+                    latin = after_name
+
+            if (
+                russian
+                and re.search(
+                    r"[A-Za-z]",
+                    russian,
+                )
+                and re.search(
+                    r"[А-Яа-яЁё]",
+                    after_name,
+                )
+            ):
+
+                russian = after_name
+                latin = before_name
+
+            # ------------------------------------------------
+            # NEIGHBOURING LINES
+            # ------------------------------------------------
+
+            nearby = []
+
+            for offset in (
+                -2,
+                -1,
+                1,
+                2,
+            ):
+
+                pos = index + offset
+
+                if (
+                    pos < 0
+                    or pos >= len(lines)
+                ):
+                    continue
+
+                nearby.append(
+                    lines[pos]
+                )
+
+            for neighbour in nearby:
+
+                candidate = (
+                    candidate_name_from_text(
+                        neighbour
+                    )
+                )
+
+                if not candidate:
+                    continue
+
+                if (
+                    not russian
+                    and re.search(
+                        r"[А-Яа-яЁё]",
+                        candidate,
+                    )
+                ):
+                    russian = candidate
+
+                if (
+                    not latin
+                    and re.search(
+                        r"[A-Za-z]",
+                        candidate,
+                    )
+                ):
+                    latin = candidate
+
+            if not russian:
+                continue
+
+            if not latin:
+                latin = russian
+
+            record = make_record(
+                country_code,
+                code,
+                russian,
+                latin,
+            )
+
+            if record:
+                records.append(
+                    record
+                )
+
+    return deduplicate_records(
+        records
+    )
+
+
+# ============================================================
+# PARSER: BLOCKS
+# ============================================================
+
+def parse_blocks(
+    blocks: list[tuple],
+    country_code: str,
+) -> list[dict[str, Any]]:
+
+    text_parts = []
+
+    for block in blocks:
+
+        if len(block) < 5:
+            continue
+
+        text = normalize_space(
+            block[4]
+        )
+
+        if text:
+            text_parts.append(
+                text
+            )
+
+    combined = "\n".join(
+        text_parts
+    )
+
+    return parse_text(
+        combined,
+        country_code,
+    )
+
+
+# ============================================================
+# POPPLER FALLBACK
+# ============================================================
+
+def extract_pdftotext(
+    pdf_bytes: bytes,
+) -> str:
 
     executable = shutil.which(
         "pdftotext"
@@ -641,21 +1488,20 @@ def extract_pdftotext_pages(
 
     if not executable:
         print(
-            "pdftotext is not installed; "
-            "Poppler fallback unavailable."
+            "pdftotext is not installed."
         )
 
-        return []
+        return ""
 
-    with tempfile.TemporaryDirectory() as tmp_dir:
+    with tempfile.TemporaryDirectory() as tmp:
 
         pdf_path = (
-            Path(tmp_dir)
+            Path(tmp)
             / "source.pdf"
         )
 
         txt_path = (
-            Path(tmp_dir)
+            Path(tmp)
             / "source.txt"
         )
 
@@ -681,8 +1527,6 @@ def extract_pdftotext_pages(
             ],
         ]
 
-        success = False
-
         for command in commands:
 
             try:
@@ -692,15 +1536,25 @@ def extract_pdftotext_pages(
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     text=True,
-                    timeout=120,
+                    timeout=180,
                 )
 
                 if (
                     result.returncode == 0
                     and txt_path.exists()
                 ):
-                    success = True
-                    break
+
+                    text = txt_path.read_text(
+                        encoding="utf-8",
+                        errors="replace",
+                    )
+
+                    print(
+                        "pdftotext characters:",
+                        len(text),
+                    )
+
+                    return text
 
             except Exception as exc:
 
@@ -709,520 +1563,7 @@ def extract_pdftotext_pages(
                     repr(exc),
                 )
 
-        if not success:
-
-            print(
-                "pdftotext failed to extract text."
-            )
-
-            return []
-
-        text = txt_path.read_text(
-            encoding="utf-8",
-            errors="replace",
-        )
-
-    print(
-        "pdftotext extracted characters:",
-        len(text),
-    )
-
-    return re.split(
-        r"\f",
-        text,
-    )
-
-
-def parse_pdftotext_line(
-    line: str,
-    country_code: str,
-) -> dict[str, Any] | None:
-
-    line = (
-        line
-        .replace("\xa0", " ")
-        .strip()
-    )
-
-    if not line:
-        return None
-
-    lower = line.lower()
-
-    if (
-        "наименование" in lower
-        and "код" in lower
-    ):
-        return None
-
-    match6 = re.search(
-        r"(?<!\d)(\d{6})(?!\d)",
-        line,
-    )
-
-    if not match6:
-        return None
-
-    code = match6.group(1)
-
-    left = line[
-        :match6.start()
-    ].strip(" |;:")
-
-    right = line[
-        match6.end():
-    ].strip(" |;:")
-
-    columns = [
-        normalize_space(x)
-        for x in re.split(
-            r"\s{2,}|\t+",
-            line,
-        )
-        if normalize_space(x)
-    ]
-
-    russian = left
-    latin = right
-
-    if columns:
-
-        code_index = None
-
-        for i, col in enumerate(
-            columns
-        ):
-
-            if code in col:
-                code_index = i
-                break
-
-        if code_index is not None:
-
-            if code_index > 0:
-                russian = columns[
-                    code_index - 1
-                ]
-
-            if (
-                code_index + 1
-                < len(columns)
-            ):
-                latin = columns[
-                    code_index + 1
-                ]
-
-    russian = clean_station_name(
-        russian
-    )
-
-    latin = clean_station_name(
-        latin
-    )
-
-    if not valid_name(russian):
-        return None
-
-    if not valid_name(latin):
-        latin = russian
-
-    return make_record(
-        country_code=country_code,
-        code=code,
-        russian_name=russian,
-        latin_name=latin,
-    )
-
-
-def parse_pdftotext_pages(
-    pages: list[str],
-    country_code: str,
-) -> list[dict[str, Any]]:
-
-    records = []
-
-    for page in pages:
-
-        for line in page.splitlines():
-
-            record = parse_pdftotext_line(
-                line,
-                country_code,
-            )
-
-            if record:
-                records.append(record)
-
-    return deduplicate_records(
-        records
-    )
-
-
-# ============================================================
-# PDF EXTRACTION
-# ============================================================
-
-def extract_text_methods(
-    pdf_bytes: bytes,
-) -> dict[str, list[Any]]:
-
-    document = fitz.open(
-        stream=pdf_bytes,
-        filetype="pdf",
-    )
-
-    methods: dict[str, list[Any]] = {
-        "text": [],
-        "blocks": [],
-        "words": [],
-        "dict": [],
-    }
-
-    for page_number, page in enumerate(
-        document,
-        start=1,
-    ):
-
-        try:
-            methods["text"].append(
-                page.get_text("text")
-            )
-        except Exception as exc:
-            print(
-                f"WARNING text page "
-                f"{page_number}: {exc}"
-            )
-
-            methods["text"].append("")
-
-        try:
-            methods["blocks"].append(
-                page.get_text("blocks")
-            )
-        except Exception as exc:
-            print(
-                f"WARNING blocks page "
-                f"{page_number}: {exc}"
-            )
-
-            methods["blocks"].append([])
-
-        try:
-            methods["words"].append(
-                page.get_text("words")
-            )
-        except Exception as exc:
-            print(
-                f"WARNING words page "
-                f"{page_number}: {exc}"
-            )
-
-            methods["words"].append([])
-
-        try:
-            methods["dict"].append(
-                page.get_text("dict")
-            )
-        except Exception as exc:
-            print(
-                f"WARNING dict page "
-                f"{page_number}: {exc}"
-            )
-
-            methods["dict"].append({})
-
-    document.close()
-
-    return methods
-
-
-def count_codes(value: Any) -> int:
-
-    if value is None:
-        return 0
-
-    if isinstance(value, str):
-
-        return len(
-            re.findall(
-                r"(?<!\d)\d{6}(?!\d)",
-                value,
-            )
-        )
-
-    if isinstance(
-        value,
-        (list, tuple),
-    ):
-
-        return sum(
-            count_codes(item)
-            for item in value
-        )
-
-    if isinstance(
-        value,
-        dict,
-    ):
-
-        return sum(
-            count_codes(item)
-            for item in value.values()
-        )
-
-    return 0
-
-
-# ============================================================
-# WORDS -> LINES
-# ============================================================
-
-def words_to_lines(
-    words: list[tuple],
-) -> list[dict[str, Any]]:
-
-    if not words:
-        return []
-
-    groups = []
-
-    sorted_words = sorted(
-        words,
-        key=lambda item: (
-            round(float(item[1]), 1),
-            float(item[0]),
-        ),
-    )
-
-    for word in sorted_words:
-
-        x0, y0, x1, y1, text = word[:5]
-
-        text = normalize_space(
-            str(text)
-        )
-
-        if not text:
-            continue
-
-        placed = False
-
-        for group in groups[-8:]:
-
-            avg_y = group["avg_y"]
-
-            if (
-                abs(
-                    float(y0)
-                    - avg_y
-                )
-                <= 3.5
-            ):
-
-                group["words"].append(
-                    word
-                )
-
-                group["avg_y"] = (
-                    sum(
-                        float(w[1])
-                        for w in group["words"]
-                    )
-                    / len(group["words"])
-                )
-
-                placed = True
-                break
-
-        if not placed:
-
-            groups.append(
-                {
-                    "avg_y": float(y0),
-                    "words": [word],
-                }
-            )
-
-    lines = []
-
-    for group in groups:
-
-        row = sorted(
-            group["words"],
-            key=lambda item: float(item[0]),
-        )
-
-        full_text = normalize_space(
-            " ".join(
-                str(item[4])
-                for item in row
-            )
-        )
-
-        lines.append(
-            {
-                "words": row,
-                "text": full_text,
-            }
-        )
-
-    return lines
-
-
-# ============================================================
-# CODE CANDIDATES
-# ============================================================
-
-def code_candidates_from_words(
-    words: list[tuple],
-) -> list[dict[str, Any]]:
-
-    candidates = []
-
-    lines = words_to_lines(
-        words
-    )
-
-    for line in lines:
-
-        row = line["words"]
-
-        for index, word in enumerate(row):
-
-            raw = str(word[4])
-
-            code = normalize_code(
-                raw
-            )
-
-            if code:
-
-                candidates.append(
-                    {
-                        "code": code,
-                        "line": line,
-                        "index": index,
-                        "source": "words",
-                    }
-                )
-
-                continue
-
-            if index + 1 < len(row):
-
-                combined = (
-                    raw
-                    + str(
-                        row[index + 1][4]
-                    )
-                )
-
-                code = normalize_code(
-                    combined
-                )
-
-                if code:
-
-                    candidates.append(
-                        {
-                            "code": code,
-                            "line": line,
-                            "index": index,
-                            "source": "words-split",
-                        }
-                    )
-
-    return candidates
-
-
-def code_candidates_from_text(
-    text: str,
-) -> list[str]:
-
-    return re.findall(
-        r"(?<!\d)\d{6}(?!\d)",
-        text,
-    )
-
-
-# ============================================================
-# NAME EXTRACTION
-# ============================================================
-
-def split_line_around_code(
-    candidate: dict[str, Any],
-) -> tuple[str, str, str]:
-
-    line = candidate["line"]
-    words = line["words"]
-    index = candidate["index"]
-    code = candidate["code"]
-
-    left_words = []
-
-    for item in words[:index]:
-        left_words.append(
-            str(item[4])
-        )
-
-    right_words = []
-
-    skip = (
-        2
-        if candidate["source"]
-        == "words-split"
-        else 1
-    )
-
-    for item in words[
-        index + skip:
-    ]:
-
-        right_words.append(
-            str(item[4])
-        )
-
-    left = clean_station_name(
-        " ".join(left_words)
-    )
-
-    right = clean_station_name(
-        " ".join(right_words)
-    )
-
-    return left, code, right
-
-
-def extract_latin_name(
-    right: str,
-) -> str:
-
-    right = normalize_space(
-        right
-    )
-
-    if not right:
-        return ""
-
-    match = re.search(
-        r"\b\d+(?:\s*[,./]\s*\d+)+\b",
-        right,
-    )
-
-    if match:
-        right = right[
-            :match.start()
-        ]
-
-    right = re.split(
-        r"\b\d{4}\b",
-        right,
-        maxsplit=1,
-    )[0]
-
-    return clean_station_name(
-        right
-    )
+    return ""
 
 
 # ============================================================
@@ -1235,496 +1576,57 @@ def make_record(
     russian_name: str,
     latin_name: str,
     operations: str = "",
-    border_code: str = "",
 ) -> dict[str, Any] | None:
 
-    russian_name = clean_station_name(
-        russian_name
-    )
-
-    latin_name = clean_station_name(
-        latin_name
-    )
-
-    code = (
-        normalize_code(code)
-        or ""
+    code = normalize_code(
+        code
     )
 
     if not code:
         return None
 
+    russian_name = clean_name(
+        russian_name
+    )
+
+    latin_name = clean_name(
+        latin_name
+    )
+
     if not valid_name(
         russian_name
     ):
         return None
 
+    # --------------------------------------------------------
+    # Latin name is allowed to fall back to Russian name.
+    # This prevents loss of valid station records when the
+    # OSJD PDF contains only one station-name column.
+    # --------------------------------------------------------
+
     if not valid_name(
         latin_name
     ):
-        return None
-
-    country = COUNTRIES[
-        country_code
-    ]
+        latin_name = russian_name
 
     record = {
         "name": russian_name,
         "code": code,
-        "country": country,
+        "country": COUNTRIES[
+            country_code
+        ],
         "country_code": country_code,
         "latin_name": latin_name,
     }
 
     if operations:
-
         record["operations"] = (
             normalize_space(
                 operations
             )
         )
 
-    if border_code:
-
-        if re.fullmatch(
-            r"\d{4}",
-            str(border_code),
-        ):
-            record["border_code"] = (
-                str(border_code)
-            )
-
     return record
-
-
-# ============================================================
-# WORDS PARSER
-# ============================================================
-
-def parse_words_page(
-    words: list[tuple],
-    country_code: str,
-) -> list[dict[str, Any]]:
-
-    records = []
-
-    candidates = (
-        code_candidates_from_words(
-            words
-        )
-    )
-
-    for candidate in candidates:
-
-        left, code, right = (
-            split_line_around_code(
-                candidate
-            )
-        )
-
-        if not left or not right:
-            continue
-
-        russian = left
-
-        latin = extract_latin_name(
-            right
-        )
-
-        if not valid_name(
-            russian
-        ):
-            continue
-
-        if not valid_name(
-            latin
-        ):
-            continue
-
-        operations = ""
-        border_code = ""
-
-        border_matches = re.findall(
-            r"(?<!\d)\d{4}(?!\d)",
-            right,
-        )
-
-        if border_matches:
-
-            border_code = (
-                border_matches[-1]
-            )
-
-        op_match = re.search(
-            r"(\d+(?:\s*[,./]\s*\d+)*"
-            r"(?:\s*[А-ЯA-Za-zКкНн«»\"']+)?)",
-            right,
-        )
-
-        if op_match:
-
-            possible_ops = (
-                normalize_space(
-                    op_match.group(1)
-                )
-            )
-
-            if looks_like_operations(
-                possible_ops
-            ):
-
-                operations = (
-                    possible_ops
-                )
-
-        record = make_record(
-            country_code=country_code,
-            code=code,
-            russian_name=russian,
-            latin_name=latin,
-            operations=operations,
-        )
-
-        if record:
-
-            if border_code:
-                record[
-                    "border_code"
-                ] = border_code
-
-            records.append(
-                record
-            )
-
-    return records
-
-
-# ============================================================
-# BLOCK PARSER
-# ============================================================
-
-def parse_blocks_page(
-    blocks: list[tuple],
-    country_code: str,
-) -> list[dict[str, Any]]:
-
-    records = []
-
-    code_blocks = []
-
-    for block in blocks:
-
-        if len(block) < 5:
-            continue
-
-        x0, y0, x1, y1, text = (
-            block[:5]
-        )
-
-        text = normalize_space(
-            str(text)
-        )
-
-        matches = list(
-            re.finditer(
-                r"(?<!\d)\d{6}(?!\d)",
-                text,
-            )
-        )
-
-        for match in matches:
-
-            code_blocks.append(
-                {
-                    "code": match.group(0),
-                    "text": text,
-                    "x0": x0,
-                    "y0": y0,
-                    "x1": x1,
-                    "y1": y1,
-                }
-            )
-
-    for code_item in code_blocks:
-
-        code = code_item["code"]
-
-        same_line = []
-
-        for block in blocks:
-
-            if len(block) < 5:
-                continue
-
-            x0, y0, x1, y1, text = (
-                block[:5]
-            )
-
-            if (
-                abs(
-                    float(y0)
-                    - code_item["y0"]
-                )
-                <= 8
-            ):
-
-                same_line.append(
-                    {
-                        "x0": float(x0),
-                        "x1": float(x1),
-                        "text": normalize_space(
-                            str(text)
-                        ),
-                    }
-                )
-
-        same_line.sort(
-            key=lambda item: item["x0"]
-        )
-
-        before = []
-        after = []
-
-        for block in same_line:
-
-            if (
-                block["x1"]
-                <= code_item["x0"]
-            ):
-                before.append(
-                    block["text"]
-                )
-
-            elif (
-                block["x0"]
-                >= code_item["x1"]
-            ):
-                after.append(
-                    block["text"]
-                )
-
-        russian_candidates = [
-            clean_station_name(
-                text
-            )
-            for text in before
-        ]
-
-        latin_candidates = [
-            clean_station_name(
-                text
-            )
-            for text in after
-        ]
-
-        russian_candidates = [
-            x
-            for x in russian_candidates
-            if valid_name(x)
-        ]
-
-        latin_candidates = [
-            x
-            for x in latin_candidates
-            if valid_name(x)
-        ]
-
-        if not russian_candidates:
-            continue
-
-        if not latin_candidates:
-            continue
-
-        russian = max(
-            russian_candidates,
-            key=score_name,
-        )
-
-        latin = max(
-            latin_candidates,
-            key=score_name,
-        )
-
-        record = make_record(
-            country_code=country_code,
-            code=code,
-            russian_name=russian,
-            latin_name=latin,
-        )
-
-        if record:
-            records.append(
-                record
-            )
-
-    return records
-
-
-# ============================================================
-# DICT PARSER
-# ============================================================
-
-def collect_dict_text(
-    dictionary: dict[str, Any],
-) -> str:
-
-    parts = []
-
-    blocks = dictionary.get(
-        "blocks",
-        [],
-    )
-
-    for block in blocks:
-
-        if block.get("type") != 0:
-            continue
-
-        for line in block.get(
-            "lines",
-            [],
-        ):
-
-            for span in line.get(
-                "spans",
-                [],
-            ):
-
-                text = span.get(
-                    "text",
-                    "",
-                )
-
-                if text:
-                    parts.append(
-                        text
-                    )
-
-    return normalize_space(
-        " ".join(parts)
-    )
-
-
-def parse_dict_page(
-    dictionary: dict[str, Any],
-    country_code: str,
-) -> list[dict[str, Any]]:
-
-    records = []
-
-    text = collect_dict_text(
-        dictionary
-    )
-
-    if not text:
-        return records
-
-    matches = list(
-        re.finditer(
-            r"(?<!\d)(\d{6})(?!\d)",
-            text,
-        )
-    )
-
-    for match in matches:
-
-        code = match.group(1)
-
-        before = text[
-            max(
-                0,
-                match.start() - 180,
-            ):
-            match.start()
-        ]
-
-        after = text[
-            match.end():
-            match.end() + 180
-        ]
-
-        before = normalize_space(
-            before
-        )
-
-        after = normalize_space(
-            after
-        )
-
-        left_parts = before.split()
-
-        if len(left_parts) > 12:
-            left_parts = (
-                left_parts[-12:]
-            )
-
-        right_parts = after.split()
-
-        if len(right_parts) > 15:
-            right_parts = (
-                right_parts[:15]
-            )
-
-        russian = normalize_space(
-            " ".join(left_parts)
-        )
-
-        latin = normalize_space(
-            " ".join(right_parts)
-        )
-
-        russian = clean_station_name(
-            russian
-        )
-
-        latin = clean_station_name(
-            latin
-        )
-
-        if not valid_name(
-            russian
-        ):
-            continue
-
-        latin_words = []
-
-        for word in latin.split():
-
-            if re.fullmatch(
-                r"[\d,./()]+",
-                word,
-            ):
-                break
-
-            latin_words.append(
-                word
-            )
-
-            if len(latin_words) >= 8:
-                break
-
-        latin = normalize_space(
-            " ".join(latin_words)
-        )
-
-        if not valid_name(
-            latin
-        ):
-            continue
-
-        record = make_record(
-            country_code=country_code,
-            code=code,
-            russian_name=russian,
-            latin_name=latin,
-        )
-
-        if record:
-            records.append(
-                record
-            )
-
-    return records
 
 
 # ============================================================
@@ -1736,24 +1638,26 @@ def deduplicate_records(
 ) -> list[dict[str, Any]]:
 
     result = []
+
     seen = set()
 
     for record in records:
 
-        country_code = record.get(
-            "country_code",
-            "",
-        )
-
-        code = str(
+        code = normalize_code(
             record.get(
-                "code",
-                "",
+                "code"
             )
         )
 
+        country = record.get(
+            "country_code"
+        )
+
+        if not code or not country:
+            continue
+
         key = (
-            country_code,
+            country,
             code,
         )
 
@@ -1781,219 +1685,181 @@ def parse_pdf(
     print()
     print("=" * 70)
     print(
-        f"PARSING COUNTRY: "
-        f"{country_code} "
-        f"{COUNTRIES[country_code]}"
+        "PARSING:",
+        country_code,
+        COUNTRIES[country_code],
     )
     print("=" * 70)
 
-    document = fitz.open(
-        stream=pdf_bytes,
-        filetype="pdf",
+    pages = extract_pages(
+        pdf_bytes
     )
 
     print(
         "PDF pages:",
-        len(document),
+        len(pages),
     )
 
-    document.close()
+    total_codes = 0
 
-    methods = extract_text_methods(
-        pdf_bytes
-    )
+    for page in pages:
 
-    method_counts = {}
-
-    for method_name, pages in (
-        methods.items()
-    ):
-
-        method_counts[
-            method_name
-        ] = count_codes(pages)
-
-    print()
-    print(
-        "EXTRACTION METHOD CODE COUNTS"
-    )
-
-    for method_name, count in (
-        method_counts.items()
-    ):
-
-        print(
-            f"  {method_name:8}: {count}"
+        total_codes += len(
+            find_codes(
+                page["text"]
+            )
         )
 
-    candidates = []
+    print(
+        "6-digit codes in text:",
+        total_codes,
+    )
 
     # --------------------------------------------------------
-    # WORDS
+    # WORDS PARSER
     # --------------------------------------------------------
 
-    for page_words in methods[
-        "words"
-    ]:
+    records = []
 
-        if not page_words:
-            continue
+    for page in pages:
 
-        records = parse_words_page(
-            page_words,
+        page_records = parse_words(
+            page["words"],
             country_code,
         )
 
-        candidates.extend(
-            records
+        records.extend(
+            page_records
         )
 
-    candidates = deduplicate_records(
-        candidates
+    records = deduplicate_records(
+        records
     )
 
     print(
-        "WORD PARSER RECORDS:",
-        len(candidates),
+        "WORD PARSER:",
+        len(records),
     )
 
     # --------------------------------------------------------
-    # BLOCKS
+    # RAW TEXT PARSER
     # --------------------------------------------------------
 
-    if len(candidates) < 3:
+    if len(records) < 3:
 
-        block_candidates = []
+        text_records = []
 
-        for page_blocks in methods[
-            "blocks"
-        ]:
+        for page in pages:
 
-            if not page_blocks:
-                continue
-
-            records = parse_blocks_page(
-                page_blocks,
+            page_records = parse_text(
+                page["text"],
                 country_code,
             )
 
-            block_candidates.extend(
-                records
+            text_records.extend(
+                page_records
             )
 
-        block_candidates = (
+        text_records = (
             deduplicate_records(
-                block_candidates
+                text_records
             )
         )
 
         print(
-            "BLOCK PARSER RECORDS:",
-            len(block_candidates),
+            "TEXT PARSER:",
+            len(text_records),
         )
 
-        candidates.extend(
-            block_candidates
+        records.extend(
+            text_records
         )
 
-        candidates = deduplicate_records(
-            candidates
+        records = deduplicate_records(
+            records
         )
 
     # --------------------------------------------------------
-    # DICT
+    # BLOCK PARSER
     # --------------------------------------------------------
 
-    if len(candidates) < 3:
+    if len(records) < 3:
 
-        dict_candidates = []
+        block_records = []
 
-        for page_dict in methods[
-            "dict"
-        ]:
+        for page in pages:
 
-            if not page_dict:
-                continue
-
-            records = parse_dict_page(
-                page_dict,
+            page_records = parse_blocks(
+                page["blocks"],
                 country_code,
             )
 
-            dict_candidates.extend(
-                records
+            block_records.extend(
+                page_records
             )
 
-        dict_candidates = (
+        block_records = (
             deduplicate_records(
-                dict_candidates
+                block_records
             )
         )
 
         print(
-            "DICT PARSER RECORDS:",
-            len(dict_candidates),
+            "BLOCK PARSER:",
+            len(block_records),
         )
 
-        candidates.extend(
-            dict_candidates
+        records.extend(
+            block_records
         )
 
-        candidates = deduplicate_records(
-            candidates
+        records = deduplicate_records(
+            records
         )
 
     # --------------------------------------------------------
     # POPPLER
     # --------------------------------------------------------
 
-    if len(candidates) < 3:
+    if len(records) < 3:
 
         print()
         print(
-            "PyMuPDF found too few "
-            "station records."
+            "PyMuPDF parsers found too few "
+            "records."
         )
 
         print(
-            "TRYING POPPLER "
-            "pdftotext FALLBACK..."
+            "Trying pdftotext fallback..."
         )
 
-        poppler_pages = (
-            extract_pdftotext_pages(
+        poppler_text = (
+            extract_pdftotext(
                 pdf_bytes
             )
         )
 
-        print(
-            "pdftotext pages:",
-            len(poppler_pages),
-        )
+        if poppler_text:
 
-        if poppler_pages:
-
-            poppler_candidates = (
-                parse_pdftotext_pages(
-                    poppler_pages,
+            poppler_records = (
+                parse_text(
+                    poppler_text,
                     country_code,
                 )
             )
 
             print(
-                "POPPLER PARSER RECORDS:",
-                len(
-                    poppler_candidates
-                ),
+                "POPPLER PARSER:",
+                len(poppler_records),
             )
 
-            candidates.extend(
-                poppler_candidates
+            records.extend(
+                poppler_records
             )
 
-            candidates = (
+            records = (
                 deduplicate_records(
-                    candidates
+                    records
                 )
             )
 
@@ -2001,29 +1867,31 @@ def parse_pdf(
     # FINAL
     # --------------------------------------------------------
 
-    candidates = deduplicate_records(
-        candidates
+    records = deduplicate_records(
+        records
     )
 
     print()
     print(
-        f"FINAL PARSED RECORDS: "
-        f"{len(candidates)}"
+        "FINAL PARSED RECORDS:",
+        len(records),
     )
 
-    if candidates:
+    if records:
 
         print()
-        print("FIRST RECORDS:")
+        print(
+            "FIRST RECORDS:"
+        )
 
-        for record in candidates[:10]:
+        for record in records[:10]:
 
             print(
-                "  ",
+                " ",
                 record,
             )
 
-    return candidates
+    return records
 
 
 # ============================================================
@@ -2036,38 +1904,33 @@ def validate_country_records(
 ) -> None:
 
     if not records:
-
         raise RuntimeError(
             f"{country_code}: "
-            "no station records parsed"
+            "не найдено ни одной станции"
         )
 
-    invalid_codes = []
+    invalid = []
 
     for record in records:
 
-        code = str(
-            record.get(
-                "code",
-                "",
-            )
-        )
-
         if not re.fullmatch(
             r"\d{6}",
-            code,
+            str(
+                record.get(
+                    "code",
+                    "",
+                )
+            ),
         ):
-
-            invalid_codes.append(
+            invalid.append(
                 record
             )
 
-    if invalid_codes:
+    if invalid:
 
         raise RuntimeError(
             f"{country_code}: "
-            f"{len(invalid_codes)} "
-            "invalid station codes"
+            f"{len(invalid)} invalid codes"
         )
 
     for record in records:
@@ -2078,27 +1941,19 @@ def validate_country_records(
                 "",
             )
         ):
-
             raise RuntimeError(
                 f"{country_code}: "
-                "invalid Russian station name"
+                "invalid station name"
             )
 
-        if not valid_name(
-            record.get(
-                "latin_name",
-                "",
-            )
-        ):
-
-            raise RuntimeError(
-                f"{country_code}: "
-                "invalid Latin station name"
-            )
+    print(
+        f"✓ {country_code}: "
+        f"country validation passed"
+    )
 
 
 # ============================================================
-# LOAD OLD DATABASE
+# LOAD EXISTING DATABASE
 # ============================================================
 
 def load_existing_database() -> list[
@@ -2119,24 +1974,21 @@ def load_existing_database() -> list[
                 file
             )
 
-        if not isinstance(
+        if isinstance(
             data,
             list,
         ):
-
-            return []
-
-        return data
+            return data
 
     except Exception as exc:
 
         print(
-            "WARNING: cannot read "
-            "existing stations.json:",
-            exc,
+            "WARNING: cannot read existing "
+            "stations.json:",
+            repr(exc),
         )
 
-        return []
+    return []
 
 
 # ============================================================
@@ -2147,19 +1999,14 @@ def merge_records(
     new_records: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
 
-    """
-    Новые записи заменяют старые записи
-    соответствующих стран.
+    existing = (
+        load_existing_database()
+    )
 
-    Также из старой базы удаляются страны,
-    которые были исключены из проекта:
-    IR, CN, CZ, KR, RO, LA.
-    """
-
-    existing = load_existing_database()
-
-    new_country_codes = {
-        record["country_code"]
+    new_countries = {
+        record.get(
+            "country_code"
+        )
         for record in new_records
     }
 
@@ -2167,22 +2014,20 @@ def merge_records(
 
     for record in existing:
 
-        country_code = record.get(
+        country = record.get(
             "country_code"
         )
 
-        # Удаляем старые записи стран,
-        # которые теперь исключены.
-        if country_code in EXCLUDED_COUNTRIES:
+        # Remove explicitly excluded countries.
+        if country in EXCLUDED_COUNTRIES:
             continue
 
-        # Заменяем старые записи
-        # стран, которые сейчас парсим.
-        if country_code in new_country_codes:
+        # Replace countries freshly parsed.
+        if country in new_countries:
             continue
 
-        # Не допускаем неизвестные страны.
-        if country_code not in COUNTRIES:
+        # Remove unknown countries.
+        if country not in COUNTRIES:
             continue
 
         result.append(
@@ -2208,7 +2053,7 @@ def validate_all_countries(
 
     print()
     print("=" * 70)
-    print("STATISTICS BY COUNTRY")
+    print("FINAL DATABASE VALIDATION")
     print("=" * 70)
 
     counters = Counter(
@@ -2218,6 +2063,10 @@ def validate_all_countries(
         )
         for station in stations
     )
+
+    # --------------------------------------------------------
+    # COUNTRY COVERAGE
+    # --------------------------------------------------------
 
     missing = []
 
@@ -2250,72 +2099,32 @@ def validate_all_countries(
                 code
             )
 
-    print()
-    print("=" * 70)
-    print(
-        "CHECKING 22 COUNTRIES"
-    )
-    print("=" * 70)
-
-    found = sum(
-        1
-        for code in COUNTRIES
-        if counters.get(
-            code,
-            0,
-        ) > 0
-    )
-
-    print(
-        "Countries in database:",
-        len(counters),
-    )
-
-    print(
-        "Countries with data:",
-        found,
-    )
-
-    print(
-        "Countries without data:",
-        len(missing),
-    )
-
     if missing:
-
-        print()
-        print("MISSING:")
-
-        for code in missing:
-
-            print(
-                f"  {code} — "
-                f"{COUNTRIES[code]}"
-            )
 
         raise RuntimeError(
             "КРИТИЧЕСКАЯ ОШИБКА: "
-            f"отсутствует {len(missing)} "
-            "стран. "
-            "stations.json НЕ изменён."
+            "нет данных по странам: "
+            + ", ".join(
+                missing
+            )
         )
 
     # --------------------------------------------------------
     # UNKNOWN COUNTRIES
     # --------------------------------------------------------
 
-    unexpected = sorted(
+    unknown = sorted(
         set(counters)
         - set(COUNTRIES)
     )
 
-    if unexpected:
+    if unknown:
 
         raise RuntimeError(
             "Обнаружены неизвестные "
             "country_code: "
             + ", ".join(
-                unexpected
+                unknown
             )
         )
 
@@ -2323,18 +2132,18 @@ def validate_all_countries(
     # EXCLUDED COUNTRIES
     # --------------------------------------------------------
 
-    excluded_found = sorted(
+    excluded = sorted(
         set(counters)
         & EXCLUDED_COUNTRIES
     )
 
-    if excluded_found:
+    if excluded:
 
         raise RuntimeError(
             "В базе остались исключённые "
             "страны: "
             + ", ".join(
-                excluded_found
+                excluded
             )
         )
 
@@ -2357,16 +2166,11 @@ def validate_all_countries(
             r"\d{6}",
             code,
         ):
-
             invalid_codes.append(
                 station
             )
 
     print()
-    print("=" * 70)
-    print("FINAL VALIDATION")
-    print("=" * 70)
-
     print(
         "Total stations:",
         len(stations),
@@ -2379,75 +2183,52 @@ def validate_all_countries(
 
     if invalid_codes:
 
-        for station in invalid_codes[:20]:
+        for station in invalid_codes[:10]:
             print(
                 station
             )
 
         raise RuntimeError(
             "Обнаружены некорректные "
-            "6-значные коды."
+            "коды станций."
         )
 
     # --------------------------------------------------------
     # NAMES
     # --------------------------------------------------------
 
-    missing_ru = [
-        station
-        for station in stations
+    missing_names = []
+
+    for station in stations:
+
         if not valid_name(
             station.get(
                 "name",
                 "",
             )
-        )
-    ]
-
-    missing_latin = [
-        station
-        for station in stations
-        if not valid_name(
-            station.get(
-                "latin_name",
-                "",
+        ):
+            missing_names.append(
+                station
             )
-        )
-    ]
 
     print(
-        "Without Russian name:",
-        len(missing_ru),
+        "Stations without names:",
+        len(missing_names),
     )
 
-    print(
-        "Without Latin name:",
-        len(missing_latin),
-    )
-
-    if missing_ru:
+    if missing_names:
 
         raise RuntimeError(
             "Есть станции без "
-            "русского названия."
-        )
-
-    if missing_latin:
-
-        raise RuntimeError(
-            "Есть станции без "
-            "латинского названия."
+            "корректного названия."
         )
 
     # --------------------------------------------------------
     # DUPLICATES
     # --------------------------------------------------------
 
-    duplicate_groups = {}
-
-    for station in stations:
-
-        key = (
+    keys = [
+        (
             station.get(
                 "country_code"
             ),
@@ -2455,48 +2236,24 @@ def validate_all_countries(
                 "code"
             ),
         )
+        for station in stations
+    ]
 
-        duplicate_groups.setdefault(
-            key,
-            [],
-        ).append(
-            station
-        )
-
-    duplicates = {
-        key: value
-        for key, value
-        in duplicate_groups.items()
-        if len(value) > 1
-    }
-
-    print(
-        "Duplicate country/code groups:",
-        len(duplicates),
+    duplicate_count = (
+        len(keys)
+        - len(set(keys))
     )
 
-    if duplicates:
+    print(
+        "Duplicate records:",
+        duplicate_count,
+    )
 
-        print()
-        print(
-            "WARNING: DUPLICATES"
+    if duplicate_count:
+        raise RuntimeError(
+            "Обнаружены дубликаты "
+            "country_code + code."
         )
-
-        for key, values in list(
-            duplicates.items()
-        )[:20]:
-
-            print(
-                f"  {key[0]} / {key[1]}"
-            )
-
-            for value in values:
-
-                print(
-                    f"    - "
-                    f"{value.get('name')} | "
-                    f"{value.get('latin_name')}"
-                )
 
     print()
     print(
@@ -2505,7 +2262,7 @@ def validate_all_countries(
 
 
 # ============================================================
-# SAVE
+# SAVE DATABASE
 # ============================================================
 
 def save_database(
@@ -2548,10 +2305,9 @@ def save_database(
 
 def main() -> None:
 
+    print()
     print("=" * 70)
-    print(
-        "OSJD RAILWAY STATION DATABASE UPDATE"
-    )
+    print("OSJD RAILWAY STATION DATABASE UPDATE")
     print("=" * 70)
 
     print()
@@ -2561,9 +2317,11 @@ def main() -> None:
     )
 
     print(
-        "Excluded countries:",
+        "Excluded:",
         ", ".join(
-            sorted(EXCLUDED_COUNTRIES)
+            sorted(
+                EXCLUDED_COUNTRIES
+            )
         ),
     )
 
@@ -2573,7 +2331,7 @@ def main() -> None:
     )
 
     # --------------------------------------------------------
-    # GET PDF URLS
+    # PDF SOURCES
     # --------------------------------------------------------
 
     pdf_urls = get_pdf_urls()
@@ -2595,16 +2353,18 @@ def main() -> None:
 
             print(
                 f"✓ {code} "
-                f"{country}: "
-                f"{url}"
+                f"{country}:"
+            )
+
+            print(
+                f"  {url}"
             )
 
         else:
 
             print(
                 f"✗ {code} "
-                f"{country}: "
-                "NO SOURCE"
+                f"{country}: NO SOURCE"
             )
 
     missing_sources = [
@@ -2625,29 +2385,29 @@ def main() -> None:
         )
 
     # --------------------------------------------------------
-    # DOWNLOAD + PARSE
+    # DOWNLOAD AND PARSE ALL COUNTRIES
     # --------------------------------------------------------
 
-    all_new_records = []
+    all_records = []
 
-    country_statistics = {}
+    statistics = {}
 
     for country_code, country_name in (
         COUNTRIES.items()
     ):
 
-        url = pdf_urls[
-            country_code
-        ]
-
         print()
         print("=" * 70)
         print(
-            f"COUNTRY "
+            f"COUNTRY: "
             f"{country_code} — "
             f"{country_name}"
         )
         print("=" * 70)
+
+        url = pdf_urls[
+            country_code
+        ]
 
         try:
 
@@ -2671,27 +2431,30 @@ def main() -> None:
                 records,
             )
 
-            country_statistics[
+            statistics[
                 country_code
             ] = len(records)
 
-            all_new_records.extend(
+            all_records.extend(
                 records
             )
 
             print()
             print(
-                f"✓ {country_code}: "
-                f"{len(records)} records"
+                f"✓ SUCCESS "
+                f"{country_code}: "
+                f"{len(records)} stations"
             )
 
         except Exception as exc:
 
             print()
+            print("=" * 70)
             print(
                 f"✗ ERROR "
-                f"{country_code}:"
+                f"{country_code}"
             )
+            print("=" * 70)
 
             print(
                 repr(exc)
@@ -2709,7 +2472,7 @@ def main() -> None:
         )
 
     # --------------------------------------------------------
-    # COUNTRY COVERAGE
+    # CHECK COUNTRY STATISTICS
     # --------------------------------------------------------
 
     print()
@@ -2721,55 +2484,51 @@ def main() -> None:
         COUNTRIES.items()
     ):
 
-        count = (
-            country_statistics.get(
-                code,
-                0,
-            )
+        count = statistics.get(
+            code,
+            0,
         )
 
         if count:
 
             print(
-                f"✓ {code} "
+                f"✓ {code:2} "
                 f"{country:<25} "
-                f"{count}"
+                f"{count:6}"
             )
 
         else:
 
             print(
-                f"✗ {code} "
+                f"✗ {code:2} "
                 f"{country:<25} "
-                "0"
+                f"{0:6}"
             )
 
     missing = [
         code
         for code in COUNTRIES
-        if not country_statistics.get(
+        if statistics.get(
             code,
             0,
-        )
+        ) == 0
     ]
 
     if missing:
 
         raise RuntimeError(
-            "Не получены данные для: "
+            "Не получены данные по странам: "
             + ", ".join(
                 missing
             )
-            + ". "
-            "stations.json НЕ изменён."
         )
 
     # --------------------------------------------------------
-    # MERGE
+    # MERGE WITH EXISTING DATABASE
     # --------------------------------------------------------
 
     merged = merge_records(
-        all_new_records
+        all_records
     )
 
     print()
@@ -2778,8 +2537,8 @@ def main() -> None:
     print("=" * 70)
 
     print(
-        "New parsed records:",
-        len(all_new_records),
+        "New records:",
+        len(all_records),
     )
 
     print(
@@ -2788,7 +2547,7 @@ def main() -> None:
     )
 
     # --------------------------------------------------------
-    # GLOBAL VALIDATION
+    # FINAL VALIDATION
     # --------------------------------------------------------
 
     validate_all_countries(
@@ -2796,12 +2555,12 @@ def main() -> None:
     )
 
     # --------------------------------------------------------
-    # SAVE ONLY NOW
+    # SAVE
     # --------------------------------------------------------
 
     print()
     print("=" * 70)
-    print("SAVING DATABASE")
+    print("SAVING")
     print("=" * 70)
 
     save_database(
@@ -2814,9 +2573,12 @@ def main() -> None:
     print("=" * 70)
 
     print(
-        "stations.json updated:",
+        "stations.json updated."
+    )
+
+    print(
+        "Total records:",
         len(merged),
-        "records",
     )
 
 
@@ -2832,8 +2594,9 @@ if __name__ == "__main__":
 
     except KeyboardInterrupt:
 
+        print()
         print(
-            "\nInterrupted by user."
+            "Interrupted by user."
         )
 
         sys.exit(130)
