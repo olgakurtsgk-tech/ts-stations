@@ -1,3 +1,4 @@
+
 name: Check railway stations
 
 on:
@@ -20,23 +21,34 @@ jobs:
           python-version: "3.12"
 
       - name: Check database
+        id: validate
+        shell: bash
         run: |
-          python scripts/check_stations.py > station_report.txt
-
-      - name: Show report
-        run: |
+          set +e
+          python -u scripts/check_stations.py > station_report.txt 2>&1
+          status=$?
+          echo "----------------------------------------"
+          echo "STATION DATABASE CHECK REPORT"
+          echo "----------------------------------------"
           cat station_report.txt
+          echo "exit_code=$status" >> "$GITHUB_OUTPUT"
+          exit 0
 
       - name: Save report
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add station_report.txt
-
           if git diff --cached --quiet; then
-            echo "No changes"
+            echo "No changes to report"
           else
-            git commit -m "Add station database report"
+            git commit -m "Update station database report"
             git push
           fi
+
+      - name: Fail if validation failed
+        if: steps.validate.outputs.exit_code != '0'
+        run: |
+          echo "Station database validation failed. See the report above."
+          exit 1
