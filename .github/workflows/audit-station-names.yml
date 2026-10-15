@@ -1,7 +1,7 @@
 ```yaml
 name: Audit station names
 
-on:
+"on":
   workflow_dispatch:
   push:
     paths:
