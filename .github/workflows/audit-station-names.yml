@@ -1,4 +1,4 @@
-```yaml
+
 name: Audit station names
 
 "on":
@@ -42,4 +42,4 @@ jobs:
             echo "Audit report was not created"
             exit 1
           fi
-```
+
