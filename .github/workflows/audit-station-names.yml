@@ -28,18 +28,25 @@ jobs:
       - name: Run station name audit
         run: python scripts/audit_station_names.py
 
-      - name: Save audit report
-        run: |
-          if [ -f station_name_audit.txt ]; then
-            git add station_name_audit.txt
-            if ! git diff --cached --quiet; then
-              git config user.name "github-actions[bot]"
-              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-              git commit -m "Update station name audit report"
-              git push
-            fi
-          else
-            echo "Audit report was not created"
-            exit 1
-          fi
+      - name: Upload audit report
+        if: always() && hashFiles('station_name_audit.txt') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: station-name-audit-report
+          path: station_name_audit.txt
+          if-no-files-found: warn
+          retention-days: 14
 
+      - name: Save audit report to repository
+        if: success() && hashFiles('station_name_audit.txt') != ''
+        run: |
+          git add station_name_audit.txt
+
+          if ! git diff --cached --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Update station name audit report"
+            git push
+          else
+            echo "The report has not changed."
+          fi
