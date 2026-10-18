@@ -98,7 +98,7 @@ def valid_name(value):
     return True
 
 
-def fail(errors, limit=50):
+def fail(errors, limit=1000):
     for error in errors[:limit]:
         print("ERROR:", error)
 
