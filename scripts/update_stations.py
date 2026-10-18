@@ -346,11 +346,16 @@ def valid_name(value: str) -> bool:
     if len(value) > 150:
         return False
 
+    # Название не должно состоять из кодов грузовых операций.
+    if looks_like_operations(value):
+        return False
+
     # Должна быть хотя бы одна буква.
     if not re.search(r"[A-Za-zА-Яа-яЁё]", value):
         return False
 
     return True
+
 
 
 def score_name(value: str) -> int:
