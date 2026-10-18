@@ -315,24 +315,22 @@ def clean_station_name(value: str) -> str:
     return value
 
 
+
 def looks_like_operations(value: str) -> bool:
     if not value:
         return False
 
     text = normalize_space(value)
 
-    # Коммерческие операции обычно состоят из цифр,
-    # запятых, буквенных обозначений и служебных символов.
-    if re.fullmatch(
-        r"[\d,\s./()«»\"'А-Яа-яA-Za-z№#*КкНн\-]+",
-        text,
-    ):
-        digits = re.findall(r"\d+", text)
-
-        if digits:
-            return True
-
-    return False
+    # Коды операций: 8н,10н; 3;8н;10н; 12н.
+    # Названия станций с цифрами не должны отсеиваться.
+    return bool(
+        re.fullmatch(
+            r"(?i)\d+\s*[а-яa-z]?"
+            r"(?:\s*[,;/.]\s*\d+\s*[а-яa-z]?)*",
+            text,
+        )
+    )
 
 
 def valid_name(value: str) -> bool:
