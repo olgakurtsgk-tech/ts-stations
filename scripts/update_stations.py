@@ -16,8 +16,6 @@ data/stations.json только после успешной проверки в�
 https://osjd.org/ru/8974/page/106077?id=2227
 """
 
-from __future__ import annotations
-
 import io
 import json
 import re
