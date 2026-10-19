@@ -1425,6 +1425,7 @@ def deduplicate_records(
 # PARSE ONE PDF
 # ============================================================
 
+
 def parse_pdf(
     pdf_bytes: bytes,
     country_code: str,
@@ -1439,190 +1440,94 @@ def parse_pdf(
     )
     print("=" * 70)
 
-    diagnostic_pdf(
-        pdf_bytes,
-        country_code,
-    )
+    diagnostic_pdf(pdf_bytes, country_code)
 
-    methods = extract_text_methods(
-        pdf_bytes
-    )
+    methods = extract_text_methods(pdf_bytes)
 
     method_counts = {}
-
     for method_name, pages in methods.items():
-        method_counts[method_name] = (
-            count_codes(pages)
-        )
+        method_counts[method_name] = count_codes(pages)
 
     print()
     print("EXTRACTION METHOD CODE COUNTS")
+    for method_name, count in method_counts.items():
+        print(f"  {method_name:8}: {count}")
 
-    for method_name, count in (
-        method_counts.items()
-    ):
-        print(
-            f"  {method_name:8}: {count}"
-        )
-
-    candidates: list[dict[str, Any]] = []
-
-    # --------------------------------------------------------
     # 1. WORDS
-    # --------------------------------------------------------
+    word_candidates = []
 
     for page_words in methods["words"]:
         if not page_words:
             continue
 
-        records = parse_words_page(
-            page_words,
-            country_code,
+        word_candidates.extend(
+            parse_words_page(page_words, country_code)
         )
 
-        candidates.extend(records)
+    word_candidates = deduplicate_records(word_candidates)
+    print("WORD PARSER RECORDS:", len(word_candidates))
 
+    # 2. BLOCKS — запускаем независимо от результата WORDS
+    block_candidates = []
+
+    for page_blocks in methods["blocks"]:
+        if not page_blocks:
+            continue
+
+        block_candidates.extend(
+            parse_blocks_page(page_blocks, country_code)
+        )
+
+    block_candidates = deduplicate_records(block_candidates)
+    print("BLOCK PARSER RECORDS:", len(block_candidates))
+
+    # 3. DICT — запускаем независимо от предыдущих результатов
+    dict_candidates = []
+
+    for page_dict in methods["dict"]:
+        if not page_dict:
+            continue
+
+        dict_candidates.extend(
+            parse_dict_page(page_dict, country_code)
+        )
+
+    dict_candidates = deduplicate_records(dict_candidates)
+    print("DICT PARSER RECORDS:", len(dict_candidates))
+
+    # 4. Объединяем результаты всех парсеров.
+    # При совпадении страны и кода сохраняется первая запись.
     candidates = deduplicate_records(
-        candidates
+        word_candidates
+        + block_candidates
+        + dict_candidates
     )
 
-    print(
-        "WORD PARSER RECORDS:",
-        len(candidates),
-    )
+    # Текстовый способ пока используется для диагностики.
+    # Сам по себе найденный код не является полноценной записью:
+    # для неё нужны проверенные названия станции.
+    text_codes = []
 
-    # --------------------------------------------------------
-    # 2. BLOCKS
-    # --------------------------------------------------------
-
-    if len(candidates) < 3:
-
-        block_candidates = []
-
-        for page_blocks in methods["blocks"]:
-            if not page_blocks:
-                continue
-
-            records = parse_blocks_page(
-                page_blocks,
-                country_code,
-            )
-
-            block_candidates.extend(
-                records
-            )
-
-        block_candidates = (
-            deduplicate_records(
-                block_candidates
-            )
+    for page_text in methods["text"]:
+        text_codes.extend(
+            code_candidates_from_text(page_text)
         )
 
-        print(
-            "BLOCK PARSER RECORDS:",
-            len(block_candidates),
-        )
+    text_codes = list(dict.fromkeys(text_codes))
 
-        candidates.extend(
-            block_candidates
-        )
-
-        candidates = deduplicate_records(
-            candidates
-        )
-
-    # --------------------------------------------------------
-    # 3. DICT
-    # --------------------------------------------------------
-
-    if len(candidates) < 3:
-
-        dict_candidates = []
-
-        for page_dict in methods["dict"]:
-            if not page_dict:
-                continue
-
-            records = parse_dict_page(
-                page_dict,
-                country_code,
-            )
-
-            dict_candidates.extend(
-                records
-            )
-
-        dict_candidates = (
-            deduplicate_records(
-                dict_candidates
-            )
-        )
-
-        print(
-            "DICT PARSER RECORDS:",
-            len(dict_candidates),
-        )
-
-        candidates.extend(
-            dict_candidates
-        )
-
-        candidates = deduplicate_records(
-            candidates
-        )
-
-    # --------------------------------------------------------
-    # 4. TEXT FALLBACK
-    # --------------------------------------------------------
-
-    if len(candidates) < 3:
-
-        text_codes = []
-
-        for page_text in methods["text"]:
-            text_codes.extend(
-                code_candidates_from_text(
-                    page_text
-                )
-            )
-
-        text_codes = list(
-            dict.fromkeys(
-                text_codes
-            )
-        )
-
-        print(
-            "TEXT CODES:",
-            len(text_codes),
-        )
-
-    # --------------------------------------------------------
-    # FINAL
-    # --------------------------------------------------------
-
-    candidates = deduplicate_records(
-        candidates
-    )
+    print("TEXT UNIQUE CODES:", len(text_codes))
 
     print()
-    print(
-        f"FINAL PARSED RECORDS: "
-        f"{len(candidates)}"
-    )
+    print("FINAL PARSED RECORDS:", len(candidates))
 
     if candidates:
         print()
         print("FIRST RECORDS:")
 
         for record in candidates[:10]:
-            print(
-                "  ",
-                record,
-            )
+            print("  ", record)
 
     return candidates
-
 
 # ============================================================
 # VALIDATE COUNTRY RECORDS
