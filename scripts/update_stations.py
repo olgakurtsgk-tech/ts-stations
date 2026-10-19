@@ -422,7 +422,6 @@ def download_pdf(url: str) -> bytes:
 # OSJD PAGE DISCOVERY
 # ============================================================
 
-<CodeBlock language="python" editable>
 def discover_osjd_links() -> dict[str, str]:
     """
     Находит ссылки ОСЖД и преобразует ссылки
@@ -506,7 +505,6 @@ print(
                 break
 
 return result
-</CodeBlock>
 
 # ============================================================
 # PDF EXTRACTION
