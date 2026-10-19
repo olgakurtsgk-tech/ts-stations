@@ -422,96 +422,91 @@ def download_pdf(url: str) -> bytes:
 # OSJD PAGE DISCOVERY
 # ============================================================
 
+<CodeBlock language="python" editable>
 def discover_osjd_links() -> dict[str, str]:
     """
-    Загружает текущую страницу ОСЖД и пытается определить
-    PDF для каждой страны.
+    Находит ссылки ОСЖД и преобразует ссылки
+    просмотра документов в прямые ссылки на PDF.
     """
 
-    print()
+print()
     print("=" * 70)
     print("DISCOVERING OSJD PDF LINKS")
     print("=" * 70)
     print(OSJD_PAGE)
 
-    response = requests.get(
+response = requests.get(
         OSJD_PAGE,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,
     )
 
-    print("HTTP STATUS:", response.status_code)
-
+print("HTTP STATUS:", response.status_code)
     response.raise_for_status()
 
-    soup = BeautifulSoup(
+soup = BeautifulSoup(
         response.text,
         "html.parser",
     )
 
     result: dict[str, str] = {}
 
-    for link in soup.find_all("a"):
+for link in soup.find_all("a"):
         href = link.get("href")
 
-        if not href:
+if not href:
             continue
 
-        text = normalize_space(
+text = normalize_space(
             link.get_text(" ", strip=True)
         )
 
         combined = f"{text} {href}".lower()
 
-        # Нужны именно ссылки на PDF / media resources.
-        if (
+if (
             "api/media/resources" not in combined
             and ".pdf" not in combined
         ):
             continue
 
-        if href.startswith("/"):
-            href = "https://osjd.org" + href
+if href.startswith("/"):
+href = "https://osjd.org" + href
+Преобразуем ссылку страницы просмотра
+в прямую ссылку на скачивание PDF.
+resource_match = re.search(
+r"/api/media/resources/(\d+)",
+href,
+)
 
-        for country_code, aliases in COUNTRY_ALIASES.items():
+if resource_match:
+resource_id = resource_match.group(1)
+pdf_url = (
+"https://osjd.org/api/media/resources/"
+f"{resource_id}?action=download"
+)
+else:
+pdf_url = href.split("#", 1)[0]
+
+for country_code, aliases in COUNTRY_ALIASES.items():
             if country_code in result:
                 continue
 
-            if any(
+if any(
                 alias in combined
                 for alias in aliases
             ):
-                result[country_code] = href
+                result[country_code] = pdf_url
 
-                print(
+print(
                     f"FOUND {country_code}: "
                     f"{text[:100]}"
                 )
-
-                print(
-                    f"       {href}"
-                )
+                print(f"       {pdf_url}")
 
                 break
 
-    return result
-
-
-def get_pdf_urls() -> dict[str, str]:
-    discovered = discover_osjd_links()
-
-    result = dict(discovered)
-
-    # Для шести проблемных стран fallback обязателен.
-    for code, url in FALLBACK_PDFS.items():
-        if code not in result:
-            print(
-                f"FALLBACK {code}: {url}"
-            )
-            result[code] = url
-
-    return result
-
+return result
+</CodeBlock>
 
 # ============================================================
 # PDF EXTRACTION
