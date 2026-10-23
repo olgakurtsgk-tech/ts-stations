@@ -292,6 +292,7 @@ def is_noise_name(value: str) -> bool:
         "железных дорог",
         "код ",
         "наименование",
+        "государственном языке",
     ]
 
     if any(fragment in lower for fragment in bad_fragments):
@@ -424,87 +425,74 @@ def download_pdf(url: str) -> bytes:
 
 def discover_osjd_links() -> dict[str, str]:
     """
-    Находит ссылки ОСЖД и преобразует ссылки
-    просмотра документов в прямые ссылки на PDF.
+    Находит ссылки ОСЖД и преобразует ссылки просмотра
+    документов в прямые ссылки на скачивание PDF.
     """
-
-print()
+    print()
     print("=" * 70)
     print("DISCOVERING OSJD PDF LINKS")
     print("=" * 70)
     print(OSJD_PAGE)
 
-response = requests.get(
+    response = requests.get(
         OSJD_PAGE,
         headers=HEADERS,
         timeout=REQUEST_TIMEOUT,
     )
-
-print("HTTP STATUS:", response.status_code)
+    print("HTTP STATUS:", response.status_code)
     response.raise_for_status()
 
-soup = BeautifulSoup(
-        response.text,
-        "html.parser",
-    )
-
+    soup = BeautifulSoup(response.text, "html.parser")
     result: dict[str, str] = {}
 
-for link in soup.find_all("a"):
+    for link in soup.find_all("a"):
         href = link.get("href")
-
-if not href:
+        if not href:
             continue
 
-text = normalize_space(
-            link.get_text(" ", strip=True)
-        )
-
+        text = normalize_space(link.get_text(" ", strip=True))
         combined = f"{text} {href}".lower()
 
-if (
-            "api/media/resources" not in combined
-            and ".pdf" not in combined
-        ):
+        if "api/media/resources" not in combined and ".pdf" not in combined:
             continue
 
-if href.startswith("/"):
-href = "https://osjd.org" + href
-Преобразуем ссылку страницы просмотра
-в прямую ссылку на скачивание PDF.
-resource_match = re.search(
-r"/api/media/resources/(\d+)",
-href,
-)
+        if href.startswith("/"):
+            href = "https://osjd.org" + href
 
-if resource_match:
-resource_id = resource_match.group(1)
-pdf_url = (
-"https://osjd.org/api/media/resources/"
-f"{resource_id}?action=download"
-)
-else:
-pdf_url = href.split("#", 1)[0]
+        # Преобразуем ссылку страницы просмотра в прямую ссылку PDF.
+        resource_match = re.search(r"/api/media/resources/(\\d+)", href)
+        if resource_match:
+            resource_id = resource_match.group(1)
+            pdf_url = (
+                "https://osjd.org/api/media/resources/"
+                f"{resource_id}?action=download"
+            )
+        else:
+            pdf_url = href.split("#", 1)[0]
 
-for country_code, aliases in COUNTRY_ALIASES.items():
+        for country_code, aliases in COUNTRY_ALIASES.items():
             if country_code in result:
                 continue
 
-if any(
-                alias in combined
-                for alias in aliases
-            ):
+            if any(alias in combined for alias in aliases):
                 result[country_code] = pdf_url
-
-print(
-                    f"FOUND {country_code}: "
-                    f"{text[:100]}"
-                )
+                print(f"FOUND {country_code}: {text[:100]}")
                 print(f"       {pdf_url}")
-
                 break
 
-return result
+    return result
+
+
+def get_pdf_urls() -> dict[str, str]:
+    """
+    Объединяет найденные на странице ОСЖД ссылки
+    с заранее проверенными резервными PDF-ссылками.
+    Ссылки, обнаруженные на странице, имеют приоритет.
+    """
+    discovered = discover_osjd_links()
+    urls = dict(FALLBACK_PDFS)
+    urls.update(discovered)
+    return urls
 
 # ============================================================
 # PDF EXTRACTION
@@ -912,30 +900,26 @@ def extract_latin_name(
     right: str,
 ) -> str:
     """
-    Пытается выделить латинское название
-    из правой части строки.
+    Выделяет латинское название из правой части строки.
+    Коды операций и четырёхзначный пограничный код
+    не должны попадать в название.
     """
-
     right = normalize_space(right)
-
     if not right:
         return ""
 
-    # Отрезаем очевидный блок коммерческих операций.
-    match = re.search(
-        r"\b\d+(?:\s*[,./]\s*\d+)+\b",
+    # Пограничный код и последующие поля не относятся к названию.
+    right = re.split(r"(?<!\d)\d{4}(?!\d)", right, maxsplit=1)[0]
+    right = normalize_space(right)
+
+    # После названия могут идти коды операций: 8н, 10н, 8н,10н.
+    operations_tail = re.search(
+        r"(?<!\S)\d+\s*[A-Za-zА-Яа-я]?"
+        r"(?:\s*[,;./]\s*\d+\s*[A-Za-zА-Яа-я]?)*\s*$",
         right,
     )
-
-    if match:
-        right = right[:match.start()]
-
-    # Если после названия пошёл код погранперехода.
-    right = re.split(
-        r"\b\d{4}\b",
-        right,
-        maxsplit=1,
-    )[0]
+    if operations_tail:
+        right = right[:operations_tail.start()]
 
     return clean_station_name(right)
 
@@ -1490,10 +1474,12 @@ def parse_pdf(
 
     # 4. Объединяем результаты всех парсеров.
     # При совпадении страны и кода сохраняется первая запись.
+    # Не добавляем dict_candidates в итоговую базу:
+    # collect_dict_text() склеивает текстовые фрагменты без координат,
+    # поэтому соседние названия могут ошибочно привязаться к коду.
+    # dict-парсер оставлен только для диагностики и сравнения количества.
     candidates = deduplicate_records(
-        word_candidates
-        + block_candidates
-        + dict_candidates
+        word_candidates + block_candidates
     )
 
     # Текстовый способ пока используется для диагностики.
