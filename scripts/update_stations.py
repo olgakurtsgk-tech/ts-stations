@@ -87,6 +87,14 @@ COUNTRIES = {
     "EE": "Эстония",
 }
 
+# These countries are excluded from the production database and validator.
+EXCLUDED_COUNTRIES = {"IR", "CN", "CZ", "KR", "RO", "LA"}
+ACTIVE_COUNTRIES = {
+    code: name for code, name in COUNTRIES.items()
+    if code not in EXCLUDED_COUNTRIES
+}
+
+
 
 # ============================================================
 # FALLBACK PDF URLS
@@ -460,7 +468,7 @@ def discover_osjd_links() -> dict[str, str]:
             href = "https://osjd.org" + href
 
         # Преобразуем ссылку страницы просмотра в прямую ссылку PDF.
-        resource_match = re.search(r"/api/media/resources/(\\d+)", href)
+        resource_match = re.search(r"/api/media/resources/(\d+)", href)
         if resource_match:
             resource_id = resource_match.group(1)
             pdf_url = (
@@ -1639,6 +1647,10 @@ def merge_records(
             "country_code"
         )
 
+        # The production database contains active countries only.
+        if country_code not in ACTIVE_COUNTRIES:
+            continue
+
         if country_code in new_country_codes:
             continue
 
@@ -1674,7 +1686,7 @@ def validate_all_countries(
 
     missing = []
 
-    for code, country in COUNTRIES.items():
+    for code, country in ACTIVE_COUNTRIES.items():
 
         count = counters.get(
             code,
@@ -1698,12 +1710,12 @@ def validate_all_countries(
 
     print()
     print("=" * 70)
-    print("CHECKING 28 COUNTRIES")
+    print("CHECKING ACTIVE COUNTRIES")
     print("=" * 70)
 
     found = sum(
         1
-        for code in COUNTRIES
+        for code in ACTIVE_COUNTRIES
         if counters.get(code, 0) > 0
     )
 
@@ -1741,7 +1753,7 @@ def validate_all_countries(
 
     unexpected = sorted(
         set(counters)
-        - set(COUNTRIES)
+        - set(ACTIVE_COUNTRIES)
     )
 
     if unexpected:
@@ -1947,8 +1959,8 @@ def main() -> None:
 
     print()
     print(
-        "Target countries:",
-        len(COUNTRIES),
+        "Target active countries:",
+        len(ACTIVE_COUNTRIES),
     )
 
     print(
@@ -1967,7 +1979,7 @@ def main() -> None:
     print("PDF SOURCES")
     print("=" * 70)
 
-    for code, country in COUNTRIES.items():
+    for code, country in ACTIVE_COUNTRIES.items():
 
         url = pdf_urls.get(code)
 
@@ -1986,7 +1998,7 @@ def main() -> None:
 
     missing_sources = [
         code
-        for code in COUNTRIES
+        for code in ACTIVE_COUNTRIES
         if code not in pdf_urls
     ]
 
@@ -2007,7 +2019,7 @@ def main() -> None:
     country_statistics = {}
 
     for country_code, country_name in (
-        COUNTRIES.items()
+        ACTIVE_COUNTRIES.items()
     ):
 
         url = pdf_urls[country_code]
@@ -2084,7 +2096,7 @@ def main() -> None:
     print("COUNTRY COVERAGE")
     print("=" * 70)
 
-    for code, country in COUNTRIES.items():
+    for code, country in ACTIVE_COUNTRIES.items():
 
         count = country_statistics.get(
             code,
@@ -2106,7 +2118,7 @@ def main() -> None:
 
     missing = [
         code
-        for code in COUNTRIES
+        for code in ACTIVE_COUNTRIES
         if not country_statistics.get(
             code,
             0,
