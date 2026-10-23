@@ -18,6 +18,7 @@ https://osjd.org/ru/8974/page/106077?id=2227
 
 import io
 import json
+import math
 import re
 import sys
 import time
@@ -359,6 +360,33 @@ def valid_name(value: str) -> bool:
     if not re.search(r"[A-Za-zА-Яа-яЁё]", value):
         return False
 
+    return True
+
+
+def strict_station_name(value: str, script: str) -> bool:
+    """
+    Проверка поля названия до создания записи.
+    Отклоняет служебные операции, шестизначные коды и смешанные
+    фрагменты таблицы, которые могли попасть в поле названия.
+    """
+    value = clean_station_name(value)
+    if not valid_name(value):
+        return False
+    if re.search(r"(?<!\d)\d{6}(?!\d)", value):
+        return False
+    if re.search(
+        r"(?<!\S)\d+\s*[А-ЯA-Za-z]?"
+        r"(?:\s*[,;./]\s*\d+\s*[А-ЯA-Za-z]?)*(?=\s|$)",
+        value,
+    ):
+        return False
+    if script == "ru" and not re.search(r"[А-Яа-яЁё]", value):
+        return False
+    if script == "latin" and not re.search(r"[A-Za-z]", value):
+        return False
+    # Чрезмерно длинное поле часто означает склейку соседних колонок.
+    if len(value.split()) > 8:
+        return False
     return True
 
 
@@ -1001,65 +1029,46 @@ def parse_words_page(
     words: list[tuple],
     country_code: str,
 ) -> list[dict[str, Any]]:
+    """
+    Строгий разбор строк PyMuPDF.
 
-    records = []
-
-    candidates = code_candidates_from_words(
-        words
-    )
+    Запись принимается только когда код, русское название и латинское
+    название находятся в одной визуальной строке. Сомнительные строки
+    отбрасываются, а не угадываются.
+    """
+    records: list[dict[str, Any]] = []
+    candidates = code_candidates_from_words(words)
 
     for candidate in candidates:
-        left, code, right = (
-            split_line_around_code(candidate)
-        )
-
+        left, code, right = split_line_around_code(candidate)
         if not left or not right:
             continue
 
-        # Русское название обычно находится слева.
-        russian = left
+        russian = clean_station_name(left)
+        latin = extract_latin_name(right)
 
-        # Латинское — справа.
-        latin = extract_latin_name(
-            right
-        )
-
-        if not valid_name(russian):
+        # Не допускаем, чтобы в название попали служебные коды,
+        # другой шестизначный код или фрагменты заголовка.
+        if not strict_station_name(russian, "ru"):
+            continue
+        if not strict_station_name(latin, "latin"):
             continue
 
-        if not valid_name(latin):
-            continue
+        # Если справа после латинского названия есть четырёхзначный
+        # пограничный код, сохраняем его отдельно.
+        border_matches = re.findall(r"(?<!\d)\d{4}(?!\d)", right)
+        border_code = border_matches[0] if border_matches else ""
 
-        # Пытаемся найти операции и 4-значный
-        # пограничный код в остатке.
+        # Коммерческие операции сохраняем отдельно, если они распознаны.
         operations = ""
-        border_code = ""
-
-        # Ищем 4-значный код.
-        border_matches = re.findall(
-            r"(?<!\d)\d{4}(?!\d)",
-            right,
-        )
-
-        if border_matches:
-            border_code = border_matches[-1]
-
-        # Ищем похожую на операции часть.
         op_match = re.search(
-            r"(\d+(?:\s*[,./]\s*\d+)*"
-            r"(?:\s*[А-ЯA-Za-zКкНн«»\"']+)?)",
+            r"(?<!\S)(\d+\s*[А-ЯA-Za-z]?"
+            r"(?:\s*[,;./]\s*\d+\s*[А-ЯA-Za-z]?)*)"
+            r"(?=\s|$)",
             right,
         )
-
-        if op_match:
-            possible_ops = normalize_space(
-                op_match.group(1)
-            )
-
-            if looks_like_operations(
-                possible_ops
-            ):
-                operations = possible_ops
+        if op_match and looks_like_operations(op_match.group(1)):
+            operations = normalize_space(op_match.group(1))
 
         record = make_record(
             country_code=country_code,
@@ -1067,16 +1076,9 @@ def parse_words_page(
             russian_name=russian,
             latin_name=latin,
             operations=operations,
+            border_code=border_code,
         )
-
         if record:
-            # Добавляем border_code вручную,
-            # потому что это 4 цифры.
-            if border_code:
-                record["border_code"] = (
-                    border_code
-                )
-
             records.append(record)
 
     return records
@@ -1090,125 +1092,84 @@ def parse_blocks_page(
     blocks: list[tuple],
     country_code: str,
 ) -> list[dict[str, Any]]:
-
-    records = []
-
-    code_blocks = []
+    """
+    Консервативный резервный разбор блоков.
+    Берём только ближайшее поле слева и справа от кода на той же строке.
+    Если соответствие неоднозначно, строка пропускается.
+    """
+    records: list[dict[str, Any]] = []
+    code_items = []
 
     for block in blocks:
         if len(block) < 5:
             continue
-
         x0, y0, x1, y1, text = block[:5]
+        text = normalize_space(str(text))
+        for match in re.finditer(r"(?<!\d)\d{6}(?!\d)", text):
+            code_items.append({
+                "code": match.group(0),
+                "x0": float(x0),
+                "y0": float(y0),
+                "x1": float(x1),
+                "y1": float(y1),
+                "text": text,
+            })
 
-        text = normalize_space(
-            str(text)
-        )
-
-        matches = list(
-            re.finditer(
-                r"(?<!\d)\d{6}(?!\d)",
-                text,
-            )
-        )
-
-        for match in matches:
-            code_blocks.append(
-                {
-                    "code": match.group(0),
-                    "text": text,
-                    "x0": float(x0),
-                    "y0": float(y0),
-                    "x1": float(x1),
-                    "y1": float(y1),
-                }
-            )
-
-    # Для каждого кода ищем блоки на той же строке.
-    for code_item in code_blocks:
-        code = code_item["code"]
-
+    for code_item in code_items:
         same_line = []
-
         for block in blocks:
             if len(block) < 5:
                 continue
-
             x0, y0, x1, y1, text = block[:5]
+            # Малый допуск снижает риск подхвата соседней строки.
+            if abs(float(y0) - code_item["y0"]) <= 2.5:
+                same_line.append({
+                    "x0": float(x0),
+                    "x1": float(x1),
+                    "text": normalize_space(str(text)),
+                })
 
-            if abs(
-                float(y0)
-                - code_item["y0"]
-            ) <= 8:
-                same_line.append(
-                    {
-                        "x0": float(x0),
-                        "x1": float(x1),
-                        "text": normalize_space(
-                            str(text)
-                        ),
-                    }
-                )
-
-        same_line.sort(
-            key=lambda item: item["x0"]
-        )
-
-        before = []
-        after = []
-
-        for block in same_line:
-            if block["x1"] <= code_item["x0"]:
-                before.append(block["text"])
-
-            elif block["x0"] >= code_item["x1"]:
-                after.append(block["text"])
-
-        russian_candidates = [
-            clean_station_name(text)
-            for text in before
+        left_blocks = [
+            item for item in same_line
+            if item["x1"] <= code_item["x0"]
+            and strict_station_name(clean_station_name(item["text"]), "ru")
+        ]
+        right_blocks = [
+            item for item in same_line
+            if item["x0"] >= code_item["x1"]
+            and strict_station_name(
+                extract_latin_name(item["text"]), "latin"
+            )
         ]
 
-        latin_candidates = [
-            clean_station_name(text)
-            for text in after
-        ]
-
-        russian_candidates = [
-            x
-            for x in russian_candidates
-            if valid_name(x)
-        ]
-
-        latin_candidates = [
-            x
-            for x in latin_candidates
-            if valid_name(x)
-        ]
-
-        if not russian_candidates:
+        if not left_blocks or not right_blocks:
             continue
 
-        if not latin_candidates:
-            continue
+        # Используем ближайший блок, а не самый длинный/«красивый».
+        left_blocks.sort(key=lambda item: code_item["x0"] - item["x1"])
+        right_blocks.sort(key=lambda item: item["x0"] - code_item["x1"])
+        russian = clean_station_name(left_blocks[0]["text"])
+        latin = extract_latin_name(right_blocks[0]["text"])
 
-        russian = max(
-            russian_candidates,
-            key=score_name,
-        )
-
-        latin = max(
-            latin_candidates,
-            key=score_name,
-        )
+        # Если второй кандидат находится практически на том же расстоянии,
+        # сопоставление неоднозначно — не включаем эту запись.
+        if len(left_blocks) > 1:
+            d1 = code_item["x0"] - left_blocks[0]["x1"]
+            d2 = code_item["x0"] - left_blocks[1]["x1"]
+            if abs(d2 - d1) < 2.0:
+                continue
+        if len(right_blocks) > 1:
+            d1 = right_blocks[0]["x0"] - code_item["x1"]
+            d2 = right_blocks[1]["x0"] - code_item["x1"]
+            if abs(d2 - d1) < 2.0:
+                continue
 
         record = make_record(
             country_code=country_code,
-            code=code,
+            code=code_item["code"],
             russian_name=russian,
             latin_name=latin,
         )
-
         if record:
             records.append(record)
 
@@ -1406,6 +1367,13 @@ def deduplicate_records(
     return result
 
 
+def normalize_name_for_match(value: str) -> str:
+    """Нормализация названия только для сравнения результатов парсеров."""
+    value = clean_station_name(value).casefold()
+    value = re.sub(r"[^a-zа-яё0-9]+", "", value)
+    return value
+
+
 # ============================================================
 # PARSE ONE PDF
 # ============================================================
@@ -1480,15 +1448,66 @@ def parse_pdf(
     dict_candidates = deduplicate_records(dict_candidates)
     print("DICT PARSER RECORDS:", len(dict_candidates))
 
-    # 4. Объединяем результаты всех парсеров.
-    # При совпадении страны и кода сохраняется первая запись.
-    # Не добавляем dict_candidates в итоговую базу:
-    # collect_dict_text() склеивает текстовые фрагменты без координат,
-    # поэтому соседние названия могут ошибочно привязаться к коду.
-    # dict-парсер оставлен только для диагностики и сравнения количества.
-    candidates = deduplicate_records(
-        word_candidates + block_candidates
-    )
+    # 4. Строгое сопоставление WORDS и BLOCKS.
+    # Если оба парсера нашли один код, но названия расходятся,
+    # такую запись не используем. Если код найден только одним методом,
+    # допускаем его только при прохождении строгой проверки названий.
+    # DICT остаётся диагностическим: в нём нет надёжной привязки текста
+    # к координатам и колонкам таблицы.
+    word_by_code = {
+        record["code"]: record
+        for record in word_candidates
+    }
+    block_by_code = {
+        record["code"]: record
+        for record in block_candidates
+    }
+
+    candidates = []
+    conflicting_codes = []
+
+    for code in sorted(set(word_by_code) | set(block_by_code)):
+        word_record = word_by_code.get(code)
+        block_record = block_by_code.get(code)
+
+        if word_record and block_record:
+            same_ru = normalize_name_for_match(
+                word_record.get("name", "")
+            ) == normalize_name_for_match(
+                block_record.get("name", "")
+            )
+            same_latin = normalize_name_for_match(
+                word_record.get("latin_name", "")
+            ) == normalize_name_for_match(
+                block_record.get("latin_name", "")
+            )
+            if same_ru and same_latin:
+                candidates.append(word_record)
+            else:
+                conflicting_codes.append(code)
+            continue
+
+        # Если совпадающий код найден только одним способом,
+        # запись принимается только после строгой валидации полей.
+        record = word_record or block_record
+        if (
+            record
+            and strict_station_name(record.get("name", ""), "ru")
+            and strict_station_name(record.get("latin_name", ""), "latin")
+        ):
+            candidates.append(record)
+
+    if conflicting_codes:
+        print(
+            "REJECTED CONFLICTING WORD/BLOCK MATCHES:",
+            len(conflicting_codes),
+        )
+        print(
+            "First conflicting codes:",
+            ", ".join(conflicting_codes[:20]),
+        )
+
+    candidates = deduplicate_records(candidates)
 
     # Текстовый способ пока используется для диагностики.
     # Сам по себе найденный код не является полноценной записью:
@@ -2051,6 +2070,28 @@ def main() -> None:
                 country_code,
                 records,
             )
+
+            # Защита от случайного пересоздания страны из неполного PDF:
+            # если источник дал заметно меньше записей, чем уже было в базе,
+            # остановить обновление и не перезаписывать stations.json.
+            existing_records = load_existing_database()
+            existing_count = sum(
+                1
+                for item in existing_records
+                if item.get("country_code") == country_code
+            )
+            if existing_count:
+                minimum_expected = max(
+                    1,
+                    math.ceil(existing_count * 0.65),
+                )
+                if len(records) < minimum_expected:
+                    raise RuntimeError(
+                        f"{country_code}: parsed only {len(records)} records; "
+                        f"existing database has {existing_count}. "
+                        f"Minimum safe threshold is {minimum_expected}. "
+                        "Refusing to replace this country's data."
+                    )
 
             country_statistics[
                 country_code
