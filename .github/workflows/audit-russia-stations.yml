@@ -1,1 +1,38 @@
 
+name: Audit Russia stations (read only)
+
+"on":
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-russia:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile audit script
+        run: python -m py_compile scripts/audit_russia_stations.py
+
+      - name: Audit Russia only
+        run: python scripts/audit_russia_stations.py
+
+      - name: Upload audit report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: russia-station-audit-report
+          path: russia_station_audit_report.json
+          if-no-files-found: warn
+          retention-days: 14
+
