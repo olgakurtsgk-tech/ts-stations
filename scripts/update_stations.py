@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 
-import os
-import re
-import json
-
 """
 OSJD railway freight stations parser.
 
 Получает актуальные PDF-перечни грузовых станций ОСЖД,
 извлекает станции несколькими способами и обновляет
 data/stations.json только после успешной проверки всех
-28 стран.
+активных стран.
 
 Основная страница ОСЖД:
 https://osjd.org/ru/8974/page/106077?id=2227
@@ -54,7 +50,7 @@ HEADERS = {
 REQUEST_TIMEOUT = 60
 
 # ============================================================
-# 28 COUNTRIES
+# COUNTRIES
 # ============================================================
 
 COUNTRIES = {
@@ -88,7 +84,6 @@ COUNTRIES = {
     "EE": "Эстония",
 }
 
-# These countries are excluded from the production database and validator.
 EXCLUDED_COUNTRIES = {"IR", "CN", "CZ", "KR", "RO", "LA"}
 ACTIVE_COUNTRIES = {
     code: name for code, name in COUNTRIES.items()
@@ -96,14 +91,16 @@ ACTIVE_COUNTRIES = {
 }
 
 
-
 # ============================================================
 # FALLBACK PDF URLS
 #
 # Эти URL уже диагностированы на сайте ОСЖД.
+# Используются, если автоматический поиск не нашёл
+# ссылку для страны.
 # ============================================================
 
 FALLBACK_PDFS = {
+    "GE": "https://osjd.org/api/media/resources/2814?action=download",
     "IR": "https://osjd.org/api/media/resources/9608?action=download",
     "CN": "https://osjd.org/api/media/resources/1537?action=download",
     "KR": "https://osjd.org/api/media/resources/1637529?action=download",
@@ -142,8 +139,11 @@ COUNTRY_ALIASES = {
         "вьетнам",
         "вьетнамской железной дороги",
     ],
+    # ВАЖНО: убрано слишком общее слово "груз",
+    # из-за которого ловилась "Памятка ОСЖД О 405".
     "GE": [
-        "груз",
+        "грузовых станций грузинской железной дороги",
+        "перечень грузовых станций грузинской",
         "грузинской железной дороги",
     ],
     "IR": [
@@ -316,7 +316,6 @@ def is_noise_name(value: str) -> bool:
 def clean_station_name(value: str) -> str:
     value = normalize_space(value)
 
-    # Убираем служебные разделители.
     value = re.sub(r"^[|;:,]+", "", value)
     value = re.sub(r"[|;:,]+$", "", value)
 
@@ -325,19 +324,19 @@ def clean_station_name(value: str) -> str:
     return value
 
 
-
 def looks_like_operations(value: str) -> bool:
     if not value:
         return False
     text = normalize_space(value)
     # Ловит: "8н,10н", "1;3(ТП)", "1; 4;9 (ТП)", "(ТП)", "ТП" и т.п.
     pattern = (
-        r"(?i)"                     # регистронезависимо
-        r"(?:\(?\s*[A-Za-zА-Яа-яЁё]{1,3}\s*\)?)?"  # необязательная буквенная метка, возможно в скобках
-        r"(?:\d+\s*[A-Za-zА-Яа-яЁё]?\s*[,;/.]?\s*)*" # последовательность чисел с разделителями
-        r"(?:\(?\s*[A-Za-zА-Яа-яЁё]{1,3}\s*\)?)?"  # ещё одна метка в конце
+        r"(?i)"
+        r"(?:\(?\s*[A-Za-zА-Яа-яЁё]{1,3}\s*\)?)?"
+        r"(?:\d+\s*[A-Za-zА-Яа-яЁё]?\s*[,;/.]?\s*)*"
+        r"(?:\(?\s*[A-Za-zА-Яа-яЁё]{1,3}\s*\)?)?"
     )
     return bool(re.fullmatch(pattern, text))
+
 
 def valid_name(value: str) -> bool:
     value = clean_station_name(value)
@@ -348,11 +347,9 @@ def valid_name(value: str) -> bool:
     if len(value) > 150:
         return False
 
-    # Название не должно состоять из кодов грузовых операций.
     if looks_like_operations(value):
         return False
 
-    # Должна быть хотя бы одна буква.
     if not re.search(r"[A-Za-zА-Яа-яЁё]", value):
         return False
 
@@ -380,11 +377,9 @@ def strict_station_name(value: str, script: str) -> bool:
         return False
     if script == "latin" and not re.search(r"[A-Za-z]", value):
         return False
-    # Чрезмерно длинное поле часто означает склейку соседних колонок.
     if len(value.split()) > 8:
         return False
     return True
-
 
 
 def score_name(value: str) -> int:
@@ -491,7 +486,6 @@ def discover_osjd_links() -> dict[str, str]:
         if href.startswith("/"):
             href = "https://osjd.org" + href
 
-        # Преобразуем ссылку страницы просмотра в прямую ссылку PDF.
         resource_match = re.search(r"/api/media/resources/(\d+)", href)
         if resource_match:
             resource_id = resource_match.group(1)
@@ -526,6 +520,7 @@ def get_pdf_urls() -> dict[str, str]:
     urls.update(discovered)
     return urls
 
+
 # ============================================================
 # PDF EXTRACTION
 # ============================================================
@@ -549,48 +544,29 @@ def extract_text_methods(
         "dict": [],
     }
 
-    for page_number, page in enumerate(
-        document,
-        start=1,
-    ):
+    for page_number, page in enumerate(document, start=1):
         try:
-            methods["text"].append(
-                page.get_text("text")
-            )
+            methods["text"].append(page.get_text("text"))
         except Exception as exc:
-            print(
-                f"WARNING text page {page_number}: {exc}"
-            )
+            print(f"WARNING text page {page_number}: {exc}")
             methods["text"].append("")
 
         try:
-            methods["blocks"].append(
-                page.get_text("blocks")
-            )
+            methods["blocks"].append(page.get_text("blocks"))
         except Exception as exc:
-            print(
-                f"WARNING blocks page {page_number}: {exc}"
-            )
+            print(f"WARNING blocks page {page_number}: {exc}")
             methods["blocks"].append([])
 
         try:
-            methods["words"].append(
-                page.get_text("words")
-            )
+            methods["words"].append(page.get_text("words"))
         except Exception as exc:
-            print(
-                f"WARNING words page {page_number}: {exc}"
-            )
+            print(f"WARNING words page {page_number}: {exc}")
             methods["words"].append([])
 
         try:
-            methods["dict"].append(
-                page.get_text("dict")
-            )
+            methods["dict"].append(page.get_text("dict"))
         except Exception as exc:
-            print(
-                f"WARNING dict page {page_number}: {exc}"
-            )
+            print(f"WARNING dict page {page_number}: {exc}")
             methods["dict"].append({})
 
     document.close()
@@ -615,16 +591,10 @@ def count_codes(value: Any) -> int:
         )
 
     if isinstance(value, (list, tuple)):
-        return sum(
-            count_codes(item)
-            for item in value
-        )
+        return sum(count_codes(item) for item in value)
 
     if isinstance(value, dict):
-        return sum(
-            count_codes(item)
-            for item in value.values()
-        )
+        return sum(count_codes(item) for item in value.values())
 
     return 0
 
@@ -644,24 +614,15 @@ def diagnostic_pdf(
 
     print()
     print("=" * 70)
-    print(
-        f"PDF DIAGNOSTIC: "
-        f"{country_code}"
-    )
+    print(f"PDF DIAGNOSTIC: {country_code}")
     print("=" * 70)
 
     print("Pages:", len(document))
 
-    for page_index, page in enumerate(
-        document,
-        start=1,
-    ):
+    for page_index, page in enumerate(document, start=1):
         text = page.get_text("text")
-
         blocks = page.get_text("blocks")
-
         words = page.get_text("words")
-
         dictionary = page.get_text("dict")
 
         text_codes = count_codes(text)
@@ -669,12 +630,7 @@ def diagnostic_pdf(
         word_codes = count_codes(words)
         dict_codes = count_codes(dictionary)
 
-        if max(
-            text_codes,
-            block_codes,
-            word_codes,
-            dict_codes,
-        ) > 0:
+        if max(text_codes, block_codes, word_codes, dict_codes) > 0:
             print(
                 f"Page {page_index}: "
                 f"text={text_codes}, "
@@ -705,8 +661,6 @@ def words_to_lines(
 
     groups: list[dict[str, Any]] = []
 
-    # Сначала сортируем по странице/блоку/строке,
-    # но допускаем PDF с нестандартной структурой.
     sorted_words = sorted(
         words,
         key=lambda item: (
@@ -725,17 +679,16 @@ def words_to_lines(
 
         placed = False
 
-        for group in groups[-8:]:
+        # Расширенное окно и увеличенный вертикальный допуск
+        # помогают собрать строки таблиц, у которых ячейки
+        # смещены по y-координате (как в PDF Азербайджана).
+        for group in groups[-30:]:
             avg_y = group["avg_y"]
 
-            # Допуск по вертикали.
-            if abs(float(y0) - avg_y) <= 3.5:
+            if abs(float(y0) - avg_y) <= 5.0:
                 group["words"].append(word)
                 group["avg_y"] = (
-                    sum(
-                        float(w[1])
-                        for w in group["words"]
-                    )
+                    sum(float(w[1]) for w in group["words"])
                     / len(group["words"])
                 )
                 placed = True
@@ -758,10 +711,7 @@ def words_to_lines(
         )
 
         full_text = normalize_space(
-            " ".join(
-                str(item[4])
-                for item in row
-            )
+            " ".join(str(item[4]) for item in row)
         )
 
         lines.append(
@@ -804,13 +754,8 @@ def code_candidates_from_words(
                 )
                 continue
 
-            # Если код разбит на несколько частей:
-            # 123 + 456
             if index + 1 < len(row):
-                combined = (
-                    raw
-                    + str(row[index + 1][4])
-                )
+                combined = raw + str(row[index + 1][4])
 
                 code = normalize_code(combined)
 
@@ -841,10 +786,7 @@ def code_candidates_from_blocks(
         text = normalize_space(str(text))
 
         matches = list(
-            re.finditer(
-                r"(?<!\d)\d{6}(?!\d)",
-                text,
-            )
+            re.finditer(r"(?<!\d)\d{6}(?!\d)", text)
         )
 
         for match in matches:
@@ -866,10 +808,7 @@ def code_candidates_from_blocks(
 def code_candidates_from_text(
     text: str,
 ) -> list[str]:
-    return re.findall(
-        r"(?<!\d)\d{6}(?!\d)",
-        text,
-    )
+    return re.findall(r"(?<!\d)\d{6}(?!\d)", text)
 
 
 # ============================================================
@@ -885,73 +824,59 @@ def split_line_around_code(
     left  = всё до кода
     code  = код
     right = всё после кода
-
-    Это особенно полезно для стандартной таблицы ОСЖД:
-
-    Русское название | Код | Latin name | Operations | Border code
     """
 
     line = candidate["line"]
-
     words = line["words"]
-
     index = candidate["index"]
-
     code = candidate["code"]
 
-    left_words = []
-
-    for item in words[:index]:
-        left_words.append(
-            str(item[4])
-        )
+    left_words = [str(item[4]) for item in words[:index]]
 
     right_words = []
 
-    # Если код был разбит 123 + 456,
-    # пропускаем два слова.
     skip = 2 if candidate["source"] == "words-split" else 1
 
     for item in words[index + skip:]:
-        right_words.append(
-            str(item[4])
-        )
+        right_words.append(str(item[4]))
 
-    left = clean_station_name(
-        " ".join(left_words)
-    )
-
-    right = clean_station_name(
-        " ".join(right_words)
-    )
+    left = clean_station_name(" ".join(left_words))
+    right = clean_station_name(" ".join(right_words))
 
     return left, code, right
 
 
-def extract_latin_name(
-    right: str,
-) -> str:
+def extract_latin_name(right: str) -> str:
     """
     Выделяет латинское название из правой части строки.
-    Коды операций и четырёхзначный пограничный код
-    не должны попадать в название.
+    Коды операций, четырёхзначный пограничный код и одиночные
+    маркеры вроде «ТП»/«(ТП)» не должны попадать в название.
     """
     right = normalize_space(right)
     if not right:
         return ""
 
-    # Пограничный код и последующие поля не относятся к названию.
+    # 1. Пограничный код и всё, что после него.
     right = re.split(r"(?<!\d)\d{4}(?!\d)", right, maxsplit=1)[0]
     right = normalize_space(right)
 
-    # После названия могут идти коды операций: 8н, 10н, 8н,10н.
-    operations_tail = re.search(
-        r"(?<!\S)\d+\s*[A-Za-zА-Яа-я]?"
-        r"(?:\s*[,;./]\s*\d+\s*[A-Za-zА-Яа-я]?)*\s*$",
+    # 2. Коды операций в любом месте строки
+    #    (не только в конце, как было раньше).
+    right = re.split(
+        r"(?<!\S)\d+\s*[A-Za-zА-Яа-яЁё]?"
+        r"(?:\s*[,;./]\s*\d+\s*[A-Za-zА-Яа-яЁё]?)*",
         right,
+        maxsplit=1,
+    )[0]
+    right = normalize_space(right)
+
+    # 3. Одиночные маркеры операций вроде «ТП» / «(ТП)».
+    right = re.sub(
+        r"\s*\(?\s*(?:ТП|TП|TP)\s*\)?\s*$",
+        "",
+        right,
+        flags=re.IGNORECASE,
     )
-    if operations_tail:
-        right = right[:operations_tail.start()]
 
     return clean_station_name(right)
 
@@ -969,14 +894,8 @@ def make_record(
     border_code: str = "",
 ) -> dict[str, Any] | None:
 
-    russian_name = clean_station_name(
-        russian_name
-    )
-
-    latin_name = clean_station_name(
-        latin_name
-    )
-
+    russian_name = clean_station_name(russian_name)
+    latin_name = clean_station_name(latin_name)
     code = normalize_code(code) or ""
 
     if not code:
@@ -999,19 +918,11 @@ def make_record(
     }
 
     if operations:
-        record["operations"] = normalize_space(
-            operations
-        )
+        record["operations"] = normalize_space(operations)
 
     if border_code:
-        border_code = normalize_code(
-            border_code
-        )
-
+        border_code = normalize_code(border_code)
         if border_code:
-            # Для перехода обычно нужен 4-значный код.
-            # Если normalize_code не подходит,
-            # обработаем отдельно ниже.
             record["border_code"] = border_code
 
     return record
@@ -1030,7 +941,7 @@ def parse_words_page(
 
     Запись принимается только когда код, русское название и латинское
     название находятся в одной визуальной строке. Сомнительные строки
-    отбрасываются, а не угадываются.
+    отбрасываются.
     """
     records: list[dict[str, Any]] = []
     candidates = code_candidates_from_words(words)
@@ -1043,19 +954,14 @@ def parse_words_page(
         russian = clean_station_name(left)
         latin = extract_latin_name(right)
 
-        # Не допускаем, чтобы в название попали служебные коды,
-        # другой шестизначный код или фрагменты заголовка.
         if not strict_station_name(russian, "ru"):
             continue
         if not strict_station_name(latin, "latin"):
             continue
 
-        # Если справа после латинского названия есть четырёхзначный
-        # пограничный код, сохраняем его отдельно.
         border_matches = re.findall(r"(?<!\d)\d{4}(?!\d)", right)
         border_code = border_matches[0] if border_matches else ""
 
-        # Коммерческие операции сохраняем отдельно, если они распознаны.
         operations = ""
         op_match = re.search(
             r"(?<!\S)(\d+\s*[А-ЯA-Za-z]?"
@@ -1090,8 +996,6 @@ def parse_blocks_page(
 ) -> list[dict[str, Any]]:
     """
     Консервативный резервный разбор блоков.
-    Берём только ближайшее поле слева и справа от кода на той же строке.
-    Если соответствие неоднозначно, строка пропускается.
     """
     records: list[dict[str, Any]] = []
     code_items = []
@@ -1117,7 +1021,6 @@ def parse_blocks_page(
             if len(block) < 5:
                 continue
             x0, y0, x1, y1, text = block[:5]
-            # Малый допуск снижает риск подхвата соседней строки.
             if abs(float(y0) - code_item["y0"]) <= 2.5:
                 same_line.append({
                     "x0": float(x0),
@@ -1141,14 +1044,11 @@ def parse_blocks_page(
         if not left_blocks or not right_blocks:
             continue
 
-        # Используем ближайший блок, а не самый длинный/«красивый».
         left_blocks.sort(key=lambda item: code_item["x0"] - item["x1"])
         right_blocks.sort(key=lambda item: item["x0"] - code_item["x1"])
         russian = clean_station_name(left_blocks[0]["text"])
         latin = extract_latin_name(right_blocks[0]["text"])
 
-        # Если второй кандидат находится практически на том же расстоянии,
-        # сопоставление неоднозначно — не включаем эту запись.
         if len(left_blocks) > 1:
             d1 = code_item["x0"] - left_blocks[0]["x1"]
             d2 = code_item["x0"] - left_blocks[1]["x1"]
@@ -1182,34 +1082,19 @@ def collect_dict_text(
 
     parts = []
 
-    blocks = dictionary.get(
-        "blocks",
-        [],
-    )
+    blocks = dictionary.get("blocks", [])
 
     for block in blocks:
         if block.get("type") != 0:
             continue
 
-        for line in block.get(
-            "lines",
-            [],
-        ):
-            for span in line.get(
-                "spans",
-                [],
-            ):
-                text = span.get(
-                    "text",
-                    "",
-                )
-
+        for line in block.get("lines", []):
+            for span in line.get("spans", []):
+                text = span.get("text", "")
                 if text:
                     parts.append(text)
 
-    return normalize_space(
-        " ".join(parts)
-    )
+    return normalize_space(" ".join(parts))
 
 
 def parse_dict_page(
@@ -1219,93 +1104,53 @@ def parse_dict_page(
 
     records = []
 
-    text = collect_dict_text(
-        dictionary
-    )
+    text = collect_dict_text(dictionary)
 
     if not text:
         return records
 
-    # Пытаемся разбить на куски вокруг кодов.
     matches = list(
-        re.finditer(
-            r"(?<!\d)(\d{6})(?!\d)",
-            text,
-        )
+        re.finditer(r"(?<!\d)(\d{6})(?!\d)", text)
     )
 
     for match in matches:
         code = match.group(1)
 
-        before = text[
-            max(0, match.start() - 180):
-            match.start()
-        ]
+        before = text[max(0, match.start() - 180):match.start()]
+        after = text[match.end():match.end() + 180]
 
-        after = text[
-            match.end():
-            match.end() + 180
-        ]
+        before = normalize_space(before)
+        after = normalize_space(after)
 
-        before = normalize_space(
-            before
-        )
-
-        after = normalize_space(
-            after
-        )
-
-        # Берём последние слова слева.
         left_parts = before.split()
 
         if len(left_parts) > 12:
             left_parts = left_parts[-12:]
 
-        # Берём первые слова справа.
         right_parts = after.split()
 
         if len(right_parts) > 15:
             right_parts = right_parts[:15]
 
-        russian = normalize_space(
-            " ".join(left_parts)
-        )
+        russian = normalize_space(" ".join(left_parts))
+        latin = normalize_space(" ".join(right_parts))
 
-        latin = normalize_space(
-            " ".join(right_parts)
-        )
-
-        # Отбрасываем явный мусор.
-        russian = clean_station_name(
-            russian
-        )
-
-        latin = clean_station_name(
-            latin
-        )
+        russian = clean_station_name(russian)
+        latin = extract_latin_name(latin)
 
         if not valid_name(russian):
             continue
 
-        # Берём наиболее вероятную первую часть
-        # латинского названия.
         latin_words = []
 
         for word in latin.split():
-            if re.fullmatch(
-                r"[\d,./()]+",
-                word,
-            ):
+            if re.fullmatch(r"[\d,./()]+", word):
                 break
-
             latin_words.append(word)
-
             if len(latin_words) >= 8:
                 break
 
-        latin = normalize_space(
-            " ".join(latin_words)
-        )
+        latin = normalize_space(" ".join(latin_words))
 
         if not valid_name(latin):
             continue
@@ -1332,32 +1177,17 @@ def deduplicate_records(
 ) -> list[dict[str, Any]]:
 
     result = []
-
     seen = set()
 
     for record in records:
-        country_code = record.get(
-            "country_code",
-            "",
-        )
-
-        code = str(
-            record.get(
-                "code",
-                "",
-            )
-        )
-
-        key = (
-            country_code,
-            code,
-        )
+        country_code = record.get("country_code", "")
+        code = str(record.get("code", ""))
+        key = (country_code, code)
 
         if key in seen:
             continue
 
         seen.add(key)
-
         result.append(record)
 
     return result
@@ -1374,7 +1204,6 @@ def normalize_name_for_match(value: str) -> str:
 # PARSE ONE PDF
 # ============================================================
 
-
 def parse_pdf(
     pdf_bytes: bytes,
     country_code: str,
@@ -1382,11 +1211,7 @@ def parse_pdf(
 
     print()
     print("=" * 70)
-    print(
-        f"PARSING COUNTRY: "
-        f"{country_code} "
-        f"{COUNTRIES[country_code]}"
-    )
+    print(f"PARSING COUNTRY: {country_code} {COUNTRIES[country_code]}")
     print("=" * 70)
 
     diagnostic_pdf(pdf_bytes, country_code)
@@ -1408,7 +1233,6 @@ def parse_pdf(
     for page_words in methods["words"]:
         if not page_words:
             continue
-
         word_candidates.extend(
             parse_words_page(page_words, country_code)
         )
@@ -1416,13 +1240,12 @@ def parse_pdf(
     word_candidates = deduplicate_records(word_candidates)
     print("WORD PARSER RECORDS:", len(word_candidates))
 
-    # 2. BLOCKS — запускаем независимо от результата WORDS
+    # 2. BLOCKS
     block_candidates = []
 
     for page_blocks in methods["blocks"]:
         if not page_blocks:
             continue
-
         block_candidates.extend(
             parse_blocks_page(page_blocks, country_code)
         )
@@ -1430,13 +1253,13 @@ def parse_pdf(
     block_candidates = deduplicate_records(block_candidates)
     print("BLOCK PARSER RECORDS:", len(block_candidates))
 
-    # 3. DICT — запускаем независимо от предыдущих результатов
+    # 3. DICT — теперь используется как источник данных,
+    # а не только для диагностики.
     dict_candidates = []
 
     for page_dict in methods["dict"]:
         if not page_dict:
             continue
-
         dict_candidates.extend(
             parse_dict_page(page_dict, country_code)
         )
@@ -1444,76 +1267,38 @@ def parse_pdf(
     dict_candidates = deduplicate_records(dict_candidates)
     print("DICT PARSER RECORDS:", len(dict_candidates))
 
-    # 4. Строгое сопоставление WORDS и BLOCKS.
-    # Если оба парсера нашли один код, но названия расходятся,
-    # такую запись не используем. Если код найден только одним методом,
-    # допускаем его только при прохождении строгой проверки названий.
-    # DICT остаётся диагностическим: в нём нет надёжной привязки текста
-    # к координатам и колонкам таблицы.
-    word_by_code = {
-        record["code"]: record
-        for record in word_candidates
-    }
-    block_by_code = {
-        record["code"]: record
-        for record in block_candidates
-    }
+    # 4. Объединение по приоритету: words > blocks > dict.
+    # Код, уже принятый более надёжным источником,
+    # из менее надёжного не дублируется.
+    candidates: list[dict[str, Any]] = []
+    seen_codes: set[str] = set()
 
-    candidates = []
-    conflicting_codes = []
-
-    for code in sorted(set(word_by_code) | set(block_by_code)):
-        word_record = word_by_code.get(code)
-        block_record = block_by_code.get(code)
-
-        if word_record and block_record:
-            same_ru = normalize_name_for_match(
-                word_record.get("name", "")
-            ) == normalize_name_for_match(
-                block_record.get("name", "")
-            )
-            same_latin = normalize_name_for_match(
-                word_record.get("latin_name", "")
-            ) == normalize_name_for_match(
-                block_record.get("latin_name", "")
-            )
-            if same_ru and same_latin:
-                candidates.append(word_record)
-            else:
-                conflicting_codes.append(code)
-            continue
-
-        # Если совпадающий код найден только одним способом,
-        # запись принимается только после строгой валидации полей.
-        record = word_record or block_record
-        if (
-            record
-            and strict_station_name(record.get("name", ""), "ru")
-            and strict_station_name(record.get("latin_name", ""), "latin")
-        ):
+    for source_name, source_records in (
+        ("words", word_candidates),
+        ("blocks", block_candidates),
+        ("dict", dict_candidates),
+    ):
+        added = 0
+        for record in source_records:
+            code = str(record.get("code", ""))
+            if not code or code in seen_codes:
+                continue
+            if not strict_station_name(record.get("name", ""), "ru"):
+                continue
+            if not strict_station_name(record.get("latin_name", ""), "latin"):
+                continue
             candidates.append(record)
-
-    if conflicting_codes:
-        print(
-            "REJECTED CONFLICTING WORD/BLOCK MATCHES:",
-            len(conflicting_codes),
-        )
-        print(
-            "First conflicting codes:",
-            ", ".join(conflicting_codes[:20]),
-        )
+            seen_codes.add(code)
+            added += 1
+        print(f"ACCEPTED FROM {source_name.upper()}: {added}")
 
     candidates = deduplicate_records(candidates)
+    candidates.sort(key=lambda record: str(record.get("code", "")))
 
-    # Текстовый способ пока используется для диагностики.
-    # Сам по себе найденный код не является полноценной записью:
-    # для неё нужны проверенные названия станции.
     text_codes = []
 
     for page_text in methods["text"]:
-        text_codes.extend(
-            code_candidates_from_text(page_text)
-        )
+        text_codes.extend(code_candidates_from_text(page_text))
 
     text_codes = list(dict.fromkeys(text_codes))
 
@@ -1525,11 +1310,11 @@ def parse_pdf(
     if candidates:
         print()
         print("FIRST RECORDS:")
-
         for record in candidates[:10]:
             print("  ", record)
 
     return candidates
+
 
 # ============================================================
 # VALIDATE COUNTRY RECORDS
@@ -1542,61 +1327,32 @@ def validate_country_records(
 
     if not records:
         raise RuntimeError(
-            f"{country_code}: "
-            f"no station records parsed"
+            f"{country_code}: no station records parsed"
         )
 
     invalid_codes = []
 
     for record in records:
-        code = str(
-            record.get(
-                "code",
-                "",
-            )
-        )
-
-        if not re.fullmatch(
-            r"\d{6}",
-            code,
-        ):
-            invalid_codes.append(
-                record
-            )
+        code = str(record.get("code", ""))
+        if not re.fullmatch(r"\d{6}", code):
+            invalid_codes.append(record)
 
     if invalid_codes:
         raise RuntimeError(
-            f"{country_code}: "
-            f"{len(invalid_codes)} invalid station codes"
+            f"{country_code}: {len(invalid_codes)} invalid station codes"
         )
 
     missing_names = []
 
     for record in records:
-        if not valid_name(
-            record.get(
-                "name",
-                "",
-            )
-        ):
-            missing_names.append(
-                record
-            )
-
-        if not valid_name(
-            record.get(
-                "latin_name",
-                "",
-            )
-        ):
-            missing_names.append(
-                record
-            )
+        if not valid_name(record.get("name", "")):
+            missing_names.append(record)
+        if not valid_name(record.get("latin_name", "")):
+            missing_names.append(record)
 
     if missing_names:
         raise RuntimeError(
-            f"{country_code}: "
-            f"records with invalid names: "
+            f"{country_code}: records with invalid names: "
             f"{len(missing_names)}"
         )
 
@@ -1610,10 +1366,7 @@ def load_existing_database() -> list[dict[str, Any]]:
         return []
 
     try:
-        with OUTPUT_FILE.open(
-            "r",
-            encoding="utf-8",
-        ) as file:
+        with OUTPUT_FILE.open("r", encoding="utf-8") as file:
             data = json.load(file)
 
         if not isinstance(data, list):
@@ -1622,11 +1375,7 @@ def load_existing_database() -> list[dict[str, Any]]:
         return data
 
     except Exception as exc:
-        print(
-            "WARNING: cannot read existing stations.json:",
-            exc,
-        )
-
+        print("WARNING: cannot read existing stations.json:", exc)
         return []
 
 
@@ -1638,16 +1387,6 @@ def merge_records(
     new_records: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
 
-    """
-    В этой версии новые записи заменяют старые
-    для соответствующей страны.
-
-    Остальные страны сохраняются.
-
-    Однако итоговая запись публикуется только после
-    проверки всех 28 стран.
-    """
-
     existing = load_existing_database()
 
     new_country_codes = {
@@ -1658,11 +1397,8 @@ def merge_records(
     result = []
 
     for record in existing:
-        country_code = record.get(
-            "country_code"
-        )
+        country_code = record.get("country_code")
 
-        # The production database contains active countries only.
         if country_code not in ACTIVE_COUNTRIES:
             continue
 
@@ -1673,9 +1409,7 @@ def merge_records(
 
     result.extend(new_records)
 
-    return deduplicate_records(
-        result
-    )
+    return deduplicate_records(result)
 
 
 # ============================================================
@@ -1692,10 +1426,7 @@ def validate_all_countries(
     print("=" * 70)
 
     counters = Counter(
-        station.get(
-            "country_code",
-            "",
-        )
+        station.get("country_code", "")
         for station in stations
     )
 
@@ -1703,24 +1434,12 @@ def validate_all_countries(
 
     for code, country in ACTIVE_COUNTRIES.items():
 
-        count = counters.get(
-            code,
-            0,
-        )
+        count = counters.get(code, 0)
 
         if count:
-            print(
-                f"✓ {code:2} "
-                f"{country:<25} "
-                f"{count:6}"
-            )
+            print(f"✓ {code:2} {country:<25} {count:6}")
         else:
-            print(
-                f"✗ {code:2} "
-                f"{country:<25} "
-                f"{count:6}"
-            )
-
+            print(f"✗ {code:2} {country:<25} {count:6}")
             missing.append(code)
 
     print()
@@ -1729,47 +1448,26 @@ def validate_all_countries(
     print("=" * 70)
 
     found = sum(
-        1
-        for code in ACTIVE_COUNTRIES
+        1 for code in ACTIVE_COUNTRIES
         if counters.get(code, 0) > 0
     )
 
-    print(
-        f"Countries in database: {len(counters)}"
-    )
-
-    print(
-        f"Countries with data:   {found}"
-    )
-
-    print(
-        f"Countries without data: {len(missing)}"
-    )
+    print(f"Countries in database: {len(counters)}")
+    print(f"Countries with data:   {found}")
+    print(f"Countries without data: {len(missing)}")
 
     if missing:
         print()
         print("MISSING:")
-
         for code in missing:
-            print(
-                f"  {code} — "
-                f"{COUNTRIES[code]}"
-            )
-
+            print(f"  {code} — {COUNTRIES[code]}")
         raise RuntimeError(
             "КРИТИЧЕСКАЯ ОШИБКА: "
             f"отсутствует {len(missing)} стран. "
             "stations.json НЕ изменён."
         )
 
-    # --------------------------------------------------------
-    # UNKNOWN COUNTRIES
-    # --------------------------------------------------------
-
-    unexpected = sorted(
-        set(counters)
-        - set(ACTIVE_COUNTRIES)
-    )
+    unexpected = sorted(set(counters) - set(ACTIVE_COUNTRIES))
 
     if unexpected:
         raise RuntimeError(
@@ -1777,152 +1475,69 @@ def validate_all_countries(
             + ", ".join(unexpected)
         )
 
-    # --------------------------------------------------------
-    # CODE VALIDATION
-    # --------------------------------------------------------
-
     invalid_codes = []
 
     for station in stations:
-
-        code = str(
-            station.get(
-                "code",
-                "",
-            )
-        )
-
-        if not re.fullmatch(
-            r"\d{6}",
-            code,
-        ):
-            invalid_codes.append(
-                station
-            )
+        code = str(station.get("code", ""))
+        if not re.fullmatch(r"\d{6}", code):
+            invalid_codes.append(station)
 
     print()
     print("=" * 70)
     print("FINAL VALIDATION")
     print("=" * 70)
 
-    print(
-        f"Total stations: {len(stations)}"
-    )
-
-    print(
-        f"Invalid codes: {len(invalid_codes)}"
-    )
+    print(f"Total stations: {len(stations)}")
+    print(f"Invalid codes: {len(invalid_codes)}")
 
     if invalid_codes:
         for station in invalid_codes[:20]:
-            print(
-                station
-            )
-
-        raise RuntimeError(
-            "Обнаружены некорректные "
-            "6-значные коды."
-        )
-
-    # --------------------------------------------------------
-    # NAMES
-    # --------------------------------------------------------
+            print(station)
+        raise RuntimeError("Обнаружены некорректные 6-значные коды.")
 
     missing_ru = [
-        station
-        for station in stations
-        if not valid_name(
-            station.get(
-                "name",
-                "",
-            )
-        )
+        station for station in stations
+        if not valid_name(station.get("name", ""))
     ]
-
     missing_latin = [
-        station
-        for station in stations
-        if not valid_name(
-            station.get(
-                "latin_name",
-                "",
-            )
-        )
+        station for station in stations
+        if not valid_name(station.get("latin_name", ""))
     ]
 
-    print(
-        f"Without Russian name: {len(missing_ru)}"
-    )
-
-    print(
-        f"Without Latin name:   {len(missing_latin)}"
-    )
+    print(f"Without Russian name: {len(missing_ru)}")
+    print(f"Without Latin name:   {len(missing_latin)}")
 
     if missing_ru:
-        raise RuntimeError(
-            "Есть станции без русского названия."
-        )
-
+        raise RuntimeError("Есть станции без русского названия.")
     if missing_latin:
-        raise RuntimeError(
-            "Есть станции без латинского названия."
-        )
-
-    # --------------------------------------------------------
-    # DUPLICATES
-    # --------------------------------------------------------
+        raise RuntimeError("Есть станции без латинского названия.")
 
     duplicate_groups = {}
 
     for station in stations:
-        key = (
-            station.get("country_code"),
-            station.get("code"),
-        )
-
-        duplicate_groups.setdefault(
-            key,
-            [],
-        ).append(station)
+        key = (station.get("country_code"), station.get("code"))
+        duplicate_groups.setdefault(key, []).append(station)
 
     duplicates = {
-        key: value
-        for key, value
-        in duplicate_groups.items()
+        key: value for key, value in duplicate_groups.items()
         if len(value) > 1
     }
 
-    print(
-        f"Duplicate country/code groups: "
-        f"{len(duplicates)}"
-    )
+    print(f"Duplicate country/code groups: {len(duplicates)}")
 
-    # Дубликаты не обязательно являются
-    # критической ошибкой — старый отчёт показывал,
-    # что ОСЖД действительно содержит такие случаи.
     if duplicates:
         print()
         print("WARNING: DUPLICATES")
-
-        for key, values in list(
-            duplicates.items()
-        )[:20]:
-
-            print(
-                f"  {key[0]} / {key[1]}"
-            )
-
+        for key, values in list(duplicates.items())[:20]:
+            print(f"  {key[0]} / {key[1]}")
             for value in values:
                 print(
-                    f"    - "
-                    f"{value.get('name')} | "
+                    f"    - {value.get('name')} | "
                     f"{value.get('latin_name')}"
                 )
 
     print()
-    print(
-        "✓ FINAL VALIDATION PASSED"
-    )
+    print("✓ FINAL VALIDATION PASSED")
 
 
 # ============================================================
@@ -1933,33 +1548,20 @@ def save_database(
     stations: list[dict[str, Any]],
 ) -> None:
 
-    DATA_DIR.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    temp_file = OUTPUT_FILE.with_suffix(
-        ".json.tmp"
-    )
+    temp_file = OUTPUT_FILE.with_suffix(".json.tmp")
 
-    with temp_file.open(
-        "w",
-        encoding="utf-8",
-    ) as file:
-
+    with temp_file.open("w", encoding="utf-8") as file:
         json.dump(
             stations,
             file,
             ensure_ascii=False,
             indent=2,
         )
-
         file.write("\n")
 
-    # Атомарная замена.
-    temp_file.replace(
-        OUTPUT_FILE
-    )
+    temp_file.replace(OUTPUT_FILE)
 
 
 # ============================================================
@@ -1973,19 +1575,8 @@ def main() -> None:
     print("=" * 70)
 
     print()
-    print(
-        "Target active countries:",
-        len(ACTIVE_COUNTRIES),
-    )
-
-    print(
-        "Output:",
-        OUTPUT_FILE,
-    )
-
-    # --------------------------------------------------------
-    # GET PDF URLS
-    # --------------------------------------------------------
+    print("Target active countries:", len(ACTIVE_COUNTRIES))
+    print("Output:", OUTPUT_FILE)
 
     pdf_urls = get_pdf_urls()
 
@@ -1995,138 +1586,82 @@ def main() -> None:
     print("=" * 70)
 
     for code, country in ACTIVE_COUNTRIES.items():
-
         url = pdf_urls.get(code)
-
         if url:
-            print(
-                f"✓ {code} "
-                f"{country}: "
-                f"{url}"
-            )
+            print(f"✓ {code} {country}: {url}")
         else:
-            print(
-                f"✗ {code} "
-                f"{country}: "
-                f"NO SOURCE"
-            )
+            print(f"✗ {code} {country}: NO SOURCE")
 
     missing_sources = [
-        code
-        for code in ACTIVE_COUNTRIES
+        code for code in ACTIVE_COUNTRIES
         if code not in pdf_urls
     ]
 
     if missing_sources:
         raise RuntimeError(
-            "Не найдены PDF для стран: "
-            + ", ".join(
-                missing_sources
-            )
+            "Не найдены PDF для стран: " + ", ".join(missing_sources)
         )
 
-    # --------------------------------------------------------
-    # DOWNLOAD + PARSE
-    # --------------------------------------------------------
+    existing_records = load_existing_database()
 
-    all_new_records = []
+    all_new_records: list[dict[str, Any]] = []
+    country_statistics: dict[str, int] = {}
 
-    country_statistics = {}
-
-    for country_code, country_name in (
-        ACTIVE_COUNTRIES.items()
-    ):
+    for country_code, country_name in ACTIVE_COUNTRIES.items():
 
         url = pdf_urls[country_code]
 
         print()
         print("=" * 70)
-        print(
-            f"COUNTRY "
-            f"{country_code} — "
-            f"{country_name}"
-        )
+        print(f"COUNTRY {country_code} — {country_name}")
         print("=" * 70)
 
         try:
-            pdf_bytes = download_pdf(
-                url
-            )
+            pdf_bytes = download_pdf(url)
 
-            records = parse_pdf(
-                pdf_bytes,
-                country_code,
-            )
+            records = parse_pdf(pdf_bytes, country_code)
+            records = deduplicate_records(records)
+            validate_country_records(country_code, records)
 
-            records = deduplicate_records(
-                records
-            )
-
-            validate_country_records(
-                country_code,
-                records,
-            )
-
-            # Защита от случайного пересоздания страны из неполного PDF:
-            # если источник дал заметно меньше записей, чем уже было в базе,
-            # остановить обновление и не перезаписывать stations.json.
-            existing_records = load_existing_database()
-            existing_count = sum(
-                1
-                for item in existing_records
+            existing_country_records = [
+                item for item in existing_records
                 if item.get("country_code") == country_code
-            )
+            ]
+            existing_count = len(existing_country_records)
+
             if existing_count:
                 minimum_expected = max(
                     1,
                     math.ceil(existing_count * 0.65),
                 )
                 if len(records) < minimum_expected:
-                    raise RuntimeError(
-                        f"{country_code}: parsed only {len(records)} records; "
-                        f"existing database has {existing_count}. "
+                    print()
+                    print(
+                        f"⚠ {country_code}: parsed only {len(records)} "
+                        f"records; existing database has {existing_count}. "
                         f"Minimum safe threshold is {minimum_expected}. "
-                        "Refusing to replace this country's data."
+                        f"Keeping existing records for this country."
                     )
+                    country_statistics[country_code] = existing_count
+                    # Не добавляем в all_new_records — старые записи
+                    # сохранятся автоматически в merge_records().
+                    continue
 
-            country_statistics[
-                country_code
-            ] = len(records)
-
-            all_new_records.extend(
-                records
-            )
+            country_statistics[country_code] = len(records)
+            all_new_records.extend(records)
 
             print()
-            print(
-                f"✓ {country_code}: "
-                f"{len(records)} records"
-            )
+            print(f"✓ {country_code}: {len(records)} records")
 
         except Exception as exc:
-
             print()
-            print(
-                f"✗ ERROR {country_code}:"
-            )
-            print(
-                repr(exc)
-            )
-
+            print(f"✗ ERROR {country_code}:")
+            print(repr(exc))
             raise RuntimeError(
-                f"Ошибка обработки "
-                f"{country_code} "
-                f"{country_name}: "
-                f"{exc}"
+                f"Ошибка обработки {country_code} {country_name}: {exc}"
             ) from exc
 
-        # Небольшая пауза, чтобы не создавать
-        # слишком много запросов подряд.
         time.sleep(0.5)
-
-    # --------------------------------------------------------
-    # COUNTRY COVERAGE
-    # --------------------------------------------------------
 
     print()
     print("=" * 70)
@@ -2134,32 +1669,15 @@ def main() -> None:
     print("=" * 70)
 
     for code, country in ACTIVE_COUNTRIES.items():
-
-        count = country_statistics.get(
-            code,
-            0,
-        )
-
+        count = country_statistics.get(code, 0)
         if count:
-            print(
-                f"✓ {code} "
-                f"{country:<25} "
-                f"{count}"
-            )
+            print(f"✓ {code} {country:<25} {count}")
         else:
-            print(
-                f"✗ {code} "
-                f"{country:<25} "
-                f"0"
-            )
+            print(f"✗ {code} {country:<25} 0")
 
     missing = [
-        code
-        for code in ACTIVE_COUNTRIES
-        if not country_statistics.get(
-            code,
-            0,
-        )
+        code for code in ACTIVE_COUNTRIES
+        if not country_statistics.get(code, 0)
     ]
 
     if missing:
@@ -2169,59 +1687,31 @@ def main() -> None:
             + ". stations.json НЕ изменён."
         )
 
-    # --------------------------------------------------------
-    # MERGE
-    # --------------------------------------------------------
-
-    merged = merge_records(
-        all_new_records
-    )
+    merged = merge_records(all_new_records)
 
     print()
     print("=" * 70)
     print("MERGED DATABASE")
     print("=" * 70)
 
-    print(
-        "New parsed records:",
-        len(all_new_records),
-    )
+    print("New parsed records:", len(all_new_records))
+    print("Final records:", len(merged))
 
-    print(
-        "Final records:",
-        len(merged),
-    )
-
-    # --------------------------------------------------------
-    # GLOBAL VALIDATION
-    # --------------------------------------------------------
-
-    validate_all_countries(
-        merged
-    )
-
-    # --------------------------------------------------------
-    # SAVE ONLY NOW
-    # --------------------------------------------------------
+    validate_all_countries(merged)
 
     print()
     print("=" * 70)
     print("SAVING DATABASE")
     print("=" * 70)
 
-    save_database(
-        merged
-    )
+    save_database(merged)
 
     print()
     print("=" * 70)
     print("SUCCESS")
     print("=" * 70)
 
-    print(
-        f"stations.json updated: "
-        f"{len(merged)} records"
-    )
+    print(f"stations.json updated: {len(merged)} records")
 
 
 if __name__ == "__main__":
@@ -2229,10 +1719,7 @@ if __name__ == "__main__":
         main()
 
     except KeyboardInterrupt:
-        print(
-            "\nInterrupted by user."
-        )
-
+        print("\nInterrupted by user.")
         sys.exit(130)
 
     except Exception as exc:
@@ -2240,14 +1727,7 @@ if __name__ == "__main__":
         print("=" * 70)
         print("FATAL ERROR")
         print("=" * 70)
-
-        print(
-            str(exc)
-        )
-
+        print(str(exc))
         print()
-        print(
-            "stations.json НЕ изменён."
-        )
-
+        print("stations.json НЕ изменён.")
         sys.exit(1)
