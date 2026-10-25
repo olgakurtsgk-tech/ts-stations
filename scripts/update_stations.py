@@ -329,19 +329,15 @@ def clean_station_name(value: str) -> str:
 def looks_like_operations(value: str) -> bool:
     if not value:
         return False
-
     text = normalize_space(value)
-
-    # Коды операций: 8н,10н; 3;8н;10н; 12н.
-    # Названия станций с цифрами не должны отсеиваться.
-    return bool(
-        re.fullmatch(
-            r"(?i)\d+\s*[а-яa-z]?"
-            r"(?:\s*[,;/.]\s*\d+\s*[а-яa-z]?)*",
-            text,
-        )
+    # Ловит: "8н,10н", "1;3(ТП)", "1; 4;9 (ТП)", "(ТП)", "ТП" и т.п.
+    pattern = (
+        r"(?i)"                     # регистронезависимо
+        r"(?:\(?\s*[A-Za-zА-Яа-яЁё]{1,3}\s*\)?)?"  # необязательная буквенная метка, возможно в скобках
+        r"(?:\d+\s*[A-Za-zА-Яа-яЁё]?\s*[,;/.]?\s*)*" # последовательность чисел с разделителями
+        r"(?:\(?\s*[A-Za-zА-Яа-яЁё]{1,3}\s*\)?)?"  # ещё одна метка в конце
     )
-
+    return bool(re.fullmatch(pattern, text))
 
 def valid_name(value: str) -> bool:
     value = clean_station_name(value)
