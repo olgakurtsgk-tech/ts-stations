@@ -1253,7 +1253,7 @@ def parse_pdf(
     block_candidates = deduplicate_records(block_candidates)
     print("BLOCK PARSER RECORDS:", len(block_candidates))
 
-    # 3. DICT — теперь используется как источник данных,
+    # 3. DICT — используется как источник данных,
     # а не только для диагностики.
     dict_candidates = []
 
@@ -1616,19 +1616,26 @@ def main() -> None:
         print(f"COUNTRY {country_code} — {country_name}")
         print("=" * 70)
 
+        existing_country_records = [
+            item for item in existing_records
+            if item.get("country_code") == country_code
+        ]
+        existing_count = len(existing_country_records)
+
         try:
             pdf_bytes = download_pdf(url)
 
             records = parse_pdf(pdf_bytes, country_code)
             records = deduplicate_records(records)
-            validate_country_records(country_code, records)
 
-            existing_country_records = [
-                item for item in existing_records
-                if item.get("country_code") == country_code
-            ]
-            existing_count = len(existing_country_records)
-
+            # ВАЖНО: сравнение с уже существующим объёмом данных
+            # выполняется ДО строгой валидации. Это защищает от:
+            #   • сканированных PDF (например, HU) — из них
+            #     нечего извлечь, но старые данные у нас есть;
+            #   • резкого падения качества парсинга на конкретной
+            #     стране (например, AZ выдаёт 62 вместо 107).
+            # В обоих случаях страна пропускается, а её старые
+            # записи сохраняются в итоговом stations.json.
             if existing_count:
                 minimum_expected = max(
                     1,
@@ -1643,9 +1650,11 @@ def main() -> None:
                         f"Keeping existing records for this country."
                     )
                     country_statistics[country_code] = existing_count
-                    # Не добавляем в all_new_records — старые записи
-                    # сохранятся автоматически в merge_records().
                     continue
+
+            # Только теперь, когда мы уверены, что данные лучше
+            # существующих, валидируем их строго.
+            validate_country_records(country_code, records)
 
             country_statistics[country_code] = len(records)
             all_new_records.extend(records)
@@ -1657,6 +1666,21 @@ def main() -> None:
             print()
             print(f"✗ ERROR {country_code}:")
             print(repr(exc))
+
+            # Если для страны уже есть данные — оставляем их
+            # и идём дальше. Это важно для стран со «сломанными»
+            # PDF (сканы, смена формата и т. п.).
+            if existing_count:
+                print()
+                print(
+                    f"⚠ {country_code}: keeping "
+                    f"{existing_count} existing records "
+                    f"and continuing."
+                )
+                country_statistics[country_code] = existing_count
+                continue
+
+            # Если данных нет ни старых, ни новых — это фатально.
             raise RuntimeError(
                 f"Ошибка обработки {country_code} {country_name}: {exc}"
             ) from exc
