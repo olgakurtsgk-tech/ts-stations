@@ -5432,6 +5432,13 @@
     "latin_name": "Ajjteke Bi"
   },
   {
+    "name": "Ак-Булак",
+    "code": "667307",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Ak-Bulak"
+  },
+  {
     "name": "Ак-Куль",
     "code": "692601",
     "country": "Казахстан",
@@ -6024,7 +6031,7 @@
     "code": "666501",
     "country": "Казахстан",
     "country_code": "KZ",
-    "latin_name": "Iletsk I (eksp.)"
+    "latin_name": "Iletsk I"
   },
   {
     "name": "Илийская",
@@ -6783,6 +6790,13 @@
     "latin_name": "Chagan"
   },
   {
+    "name": "Чашкан",
+    "code": "667203",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Chashkan"
+  },
+  {
     "name": "Черемшанка Чильбастау",
     "code": "703405",
     "country": "Казахстан",
@@ -6949,13 +6963,6 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Zhanauzen"
-  },
-  {
-    "name": "адыр Ак-Булак",
-    "code": "667307",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Ak-Bulak"
   },
   {
     "name": "азалы Казанбасы",
@@ -8188,13 +8195,6 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Ust"
-  },
-  {
-    "name": "н Чаглинка Чашкан",
-    "code": "667203",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Chashkan"
   },
   {
     "name": "н Чкалово Шагыр",
@@ -23688,13 +23688,6 @@
     "latin_name": "JUTOVO"
   },
   {
-    "name": "ЗАБАЙКАЛЬСК",
-    "code": "946801",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "ZABAIKALSK"
-  },
-  {
     "name": "ЗАБАЙКАЛЬСК (ЭКСП.) ЗЧ",
     "code": "947109",
     "country": "Россия",
@@ -24260,6 +24253,13 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "ZIURZIA"
+  },
+  {
+    "name": "Забайкальск",
+    "code": "946801",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Zabaykalsk"
   },
   {
     "name": "ИБРЕСИ",
@@ -32746,13 +32746,6 @@
     "latin_name": "NAUSHKI"
   },
   {
-    "name": "НАУШКИ (ЭКСП.) ДСВН",
-    "code": "937200",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "NAUSHKI (EKSP.) DSVN"
-  },
-  {
     "name": "НАУШКИ (ЭКСП.) КЖД",
     "code": "937304",
     "country": "Россия",
@@ -33838,6 +33831,13 @@
     "latin_name": "NIANDOMA"
   },
   {
+    "name": "Наушки",
+    "code": "937200",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Naushki"
+  },
+  {
     "name": "ОБГ. ПУНКТ № 201",
     "code": "812407",
     "country": "Россия",
@@ -34286,13 +34286,6 @@
     "latin_name": "OREL"
   },
   {
-    "name": "ОРЕНБУРГ",
-    "code": "811905",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "ORENBURG"
-  },
-  {
     "name": "ОРЕХОВО",
     "code": "037804",
     "country": "Россия",
@@ -34312,13 +34305,6 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "ORLOVKA"
-  },
-  {
-    "name": "ОРСК",
-    "code": "810006",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "ORSK"
   },
   {
     "name": "ОРСК-НОВЫЙ-ГОРОД (ЭКСП.)",
@@ -34445,6 +34431,13 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "OIAT-VOLHOVSTROEVSKII"
+  },
+  {
+    "name": "Орск",
+    "code": "810006",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Orsk"
   },
   {
     "name": "ПАВЕЛЕЦ-СЫЗРАНСКИЙ",
@@ -36806,13 +36799,6 @@
     "latin_name": "ROMANOVKA"
   },
   {
-    "name": "РОСЛАВЛЬ",
-    "code": "177408",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "ROSLAVL I"
-  },
-  {
     "name": "РОССОЛОВО",
     "code": "304705",
     "country": "Россия",
@@ -37119,6 +37105,13 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "RIAZAN-OKA-PRISTAN (PEREV.)"
+  },
+  {
+    "name": "Рославль I",
+    "code": "177408",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Roslavl I"
   },
   {
     "name": "САБУРОВО",
@@ -38176,13 +38169,6 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "SMIRNYH-SAHALINSKII"
-  },
-  {
-    "name": "СМОЛЕНСК",
-    "code": "170108",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "SMOLENSK"
   },
   {
     "name": "СМОЛЕНСК-СОРТИРОВОЧНЫЙ",
@@ -39394,6 +39380,20 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "SIUZIUM"
+  },
+  {
+    "name": "Смоленск",
+    "code": "170108",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Smolensk"
+  },
+  {
+    "name": "Соль-Илецк I",
+    "code": "811905",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Sol-Iletsk I"
   },
   {
     "name": "ТАБСАВЭЙ",
