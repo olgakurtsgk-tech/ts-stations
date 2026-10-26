@@ -273,7 +273,7 @@
     "latin_name": "H.Z.Tagiyev"
   },
   {
-    "name": "Гаджи Зейналабдин",
+    "name": "Гаджи Зайналабдин",
     "code": "546302",
     "country": "Азербайджан",
     "country_code": "AZ",
@@ -411,6 +411,13 @@
     "country": "Азербайджан",
     "country_code": "AZ",
     "latin_name": "Zira"
+  },
+  {
+    "name": "Имишли",
+    "code": "552207",
+    "country": "Азербайджан",
+    "country_code": "AZ",
+    "latin_name": "Imishli"
   },
   {
     "name": "Казах",
@@ -3661,13 +3668,6 @@
     "latin_name": "Kobuleti"
   },
   {
-    "name": "Констанца)",
-    "code": "572605",
-    "country": "Грузия",
-    "country_code": "GE",
-    "latin_name": "Konstants"
-  },
-  {
     "name": "Копитнари",
     "code": "574507",
     "country": "Грузия",
@@ -3815,39 +3815,53 @@
     "latin_name": "Poti"
   },
   {
-    "name": "Поти",
-    "code": "576201",
-    "country": "Грузия",
-    "country_code": "GE",
-    "latin_name": "Poti (exp.)"
-  },
-  {
-    "name": "Поти (паром",
+    "name": "Поти (паром эксп. на Кавказ)",
     "code": "576108",
     "country": "Грузия",
     "country_code": "GE",
-    "latin_name": "Poti (parom"
+    "latin_name": "Poti (parom, exp., Kavkaz)"
   },
   {
-    "name": "Поти (паром",
-    "code": "576409",
-    "country": "Грузия",
-    "country_code": "GE",
-    "latin_name": "Poti (parom"
-  },
-  {
-    "name": "Поти (паром",
+    "name": "Поти (паром, эксп. на Варну)",
     "code": "572003",
     "country": "Грузия",
     "country_code": "GE",
-    "latin_name": "Poti (parom"
+    "latin_name": "Poti (parom, exp.Varna)"
+  },
+  {
+    "name": "Поти (паром, эксп. на Констанцу)",
+    "code": "572605",
+    "country": "Грузия",
+    "country_code": "GE",
+    "latin_name": "Poti (parom, exp. Konstantsa)"
+  },
+  {
+    "name": "Поти (паром, эксп. на Паромная)",
+    "code": "572304",
+    "country": "Грузия",
+    "country_code": "GE",
+    "latin_name": "Poti (parom, exp. Paromnaya)"
+  },
+  {
+    "name": "Поти (паромная-эксп. на Керчь)",
+    "code": "576409",
+    "country": "Грузия",
+    "country_code": "GE",
+    "latin_name": "Poti (parom, exp., Kerch)"
   },
   {
     "name": "Поти (порт, эксп.)",
     "code": "572200",
     "country": "Грузия",
     "country_code": "GE",
-    "latin_name": "Poti (port"
+    "latin_name": "Poti (port, exp.)"
+  },
+  {
+    "name": "Поти (эксп.)",
+    "code": "576201",
+    "country": "Грузия",
+    "country_code": "GE",
+    "latin_name": "Poti (exp.)"
   },
   {
     "name": "Риони",
