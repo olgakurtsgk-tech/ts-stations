@@ -101,7 +101,7 @@ MANUAL_ADDITIONS = [
 
     # Азербайджан
     {"name": "Астара (эксп.)", "code": "554503", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Astara (eksp.)"},
-    {"name": "Гаджи Зайналабдин", "code": "546302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Hacı Zeynalabdin"},
+    {"name": "Гаджи Зейналабдин", "code": "546302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Hacı Zeynalabdin"},
 
     # Россия (Туапсе и Автово)
     {"name": "Автово (перев.)", "code": "035404", "country": "Россия", "country_code": "RU", "latin_name": "Avtovo (perev.)"},
