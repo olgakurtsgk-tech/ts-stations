@@ -139,6 +139,7 @@ def strict_station_name(value: str, script: str) -> bool:
     if re.search(r"(?<!\d)\d{6}(?!\d)", value): return False
     if script == "ru" and not re.search(r"[А-Яа-яЁё]", value): return False
     if script == "latin" and not re.search(r"[A-Za-z]", value): return False
+    if len(value.split()) > 10: return False # немного увеличили лимит слов для длинных названий
     return True
 
 def make_record(country_code, code, ru, lat, border_code=""):
@@ -209,41 +210,38 @@ def get_pdf_urls() -> dict[str, str]:
 # ============================================================
 
 def parse_text_page(text: str, country_code: str) -> list[dict]:
-    """Парсит сплошной текст (вытаскивает названия слева и справа от 6-значного кода)."""
+    """Парсит сплошной текст, склеивая переносы строк."""
     records = []
-    lines = text.split('\n')
+    # Склеиваем весь текст в одну строку, чтобы переносы строк не разрывали названия
+    text = normalize_space(text.replace('\n', ' '))
     
-    for i, line in enumerate(lines):
-        line = normalize_space(line)
-        if len(line) < 10: continue
-        
-        match = re.search(r'(?<!\d)(\d{6})(?!\d)', line)
-        if not match: continue
-        
+    matches = list(re.finditer(r'(?<!\d)(\d{6})(?!\d)', text))
+    
+    for i, match in enumerate(matches):
         code = match.group(1)
-        left = line[:match.start()].strip()
-        right = line[match.end():].strip()
         
-        # Если слева пусто, берем предыдущую строку (название съехало наверх)
-        if not left and i > 0:
-            prev_line = normalize_space(lines[i-1])
-            if prev_line and not re.search(r'\d{6}', prev_line):
-                left = prev_line
-                
-        # Оставляем только русскую часть в левой колонке (убираем грузинский текст)
-        if left:
-            ru_match = re.search(r'[А-Яа-яЁё][А-Яа-яЁё\s\-\(\)\.,]*$', left)
-            if ru_match:
-                left = ru_match.group(0).strip()
-                
-        lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right)
+        start_pos = matches[i-1].end() if i > 0 else 0
+        left_raw = text[start_pos:match.start()].strip()
+        
+        end_pos = matches[i+1].start() if i + 1 < len(matches) else len(text)
+        right_raw = text[match.end():end_pos].strip()
+        
+        # Ищем последнее вхождение русского названия
+        ru_match = re.search(r'([А-Яа-яЁё][А-Яа-яЁё\s\-\(\)\.,]*)$', left_raw)
+        if not ru_match: continue
+        left = ru_match.group(1).strip()
+        
+        # Очищаем от лишних пробелов внутри скобок и перед запятыми
+        left = re.sub(r'\s+([,\.\)])', r'\1', left)
+        left = re.sub(r'([\(])\s+', r'\1', left)
+        
+        # Ищем латинское название
+        lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right_raw)
         if not lat_match: continue
+        lat = lat_match.group(1).strip()
         
-        ru = clean_station_name(left)
-        lat = clean_station_name(lat_match.group(1))
-        
-        if strict_station_name(ru, "ru") and strict_station_name(lat, "latin"):
-            rec = make_record(country_code, code, ru, lat)
+        if strict_station_name(left, "ru") and strict_station_name(lat, "latin"):
+            rec = make_record(country_code, code, left, lat)
             if rec: records.append(rec)
             
     return records
@@ -253,7 +251,7 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
     if not words: return records
     
     groups = []
-    # Увеличили допуск по Y до 10.0, чтобы склеивать слова на одной визуальной строке
+    # Увеличили допуск по Y до 10.0
     for word in sorted(words, key=lambda i: (round(float(i[1]), 1), float(i[0]))):
         placed = False
         for g in groups[-30:]:
@@ -270,22 +268,22 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
                 code = normalize_code(str(w[4]) + str(row[i+1][4])); skip = 2
             if not code: continue
             
-            left = " ".join(str(x[4]) for x in row[:i])
+            left = clean_station_name(" ".join(str(x[4]) for x in row[:i]))
             right = " ".join(str(x[4]) for x in row[i+skip:])
             
-            # Очистка левой части от грузинского текста
             if left:
-                ru_match = re.search(r'[А-Яа-яЁё][А-Яа-яЁё\s\-\(\)\.,]*$', left)
+                ru_match = re.search(r'([А-Яа-яЁё][А-Яа-яЁё\s\-\(\)\.,]*)$', left)
                 if ru_match:
-                    left = ru_match.group(0).strip()
+                    left = ru_match.group(1).strip()
+                    left = re.sub(r'\s+([,\.\)])', r'\1', left)
+                    left = re.sub(r'([\(])\s+', r'\1', left)
             
             lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right)
             if not lat_match: continue
             
-            ru = clean_station_name(left)
             lat = clean_station_name(lat_match.group(1))
-            if strict_station_name(ru, "ru") and strict_station_name(lat, "latin"):
-                rec = make_record(country_code, code, ru, lat)
+            if strict_station_name(left, "ru") and strict_station_name(lat, "latin"):
+                rec = make_record(country_code, code, left, lat)
                 if rec: records.append(rec)
     return records
 
@@ -303,7 +301,7 @@ def parse_pdf(pdf_bytes: bytes, country_code: str) -> list[dict]:
 
     final = []
     seen = set()
-    # Отдаем приоритет парсеру текста (он точнее собирает полные названия)
+    # Приоритет отдаем парсеру текста, так как он лучше справляется с переносами
     for source in (t_recs, w_recs):
         for r in source:
             if r["code"] not in seen:
