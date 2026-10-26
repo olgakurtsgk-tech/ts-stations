@@ -91,6 +91,7 @@ MANUAL_ADDITIONS = [
     # Россия (граница с Беларусью)
     {"name": "Смоленск", "code": "170108", "country": "Россия", "country_code": "RU", "latin_name": "Smolensk"},
     {"name": "Рославль I", "code": "177408", "country": "Россия", "country_code": "RU", "latin_name": "Roslavl I"},
+    {"name": "Светлогорск-на-Березине", "code": "154209", "country": "Беларусь", "country_code": "BY", "latin_name": "Svetlogorsk-na-Berezine"},
     
     # Россия (граница с Китаем)
     {"name": "Забайкальск", "code": "946801", "country": "Россия", "country_code": "RU", "latin_name": "Zabaykalsk"},
