@@ -55,7 +55,7 @@ EXCLUDED_COUNTRIES = {"IR", "CN", "CZ", "KR", "RO", "LA"}
 ACTIVE_COUNTRIES = {code: name for code, name in COUNTRIES.items() if code not in EXCLUDED_COUNTRIES}
 
 # ============================================================
-# РУЧНЫЕ ДОПОЛНЕНИЯ (Станции, которых нет в PDF ОСЖД)
+# РУЧНЫЕ ДОПОЛНЕНИЯ И ИСПРАВЛЕНИЯ
 # ============================================================
 MANUAL_ADDITIONS = [
     # Казахстан (граница с РФ и внутренние)
@@ -63,6 +63,9 @@ MANUAL_ADDITIONS = [
     {"name": "Ак-Булак", "code": "667307", "country": "Казахстан", "country_code": "KZ", "latin_name": "Ak-Bulak"},
     {"name": "Чашкан", "code": "667203", "country": "Казахстан", "country_code": "KZ", "latin_name": "Chashkan"},
     {"name": "Зыряновск", "code": "714601", "country": "Казахстан", "country_code": "KZ", "latin_name": "Zyryanovsk"},
+    # ИСПРАВЛЕНИЕ ГЛЮКОВ ПАРСЕРА (Болашак и Бопай)
+    {"name": "Бопай", "code": "664506", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bopay"},
+    {"name": "Болашак", "code": "664600", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bolashak"},
     
     # Россия (граница с КЗ)
     {"name": "Карталы I", "code": "816203", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I"},
@@ -82,7 +85,7 @@ MANUAL_ADDITIONS = [
 ]
 
 # ============================================================
-# FALLBACK PDF URLS (Наивысший приоритет)
+# FALLBACK PDF URLS
 # ============================================================
 
 FALLBACK_PDFS = {
@@ -152,8 +155,8 @@ def is_noise_name(value: str) -> bool:
 
 def clean_station_name(value: str) -> str:
     value = normalize_space(value)
-    # Удаляем одиночные буквы в начале строки (например, "л Болашак" -> "Болашак")
-    value = re.sub(r'^[А-Яа-яЁёA-Za-z]\s+', '', value)
+    # УЛУЧШЕННАЯ ОЧИСТКА: удаляем 1 или 2 символа (буквы/цифры) в начале строки, если после них идет пробел
+    value = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', value)
     return re.sub(r"^[|;:,]+|[|;:,]+$", "", value).strip()
 
 def valid_name(value: str) -> bool:
@@ -239,18 +242,14 @@ def get_pdf_urls() -> dict[str, str]:
 # ============================================================
 
 def parse_text_page(text: str, country_code: str) -> list[dict]:
-    """Парсит сплошной текст, склеивая переносы строк."""
     records = []
     text = normalize_space(text.replace('\n', ' '))
-    
     matches = list(re.finditer(r'(?<!\d)(\d{6})(?!\d)', text))
     
     for i, match in enumerate(matches):
         code = match.group(1)
-        
         start_pos = matches[i-1].end() if i > 0 else 0
         left_raw = text[start_pos:match.start()].strip()
-        
         end_pos = matches[i+1].start() if i + 1 < len(matches) else len(text)
         right_raw = text[match.end():end_pos].strip()
         
@@ -260,8 +259,6 @@ def parse_text_page(text: str, country_code: str) -> list[dict]:
         
         left = re.sub(r'\s+([,\.\)])', r'\1', left)
         left = re.sub(r'([\(])\s+', r'\1', left)
-        # Очистка от одиночных букв в начале
-        left = re.sub(r'^[А-Яа-яЁёA-Za-z]\s+', '', left)
         
         lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right_raw)
         if not lat_match: continue
@@ -270,13 +267,11 @@ def parse_text_page(text: str, country_code: str) -> list[dict]:
         if strict_station_name(left, "ru") and strict_station_name(lat, "latin"):
             rec = make_record(country_code, code, left, lat)
             if rec: records.append(rec)
-            
     return records
 
 def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
     records = []
     if not words: return records
-    
     groups = []
     for word in sorted(words, key=lambda i: (round(float(i[1]), 1), float(i[0]))):
         placed = False
@@ -303,8 +298,6 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
                     left = ru_match.group(1).strip()
                     left = re.sub(r'\s+([,\.\)])', r'\1', left)
                     left = re.sub(r'([\(])\s+', r'\1', left)
-                    # Очистка от одиночных букв в начале
-                    left = re.sub(r'^[А-Яа-яЁёA-Za-z]\s+', '', left)
             
             lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right)
             if not lat_match: continue
@@ -317,12 +310,10 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
 
 def parse_pdf(pdf_bytes: bytes, country_code: str) -> list[dict]:
     doc = fitz.open(stream=pdf_bytes, filetype="pdf")
-    
     t_recs, w_recs = [], []
     for page in doc:
         text = page.get_text("text")
         words = page.get_text("words")
-        
         t_recs.extend(parse_text_page(text, country_code))
         w_recs.extend(parse_words_page(words, country_code))
     doc.close()
@@ -392,6 +383,7 @@ def main():
     merged = [r for r in existing if r.get("country_code") not in new_countries]
     merged.extend(all_new)
     
+    # ПРИМЕНЯЕМ РУЧНЫЕ СТАНЦИИ (наивысший приоритет)
     manual_keys = {(m["country_code"], m["code"]) for m in MANUAL_ADDITIONS}
     merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
     merged.extend(MANUAL_ADDITIONS)
