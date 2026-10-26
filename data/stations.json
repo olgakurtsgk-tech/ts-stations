@@ -5551,18 +5551,18 @@
     "latin_name": "Aktau-Port"
   },
   {
-    "name": "Актобе",
+    "name": "Актобе I",
     "code": "689503",
     "country": "Казахстан",
     "country_code": "KZ",
-    "latin_name": "Aktobe -I"
+    "latin_name": "Aktobe I"
   },
   {
-    "name": "Актобе -I",
+    "name": "Актобе II",
     "code": "689607",
     "country": "Казахстан",
     "country_code": "KZ",
-    "latin_name": "Aktobe -I I"
+    "latin_name": "Aktobe II"
   },
   {
     "name": "Актогай",
