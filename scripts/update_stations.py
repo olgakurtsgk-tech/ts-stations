@@ -101,14 +101,24 @@ MANUAL_ADDITIONS = [
 
     # Азербайджан
     {"name": "Астара (эксп.)", "code": "554503", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Astara (eksp.)"},
-    {"name": "Гаджи Зейналабдин", "code": "546302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Hacı Zeynalabdin"},
+    {"name": "Гаджи Зайналабдин", "code": "546302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Hacı Zeynalabdin"},
+    {"name": "Имишли", "code": "552207", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Imishli"}, # ДОБАВИЛИ ИМИШЛИ
 
     # Россия (Туапсе и Автово)
     {"name": "Автово (перев.)", "code": "035404", "country": "Россия", "country_code": "RU", "latin_name": "Avtovo (perev.)"},
     {"name": "Туапсе-Сортировочная (перев.)", "code": "533600", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (perev.)"},
-    {"name": "Туапсе-Сортировочная (слив.)", "code": "533507", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (sliv.)"}
-]
+    {"name": "Туапсе-Сортировочная (слив.)", "code": "533507", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (sliv.)"},
 
+    # Грузия (Поти и паромы - эталонные названия из R-Tariff)
+    {"name": "Поти", "code": "572107", "country": "Грузия", "country_code": "GE", "latin_name": "Poti"},
+    {"name": "Поти (эксп.)", "code": "576201", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (exp.)"},
+    {"name": "Поти (порт, эксп.)", "code": "572200", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (port, exp.)"},
+    {"name": "Поти (паромная-эксп. на Керчь)", "code": "576409", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp., Kerch)"},
+    {"name": "Поти (паром эксп. на Кавказ)", "code": "576108", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp., Kavkaz)"},
+    {"name": "Поти (паром, эксп. на Констанцу)", "code": "572605", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp. Konstantsa)"},
+    {"name": "Поти (паром, эксп. на Паромная)", "code": "572304", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp. Paromnaya)"},
+    {"name": "Поти (паром, эксп. на Варну)", "code": "572003", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp.Varna)"}
+]
 # ============================================================
 # FALLBACK PDF URLS
 # ============================================================
