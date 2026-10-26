@@ -418,11 +418,17 @@ def download_pdf(url: str) -> bytes:
     print("DOWNLOAD")
     print(url)
 
-    response = requests.get(
-        url,
-        headers=HEADERS,
-        timeout=REQUEST_TIMEOUT,
-    )
+    # Жесткий таймаут: 10 секунд на подключение, 30 секунд на чтение.
+    # Если сервер ОСЖД тормозит, скрипт выдаст ошибку и пойдет дальше,
+    # сохранив старые данные страны.
+    try:
+        response = requests.get(
+            url,
+            headers=HEADERS,
+            timeout=(10, 30),
+        )
+    except requests.exceptions.RequestException as exc:
+        raise RuntimeError(f"Network error downloading {url}: {exc}")
 
     print("HTTP STATUS:", response.status_code)
     print("CONTENT TYPE:", response.headers.get("content-type"))
