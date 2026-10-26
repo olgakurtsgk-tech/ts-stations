@@ -66,6 +66,10 @@ MANUAL_ADDITIONS = [
     {"name": "Бопай", "code": "664506", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bopay"},
     {"name": "Болашак", "code": "664600", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bolashak"},
     {"name": "Арал Тенизи", "code": "670309", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aral Tenizi"},
+
+    # Казахстан (Актобе)
+    {"name": "Актобе I", "code": "689503", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktobe I"},
+    {"name": "Актобе II", "code": "689607", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktobe II"}, 
     
     # Казахстан (Достык)
     {"name": "Достык", "code": "708403", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk"},
