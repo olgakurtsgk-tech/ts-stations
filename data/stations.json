@@ -1456,14 +1456,14 @@
     "latin_name": "Beloozersk"
   },
   {
-    "name": "Белынковичи",
+    "name": "Белынковичи (эксп.)",
     "code": "159306",
     "country": "Беларусь",
     "country_code": "BY",
     "latin_name": "Belynkovichi (eksp.)"
   },
   {
-    "name": "Беняконе",
+    "name": "Беняконе (эксп.)",
     "code": "136605",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1491,7 +1491,7 @@
     "latin_name": "Bernady"
   },
   {
-    "name": "Бигосово",
+    "name": "Бигосово (эксп.)",
     "code": "161401",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1561,7 +1561,7 @@
     "latin_name": "Brest-Severnyi"
   },
   {
-    "name": "Брест-Северный",
+    "name": "Брест-Северный (эксп.)",
     "code": "130505",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1589,7 +1589,7 @@
     "latin_name": "Bruzgi"
   },
   {
-    "name": "Брузги",
+    "name": "Брузги (эксп.)",
     "code": "134807",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1694,7 +1694,7 @@
     "latin_name": "Vysoko-Litovsk"
   },
   {
-    "name": "Высоко-Литовск",
+    "name": "Высоко-Литовск (эксп.)",
     "code": "131809",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1757,7 +1757,7 @@
     "latin_name": "Goryn"
   },
   {
-    "name": "Горынь",
+    "name": "Горынь (эксп.)",
     "code": "138808",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1785,7 +1785,7 @@
     "latin_name": "Gudogai"
   },
   {
-    "name": "Гудогай",
+    "name": "Гудогай (эксп.)",
     "code": "164107",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1855,7 +1855,7 @@
     "latin_name": "Dubravy"
   },
   {
-    "name": "Езерище",
+    "name": "Езерище (эксп.)",
     "code": "161005",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1918,7 +1918,7 @@
     "latin_name": "Zadneprovskaja"
   },
   {
-    "name": "Закопытье",
+    "name": "Закопытье (эксп.)",
     "code": "150405",
     "country": "Беларусь",
     "country_code": "BY",
@@ -1939,7 +1939,7 @@
     "latin_name": "Zalesje"
   },
   {
-    "name": "Заольша",
+    "name": "Заольша (эксп.)",
     "code": "165805",
     "country": "Беларусь",
     "country_code": "BY",
@@ -2408,7 +2408,7 @@
     "latin_name": "Osinovka"
   },
   {
-    "name": "Осиновка",
+    "name": "Осиновка (эксп.)",
     "code": "169100",
     "country": "Беларусь",
     "country_code": "BY",
@@ -2597,7 +2597,7 @@
     "latin_name": "Svisloch"
   },
   {
-    "name": "Свислочь",
+    "name": "Свислочь (эксп.)",
     "code": "135706",
     "country": "Беларусь",
     "country_code": "BY",
@@ -2618,7 +2618,7 @@
     "latin_name": "Skidel"
   },
   {
-    "name": "Словечно",
+    "name": "Словечно (эксп.)",
     "code": "151200",
     "country": "Беларусь",
     "country_code": "BY",
@@ -2688,14 +2688,14 @@
     "latin_name": "Terekhovka"
   },
   {
-    "name": "Тереховка",
+    "name": "Тереховка (эксп.)",
     "code": "150805",
     "country": "Беларусь",
     "country_code": "BY",
     "latin_name": "Terekhovka (eksp.)"
   },
   {
-    "name": "Терюха",
+    "name": "Терюха (эксп.)",
     "code": "151003",
     "country": "Беларусь",
     "country_code": "BY",
@@ -2779,7 +2779,7 @@
     "latin_name": "KHotislav"
   },
   {
-    "name": "Хотислав",
+    "name": "Хотислав (эксп.)",
     "code": "132106",
     "country": "Беларусь",
     "country_code": "BY",
@@ -3437,7 +3437,7 @@
     "latin_name": "Vale (exp.)"
   },
   {
-    "name": "Варна)",
+    "name": "Варна) (паром)",
     "code": "579905",
     "country": "Грузия",
     "country_code": "GE",
@@ -3647,7 +3647,7 @@
     "latin_name": "Kachreti"
   },
   {
-    "name": "Керчь)",
+    "name": "Керчь) (паром)",
     "code": "578006",
     "country": "Грузия",
     "country_code": "GE",
@@ -4109,7 +4109,7 @@
     "latin_name": "Tbilisi-tovarnaya (exp.) ("
   },
   {
-    "name": "эксп.",
+    "name": "эксп. (паром)",
     "code": "579708",
     "country": "Грузия",
     "country_code": "GE",
@@ -8645,7 +8645,7 @@
     "latin_name": "Bugeniai"
   },
   {
-    "name": "Бугяняй",
+    "name": "Бугяняй (эксп.)",
     "code": "126209",
     "country": "Литва",
     "country_code": "LT",
@@ -8827,7 +8827,7 @@
     "latin_name": "Kybartai"
   },
   {
-    "name": "Кибартай",
+    "name": "Кибартай (эксп.)",
     "code": "124400",
     "country": "Литва",
     "country_code": "LT",
@@ -8848,7 +8848,7 @@
     "latin_name": "Klaipeda"
   },
   {
-    "name": "Клайпеда",
+    "name": "Клайпеда (эксп.)",
     "code": "108107",
     "country": "Литва",
     "country_code": "LT",
@@ -8883,7 +8883,7 @@
     "latin_name": "Kena"
   },
   {
-    "name": "Кяна",
+    "name": "Кяна (эксп.)",
     "code": "120202",
     "country": "Литва",
     "country_code": "LT",
@@ -8904,7 +8904,7 @@
     "latin_name": "Mazeikiai"
   },
   {
-    "name": "Мажейкяй",
+    "name": "Мажейкяй (эксп.)",
     "code": "126505",
     "country": "Литва",
     "country_code": "LT",
@@ -8939,7 +8939,7 @@
     "latin_name": "Mockava"
   },
   {
-    "name": "Моцкава",
+    "name": "Моцкава (эксп.)",
     "code": "123003",
     "country": "Литва",
     "country_code": "LT",
@@ -8974,7 +8974,7 @@
     "latin_name": "Pagegiai"
   },
   {
-    "name": "Пагегяй",
+    "name": "Пагегяй (эксп.)",
     "code": "107903",
     "country": "Литва",
     "country_code": "LT",
@@ -9051,7 +9051,7 @@
     "latin_name": "Rokiskis"
   },
   {
-    "name": "Рокишкис",
+    "name": "Рокишкис (эксп.)",
     "code": "127907",
     "country": "Литва",
     "country_code": "LT",
@@ -9072,7 +9072,7 @@
     "latin_name": "Skuodas"
   },
   {
-    "name": "Стасилос***",
+    "name": "Стасилос*** (эксп.)",
     "code": "121101",
     "country": "Литва",
     "country_code": "LT",
@@ -9114,7 +9114,7 @@
     "latin_name": "Turmantas"
   },
   {
-    "name": "Турмантас",
+    "name": "Турмантас (эксп.)",
     "code": "129207",
     "country": "Литва",
     "country_code": "LT",
@@ -11620,21 +11620,21 @@
     "latin_name": "GDANSK PORT POLNOCNY-ZMPG"
   },
   {
-    "name": "ГДЫНЯ",
+    "name": "ГДЫНЯ (порт)",
     "code": "005801",
     "country": "Польша",
     "country_code": "PL",
     "latin_name": "GDYNIA PORT"
   },
   {
-    "name": "ГДЫНЯ",
+    "name": "ГДЫНЯ (порт)",
     "code": "600379",
     "country": "Польша",
     "country_code": "PL",
     "latin_name": "GDYNIA PORT-GCT"
   },
   {
-    "name": "ГДЫНЯ",
+    "name": "ГДЫНЯ (порт)",
     "code": "600361",
     "country": "Польша",
     "country_code": "PL",
@@ -11698,17 +11698,17 @@
   },
   {
     "name": "ГЛИВИЦЕ",
-    "code": "069757",
-    "country": "Польша",
-    "country_code": "PL",
-    "latin_name": "GLIWICE PORT"
-  },
-  {
-    "name": "ГЛИВИЦЕ",
     "code": "070011",
     "country": "Польша",
     "country_code": "PL",
     "latin_name": "GLIWICE SOSNICA"
+  },
+  {
+    "name": "ГЛИВИЦЕ (порт)",
+    "code": "069757",
+    "country": "Польша",
+    "country_code": "PL",
+    "latin_name": "GLIWICE PORT"
   },
   {
     "name": "ГЛИВИЦЕ Б",
@@ -13888,7 +13888,7 @@
     "latin_name": "MALASZEWICZE B"
   },
   {
-    "name": "МАЛАШЕВИЧЕ-ЦЛЬ",
+    "name": "МАЛАШЕВИЧЕ-ЦЛЬ (порт)",
     "code": "602730",
     "country": "Польша",
     "country_code": "PL",
@@ -15715,7 +15715,7 @@
     "latin_name": "SWINOUJSCIE"
   },
   {
-    "name": "СВИНОУЙСЬЦЕ - ОТ",
+    "name": "СВИНОУЙСЬЦЕ - ОТ (порт)",
     "code": "610147",
     "country": "Польша",
     "country_code": "PL",
@@ -17521,7 +17521,7 @@
     "latin_name": "ABAZA"
   },
   {
-    "name": "АБАЗА",
+    "name": "АБАЗА (эксп.)",
     "code": "887406",
     "country": "Россия",
     "country_code": "RU",
@@ -17619,7 +17619,7 @@
     "latin_name": "AVTOVO (PEREV.)"
   },
   {
-    "name": "АВТОВО",
+    "name": "АВТОВО (эксп.)",
     "code": "035601",
     "country": "Россия",
     "country_code": "RU",
@@ -17724,7 +17724,7 @@
     "latin_name": "AZOV (PEREV.)"
   },
   {
-    "name": "АЗОВ",
+    "name": "АЗОВ (эксп.)",
     "code": "510308",
     "country": "Россия",
     "country_code": "RU",
@@ -18221,7 +18221,7 @@
     "latin_name": "ANTROPSHINO"
   },
   {
-    "name": "АНТРОПШИНО",
+    "name": "АНТРОПШИНО (эксп.)",
     "code": "032603",
     "country": "Россия",
     "country_code": "RU",
@@ -18487,7 +18487,7 @@
     "latin_name": "ARHANGELSK (perev.)"
   },
   {
-    "name": "АРХАНГЕЛЬСК",
+    "name": "АРХАНГЕЛЬСК (эксп.)",
     "code": "291209",
     "country": "Россия",
     "country_code": "RU",
@@ -18508,7 +18508,7 @@
     "latin_name": "ARHANGELSK-GOROD (PEREV.)"
   },
   {
-    "name": "АРХАНГЕЛЬСК-ГОРОД",
+    "name": "АРХАНГЕЛЬСК-ГОРОД (эксп.)",
     "code": "290600",
     "country": "Россия",
     "country_code": "RU",
@@ -18788,7 +18788,7 @@
     "latin_name": "BAGRATIONOVSK"
   },
   {
-    "name": "БАГРАТИОНОВСК",
+    "name": "БАГРАТИОНОВСК (эксп.)",
     "code": "102308",
     "country": "Россия",
     "country_code": "RU",
@@ -18914,7 +18914,7 @@
     "latin_name": "BAKARICA (PEREV.)"
   },
   {
-    "name": "БАКАРИЦА",
+    "name": "БАКАРИЦА (эксп.)",
     "code": "291001",
     "country": "Россия",
     "country_code": "RU",
@@ -19026,21 +19026,7 @@
     "latin_name": "BALTIISK"
   },
   {
-    "name": "БАЛТИЙСК",
-    "code": "103902",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "BALTIISK (EKSP.)"
-  },
-  {
-    "name": "БАЛТИЙСК",
-    "code": "103601",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "BALTIISK PAROM"
-  },
-  {
-    "name": "БАЛТИЙСК (ПАРОМ",
+    "name": "БАЛТИЙСК (ПАРОМ (эксп.)",
     "code": "104106",
     "country": "Россия",
     "country_code": "RU",
@@ -19054,6 +19040,20 @@
     "latin_name": "BALTIISK (PAROM EKSP.) V TRETI STRANY"
   },
   {
+    "name": "БАЛТИЙСК (паром)",
+    "code": "103601",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "BALTIISK PAROM"
+  },
+  {
+    "name": "БАЛТИЙСК (эксп.)",
+    "code": "103902",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "BALTIISK (EKSP.)"
+  },
+  {
     "name": "БАЛТИЙСКИЙ",
     "code": "103207",
     "country": "Россия",
@@ -19061,7 +19061,7 @@
     "latin_name": "BALTIISKII LES"
   },
   {
-    "name": "БАЛТИЙСКИЙ ЛЕС",
+    "name": "БАЛТИЙСКИЙ ЛЕС (эксп.)",
     "code": "103508",
     "country": "Россия",
     "country_code": "RU",
@@ -19425,7 +19425,7 @@
     "latin_name": "BELOE OZERO"
   },
   {
-    "name": "БЕЛОЕ МОРЕ",
+    "name": "БЕЛОЕ МОРЕ (эксп.)",
     "code": "014605",
     "country": "Россия",
     "country_code": "RU",
@@ -19677,7 +19677,7 @@
     "latin_name": "BIISK"
   },
   {
-    "name": "БИЙСК",
+    "name": "БИЙСК (эксп.)",
     "code": "842903",
     "country": "Россия",
     "country_code": "RU",
@@ -19698,7 +19698,7 @@
     "latin_name": "BIKLIAN"
   },
   {
-    "name": "БИКЛЯНЬ",
+    "name": "БИКЛЯНЬ (эксп.)",
     "code": "649008",
     "country": "Россия",
     "country_code": "RU",
@@ -19838,18 +19838,18 @@
     "latin_name": "BLAGOVESCENSK"
   },
   {
-    "name": "БЛАГОВЕЩЕНСК",
-    "code": "954901",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "BLAGOVESCENSK (EKSP.)"
-  },
-  {
     "name": "БЛАГОВЕЩЕНСК (ПЕРЕВ.",
     "code": "954808",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "BLAGOVESCENSK (PEREV. )"
+  },
+  {
+    "name": "БЛАГОВЕЩЕНСК (эксп.)",
+    "code": "954901",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "BLAGOVESCENSK (EKSP.)"
   },
   {
     "name": "БЛАГОДАРНОЕ",
@@ -19901,7 +19901,7 @@
     "latin_name": "BLIUHER"
   },
   {
-    "name": "БЛЮХЕР",
+    "name": "БЛЮХЕР (эксп.)",
     "code": "986902",
     "country": "Россия",
     "country_code": "RU",
@@ -20118,7 +20118,7 @@
     "latin_name": "BOLSHAIA RECHKA"
   },
   {
-    "name": "БОЛЬШАЯ ВОЛГА",
+    "name": "БОЛЬШАЯ ВОЛГА (эксп.)",
     "code": "239209",
     "country": "Россия",
     "country_code": "RU",
@@ -20167,7 +20167,7 @@
     "latin_name": "BOLSHOI KAMEN (PEREV.)"
   },
   {
-    "name": "БОЛЬШОЙ КАМЕНЬ",
+    "name": "БОЛЬШОЙ КАМЕНЬ (эксп.)",
     "code": "982901",
     "country": "Россия",
     "country_code": "RU",
@@ -20566,7 +20566,7 @@
     "latin_name": "BUSLOVSKAIA"
   },
   {
-    "name": "БУСЛОВСКАЯ",
+    "name": "БУСЛОВСКАЯ (эксп.)",
     "code": "021401",
     "country": "Россия",
     "country_code": "RU",
@@ -20601,7 +20601,7 @@
     "latin_name": "BUHTA (PEREV.)"
   },
   {
-    "name": "БУХТА",
+    "name": "БУХТА (эксп.)",
     "code": "658609",
     "country": "Россия",
     "country_code": "RU",
@@ -20762,7 +20762,7 @@
     "latin_name": "VANINO (PEREV.)"
   },
   {
-    "name": "ВАНИНО",
+    "name": "ВАНИНО (эксп.)",
     "code": "967808",
     "country": "Россия",
     "country_code": "RU",
@@ -21098,7 +21098,7 @@
     "latin_name": "VERHNIAIA TERRASA"
   },
   {
-    "name": "ВЕРХНЯЯ ТЕРРАСА",
+    "name": "ВЕРХНЯЯ ТЕРРАСА (эксп.)",
     "code": "645702",
     "country": "Россия",
     "country_code": "RU",
@@ -21126,7 +21126,7 @@
     "latin_name": "VESELOE"
   },
   {
-    "name": "ВЕСЕЛОЕ",
+    "name": "ВЕСЕЛОЕ (эксп.)",
     "code": "532608",
     "country": "Россия",
     "country_code": "RU",
@@ -21245,7 +21245,7 @@
     "latin_name": "VITEMLIA (OP)"
   },
   {
-    "name": "ВИТЕМЛЯ (ОП)",
+    "name": "ВИТЕМЛЯ (ОП) (эксп.)",
     "code": "203706",
     "country": "Россия",
     "country_code": "RU",
@@ -21287,7 +21287,7 @@
     "latin_name": "VLADIVOSTOK (PEREV.)"
   },
   {
-    "name": "ВЛАДИВОСТОК",
+    "name": "ВЛАДИВОСТОК (эксп.)",
     "code": "980200",
     "country": "Россия",
     "country_code": "RU",
@@ -21301,7 +21301,7 @@
     "latin_name": "VLADIKAVKAZ"
   },
   {
-    "name": "ВЛАДИКАВКАЗ",
+    "name": "ВЛАДИКАВКАЗ (эксп.)",
     "code": "538801",
     "country": "Россия",
     "country_code": "RU",
@@ -21511,7 +21511,7 @@
     "latin_name": "VOLGOGRAD-PORT"
   },
   {
-    "name": "ВОЛГОГРАД-ПОРТ",
+    "name": "ВОЛГОГРАД-ПОРТ (эксп.)",
     "code": "611208",
     "country": "Россия",
     "country_code": "RU",
@@ -21532,7 +21532,7 @@
     "latin_name": "VOLGODONSKAIA (PEREV.)"
   },
   {
-    "name": "ВОЛГОДОНСКАЯ",
+    "name": "ВОЛГОДОНСКАЯ (эксп.)",
     "code": "519506",
     "country": "Россия",
     "country_code": "RU",
@@ -21567,7 +21567,7 @@
     "latin_name": "VOLJSKII (perev.)"
   },
   {
-    "name": "ВОЛЖСКИЙ",
+    "name": "ВОЛЖСКИЙ (эксп.)",
     "code": "611301",
     "country": "Россия",
     "country_code": "RU",
@@ -21644,7 +21644,7 @@
     "latin_name": "VOLOSOVO"
   },
   {
-    "name": "ВОЛОСОВО",
+    "name": "ВОЛОСОВО (эксп.)",
     "code": "073904",
     "country": "Россия",
     "country_code": "RU",
@@ -21847,7 +21847,7 @@
     "latin_name": "VYBORG (PEREV.)"
   },
   {
-    "name": "ВЫБОРГ",
+    "name": "ВЫБОРГ (эксп.)",
     "code": "020108",
     "country": "Россия",
     "country_code": "RU",
@@ -21917,14 +21917,14 @@
     "latin_name": "VYSOCK (PEREV.)"
   },
   {
-    "name": "ВЫСОЦК",
+    "name": "ВЫСОЦК (эксп.)",
     "code": "020706",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "VYSOCK (EKSP.)"
   },
   {
-    "name": "ВЫСТРЕЛ (РЗД)",
+    "name": "ВЫСТРЕЛ (РЗД) (эксп.)",
     "code": "439803",
     "country": "Россия",
     "country_code": "RU",
@@ -21952,7 +21952,7 @@
     "latin_name": "VYSHESTEBLIEVSKAIA (perev.)"
   },
   {
-    "name": "ВЫШЕСТЕБЛИЕВСКАЯ",
+    "name": "ВЫШЕСТЕБЛИЕВСКАЯ (эксп.)",
     "code": "523100",
     "country": "Россия",
     "country_code": "RU",
@@ -22015,7 +22015,7 @@
     "latin_name": "VIARTSILIA"
   },
   {
-    "name": "ВЯРТСИЛЯ",
+    "name": "ВЯРТСИЛЯ (эксп.)",
     "code": "024202",
     "country": "Россия",
     "country_code": "RU",
@@ -22092,7 +22092,7 @@
     "latin_name": "GAIDAMAK (perev.)"
   },
   {
-    "name": "ГАЙДАМАК",
+    "name": "ГАЙДАМАК (эксп.)",
     "code": "980501",
     "country": "Россия",
     "country_code": "RU",
@@ -22106,7 +22106,7 @@
     "latin_name": "GAIDUK"
   },
   {
-    "name": "ГАЙДУК",
+    "name": "ГАЙДУК (эксп.)",
     "code": "522004",
     "country": "Россия",
     "country_code": "RU",
@@ -22225,7 +22225,7 @@
     "latin_name": "GETMANOVSKAIA"
   },
   {
-    "name": "ГЕТМАНОВСКАЯ",
+    "name": "ГЕТМАНОВСКАЯ (эксп.)",
     "code": "527506",
     "country": "Россия",
     "country_code": "RU",
@@ -22330,7 +22330,7 @@
     "latin_name": "GLUSHKOVO"
   },
   {
-    "name": "ГЛУШКОВО",
+    "name": "ГЛУШКОВО (эксп.)",
     "code": "207105",
     "country": "Россия",
     "country_code": "RU",
@@ -22736,7 +22736,7 @@
     "latin_name": "GRUSHEVAIA"
   },
   {
-    "name": "ГРУШЕВАЯ",
+    "name": "ГРУШЕВАЯ (эксп.)",
     "code": "521105",
     "country": "Россия",
     "country_code": "RU",
@@ -22820,7 +22820,7 @@
     "latin_name": "GUKOVO"
   },
   {
-    "name": "ГУКОВО",
+    "name": "ГУКОВО (эксп.)",
     "code": "589502",
     "country": "Россия",
     "country_code": "RU",
@@ -23002,7 +23002,7 @@
     "latin_name": "DACHA DOLGORUKOVA (PEREV.)"
   },
   {
-    "name": "ДАЧА ДОЛГОРУКОВА",
+    "name": "ДАЧА ДОЛГОРУКОВА (эксп.)",
     "code": "036708",
     "country": "Россия",
     "country_code": "RU",
@@ -23184,7 +23184,7 @@
     "latin_name": "DZEMGI (PEREV.)"
   },
   {
-    "name": "ДЗЕМГИ",
+    "name": "ДЗЕМГИ (эксп.)",
     "code": "968603",
     "country": "Россия",
     "country_code": "RU",
@@ -23205,7 +23205,7 @@
     "latin_name": "DZERJINSKAIA-NOVAIA"
   },
   {
-    "name": "ДЗЕРЖИНСКАЯ-НОВАЯ",
+    "name": "ДЗЕРЖИНСКАЯ-НОВАЯ (эксп.)",
     "code": "101201",
     "country": "Россия",
     "country_code": "RU",
@@ -23408,7 +23408,7 @@
     "latin_name": "DONSKAIA"
   },
   {
-    "name": "ДОНСКАЯ",
+    "name": "ДОНСКАЯ (эксп.)",
     "code": "615603",
     "country": "Россия",
     "country_code": "RU",
@@ -23674,7 +23674,7 @@
     "latin_name": "EISK (PEREV.)"
   },
   {
-    "name": "ЕЙСК",
+    "name": "ЕЙСК (эксп.)",
     "code": "515208",
     "country": "Россия",
     "country_code": "RU",
@@ -23989,7 +23989,7 @@
     "latin_name": "JELEZNODOROJNAIA"
   },
   {
-    "name": "ЖЕЛЕЗНОДОРОЖНЫЙ",
+    "name": "ЖЕЛЕЗНОДОРОЖНЫЙ (эксп.)",
     "code": "101108",
     "country": "Россия",
     "country_code": "RU",
@@ -24059,7 +24059,7 @@
     "latin_name": "JIGULEVSKOE MORE (PEREV.)"
   },
   {
-    "name": "ЖИГУЛЕВСКОЕ МОРЕ",
+    "name": "ЖИГУЛЕВСКОЕ МОРЕ (эксп.)",
     "code": "637000",
     "country": "Россия",
     "country_code": "RU",
@@ -24164,7 +24164,7 @@
     "latin_name": "ZAVARUIKA"
   },
   {
-    "name": "ЗАВЕРЕЖЬЕ",
+    "name": "ЗАВЕРЕЖЬЕ (эксп.)",
     "code": "067405",
     "country": "Россия",
     "country_code": "RU",
@@ -24255,7 +24255,7 @@
     "latin_name": "ZAKOLPE"
   },
   {
-    "name": "ЗАКОРДОННЫЙ (РЗД)",
+    "name": "ЗАКОРДОННЫЙ (РЗД) (эксп.)",
     "code": "511902",
     "country": "Россия",
     "country_code": "RU",
@@ -24297,7 +24297,7 @@
     "latin_name": "ZANEVSKII POST"
   },
   {
-    "name": "ЗАНЕВСКИЙ ПОСТ",
+    "name": "ЗАНЕВСКИЙ ПОСТ (эксп.)",
     "code": "037202",
     "country": "Россия",
     "country_code": "RU",
@@ -24325,7 +24325,7 @@
     "latin_name": "ZAPADNYI-NOVYI"
   },
   {
-    "name": "ЗАПАДНЫЙ-НОВЫЙ",
+    "name": "ЗАПАДНЫЙ-НОВЫЙ (эксп.)",
     "code": "103300",
     "country": "Россия",
     "country_code": "RU",
@@ -24367,7 +24367,7 @@
     "latin_name": "ZARECHNAIA (PEREV.)"
   },
   {
-    "name": "ЗАРЕЧНАЯ",
+    "name": "ЗАРЕЧНАЯ (эксп.)",
     "code": "515301",
     "country": "Россия",
     "country_code": "RU",
@@ -24402,7 +24402,7 @@
     "latin_name": "ZAURALE"
   },
   {
-    "name": "ЗАУРАЛЬЕ",
+    "name": "ЗАУРАЛЬЕ (эксп.)",
     "code": "827301",
     "country": "Россия",
     "country_code": "RU",
@@ -24549,7 +24549,7 @@
     "latin_name": "ZENZELI"
   },
   {
-    "name": "ЗЕНЗЕЛИ",
+    "name": "ЗЕНЗЕЛИ (эксп.)",
     "code": "615707",
     "country": "Россия",
     "country_code": "RU",
@@ -24640,7 +24640,7 @@
     "latin_name": "ZLYNKA"
   },
   {
-    "name": "ЗЛЫНКА",
+    "name": "ЗЛЫНКА (эксп.)",
     "code": "201202",
     "country": "Россия",
     "country_code": "RU",
@@ -24675,7 +24675,7 @@
     "latin_name": "ZOLOTAIA STEP"
   },
   {
-    "name": "ЗОЛОТАЯ СОПКА",
+    "name": "ЗОЛОТАЯ СОПКА (эксп.)",
     "code": "803805",
     "country": "Россия",
     "country_code": "RU",
@@ -24794,7 +24794,7 @@
     "latin_name": "IVANGOROD-NARVSKII"
   },
   {
-    "name": "ИВАНГОРОД-НАРВСКИЙ",
+    "name": "ИВАНГОРОД-НАРВСКИЙ (эксп.)",
     "code": "076003",
     "country": "Россия",
     "country_code": "RU",
@@ -25053,7 +25053,7 @@
     "latin_name": "ILEK-PENKOVKA"
   },
   {
-    "name": "ИЛЕК-ПЕНЬКОВКА",
+    "name": "ИЛЕК-ПЕНЬКОВКА (эксп.)",
     "code": "436608",
     "country": "Россия",
     "country_code": "RU",
@@ -25424,14 +25424,7 @@
     "latin_name": "KAVKAZ"
   },
   {
-    "name": "КАВКАЗ",
-    "code": "528104",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "KAVKAZ (EKSP.)"
-  },
-  {
-    "name": "КАВКАЗ (ПАРОМ",
+    "name": "КАВКАЗ (ПАРОМ (эксп.)",
     "code": "528000",
     "country": "Россия",
     "country_code": "RU",
@@ -25457,6 +25450,13 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "KAVKAZ (PAROM EKSP.) na Poti"
+  },
+  {
+    "name": "КАВКАЗ (эксп.)",
+    "code": "528104",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "KAVKAZ (EKSP.)"
   },
   {
     "name": "КАВКАЗ-ПАРОМ-КЕРЧЬ",
@@ -25627,7 +25627,7 @@
     "latin_name": "KALININGRAD-SORTIROVOCHNYI"
   },
   {
-    "name": "КАЛИНИНГРАД-СОРТИРОВОЧНЫЙ",
+    "name": "КАЛИНИНГРАД-СОРТИРОВОЧНЫЙ (эксп.)",
     "code": "100105",
     "country": "Россия",
     "country_code": "RU",
@@ -25718,7 +25718,7 @@
     "latin_name": "KAMA (PEREV.)"
   },
   {
-    "name": "КАМА",
+    "name": "КАМА (эксп.)",
     "code": "257208",
     "country": "Россия",
     "country_code": "RU",
@@ -25809,7 +25809,7 @@
     "latin_name": "KAMYSHIN (perev.)"
   },
   {
-    "name": "КАМЫШИН",
+    "name": "КАМЫШИН (эксп.)",
     "code": "623101",
     "country": "Россия",
     "country_code": "RU",
@@ -25830,7 +25830,7 @@
     "latin_name": "KAMYSHOVAIA"
   },
   {
-    "name": "КАМЫШОВАЯ",
+    "name": "КАМЫШОВАЯ (эксп.)",
     "code": "979504",
     "country": "Россия",
     "country_code": "RU",
@@ -25879,7 +25879,7 @@
     "latin_name": "KANDALAKSHA (PEREV.)"
   },
   {
-    "name": "КАНДАЛАКША",
+    "name": "КАНДАЛАКША (эксп.)",
     "code": "015701",
     "country": "Россия",
     "country_code": "RU",
@@ -25914,7 +25914,7 @@
     "latin_name": "KANZYBA"
   },
   {
-    "name": "КАНИСАЙ (РЗД)",
+    "name": "КАНИСАЙ (РЗД) (эксп.)",
     "code": "813008",
     "country": "Россия",
     "country_code": "RU",
@@ -25963,7 +25963,7 @@
     "latin_name": "KAPITOLOVO"
   },
   {
-    "name": "КАПИТОЛОВО",
+    "name": "КАПИТОЛОВО (эксп.)",
     "code": "039903",
     "country": "Россия",
     "country_code": "RU",
@@ -26439,14 +26439,14 @@
     "latin_name": "KIVIIARVI"
   },
   {
-    "name": "КИВИЯРВИ",
+    "name": "КИВИЯРВИ (эксп.)",
     "code": "028100",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "KIVIIARVI (EKSP.)"
   },
   {
-    "name": "КИГАШ",
+    "name": "КИГАШ (эксп.)",
     "code": "618404",
     "country": "Россия",
     "country_code": "RU",
@@ -26488,7 +26488,7 @@
     "latin_name": "KIZITERINKA (PEREV.)"
   },
   {
-    "name": "КИЗИТЕРИНКА",
+    "name": "КИЗИТЕРИНКА (эксп.)",
     "code": "513804",
     "country": "Россия",
     "country_code": "RU",
@@ -26573,17 +26573,17 @@
   },
   {
     "name": "КИНЕШМА",
-    "code": "319404",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "KINESHMA (eksp.)"
-  },
-  {
-    "name": "КИНЕШМА",
     "code": "317004",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "KINESHMA II"
+  },
+  {
+    "name": "КИНЕШМА (эксп.)",
+    "code": "319404",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "KINESHMA (eksp.)"
   },
   {
     "name": "КИНЕШМА II",
@@ -26593,7 +26593,7 @@
     "latin_name": "KINESHMA II (perev.)"
   },
   {
-    "name": "КИНЕШМА II",
+    "name": "КИНЕШМА II (эксп.)",
     "code": "317409",
     "country": "Россия",
     "country_code": "RU",
@@ -26866,7 +26866,7 @@
     "latin_name": "KLIAVLINO"
   },
   {
-    "name": "КЛЯСТИЦА",
+    "name": "КЛЯСТИЦА (эксп.)",
     "code": "066900",
     "country": "Россия",
     "country_code": "RU",
@@ -26978,7 +26978,7 @@
     "latin_name": "KOJYM"
   },
   {
-    "name": "КОЗАЧОК",
+    "name": "КОЗАЧОК (эксп.)",
     "code": "439502",
     "country": "Россия",
     "country_code": "RU",
@@ -27069,7 +27069,7 @@
     "latin_name": "KOLA (PEREV.)"
   },
   {
-    "name": "КОЛА",
+    "name": "КОЛА (эксп.)",
     "code": "017209",
     "country": "Россия",
     "country_code": "RU",
@@ -27216,7 +27216,7 @@
     "latin_name": "KOMSOMOLSK- MURMANSKII"
   },
   {
-    "name": "КОМСОМОЛЬСК- МУРМАНСКИЙ",
+    "name": "КОМСОМОЛЬСК- МУРМАНСКИЙ (эксп.)",
     "code": "018709",
     "country": "Россия",
     "country_code": "RU",
@@ -27426,7 +27426,7 @@
     "latin_name": "KORSAKOV (PEREV.)"
   },
   {
-    "name": "КОРСАКОВ",
+    "name": "КОРСАКОВ (эксп.)",
     "code": "990202",
     "country": "Россия",
     "country_code": "RU",
@@ -27622,7 +27622,7 @@
     "latin_name": "KOTLAS-SEVERNYI (PEREV.)"
   },
   {
-    "name": "КОТЛАС-СЕВЕРНЫЙ",
+    "name": "КОТЛАС-СЕВЕРНЫЙ (эксп.)",
     "code": "280806",
     "country": "Россия",
     "country_code": "RU",
@@ -27657,7 +27657,7 @@
     "latin_name": "KOTLY"
   },
   {
-    "name": "КОТЛЫ",
+    "name": "КОТЛЫ (эксп.)",
     "code": "076207",
     "country": "Россия",
     "country_code": "RU",
@@ -27755,7 +27755,7 @@
     "latin_name": "KRABOVAIA"
   },
   {
-    "name": "КРАБОВАЯ",
+    "name": "КРАБОВАЯ (эксп.)",
     "code": "985505",
     "country": "Россия",
     "country_code": "RU",
@@ -27874,7 +27874,7 @@
     "latin_name": "KRASNODAR II"
   },
   {
-    "name": "КРАСНОДАР II",
+    "name": "КРАСНОДАР II (эксп.)",
     "code": "529003",
     "country": "Россия",
     "country_code": "RU",
@@ -27888,7 +27888,7 @@
     "latin_name": "KRASNODAR-SORTIROVOCHNYI"
   },
   {
-    "name": "КРАСНОДАР-СОРТИРОВОЧНЫЙ",
+    "name": "КРАСНОДАР-СОРТИРОВОЧНЫЙ (эксп.)",
     "code": "528903",
     "country": "Россия",
     "country_code": "RU",
@@ -27896,17 +27896,17 @@
   },
   {
     "name": "КРАСНОЕ",
-    "code": "171401",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "KRASNOE (EKSP.)"
-  },
-  {
-    "name": "КРАСНОЕ",
     "code": "034308",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "KRASNOE SELO"
+  },
+  {
+    "name": "КРАСНОЕ (эксп.)",
+    "code": "171401",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "KRASNOE (EKSP.)"
   },
   {
     "name": "КРАСНОЗЕРСКОЕ",
@@ -28049,7 +28049,7 @@
     "latin_name": "KRASNYI HOLM"
   },
   {
-    "name": "КРАСНЫЙ ХУТОР",
+    "name": "КРАСНЫЙ ХУТОР (эксп.)",
     "code": "439606",
     "country": "Россия",
     "country_code": "RU",
@@ -28168,7 +28168,7 @@
     "latin_name": "KRUGLOE POLE"
   },
   {
-    "name": "КРУГЛОЕ ПОЛЕ",
+    "name": "КРУГЛОЕ ПОЛЕ (эксп.)",
     "code": "648804",
     "country": "Россия",
     "country_code": "RU",
@@ -28217,7 +28217,7 @@
     "latin_name": "KRYMSKAIA"
   },
   {
-    "name": "КРЫМСКАЯ",
+    "name": "КРЫМСКАЯ (эксп.)",
     "code": "529304",
     "country": "Россия",
     "country_code": "RU",
@@ -28490,7 +28490,7 @@
     "latin_name": "KULUNDA"
   },
   {
-    "name": "КУЛУНДА",
+    "name": "КУЛУНДА (эксп.)",
     "code": "844805",
     "country": "Россия",
     "country_code": "RU",
@@ -28623,7 +28623,7 @@
     "latin_name": "KUPCHINSKAIA"
   },
   {
-    "name": "КУПЧИНСКАЯ",
+    "name": "КУПЧИНСКАЯ (эксп.)",
     "code": "033305",
     "country": "Россия",
     "country_code": "RU",
@@ -28798,7 +28798,7 @@
     "latin_name": "KUTUM"
   },
   {
-    "name": "КУТУМ",
+    "name": "КУТУМ (эксп.)",
     "code": "619303",
     "country": "Россия",
     "country_code": "RU",
@@ -29169,7 +29169,7 @@
     "latin_name": "LEVSHINO (PEREV.)"
   },
   {
-    "name": "ЛЕВШИНО",
+    "name": "ЛЕВШИНО (эксп.)",
     "code": "760807",
     "country": "Россия",
     "country_code": "RU",
@@ -29442,7 +29442,7 @@
     "latin_name": "LIGOVO"
   },
   {
-    "name": "ЛИГОВО",
+    "name": "ЛИГОВО (эксп.)",
     "code": "034609",
     "country": "Россия",
     "country_code": "RU",
@@ -29519,7 +29519,7 @@
     "latin_name": "LISII NOS"
   },
   {
-    "name": "ЛИСИЙ НОС",
+    "name": "ЛИСИЙ НОС (эксп.)",
     "code": "038703",
     "country": "Россия",
     "country_code": "RU",
@@ -29673,13 +29673,6 @@
     "latin_name": "LOKOT"
   },
   {
-    "name": "ЛОКОТЬ",
-    "code": "207209",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "LOKOT (EKSP.)"
-  },
-  {
     "name": "ЛОКОТЬ (ЭКСП.) НА",
     "code": "843304",
     "country": "Россия",
@@ -29692,6 +29685,13 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "LOKOT (EKSP.) NA MALINOVOE OZERO"
+  },
+  {
+    "name": "ЛОКОТЬ (эксп.)",
+    "code": "207209",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "LOKOT (EKSP.)"
   },
   {
     "name": "ЛОМ",
@@ -29813,21 +29813,7 @@
     "latin_name": "LUJSKAIA (PEREV.)"
   },
   {
-    "name": "ЛУЖСКАЯ",
-    "code": "076404",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "LUJSKAIA (EKSP.)"
-  },
-  {
-    "name": "ЛУЖСКАЯ",
-    "code": "076601",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "LUJSKAIA PAROM"
-  },
-  {
-    "name": "ЛУЖСКАЯ (ПАРОМ",
+    "name": "ЛУЖСКАЯ (ПАРОМ (эксп.)",
     "code": "076705",
     "country": "Россия",
     "country_code": "RU",
@@ -29839,6 +29825,20 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "LUJSKAIA (PAROM EKSP.) V TRETI STRANY"
+  },
+  {
+    "name": "ЛУЖСКАЯ (паром)",
+    "code": "076601",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "LUJSKAIA PAROM"
+  },
+  {
+    "name": "ЛУЖСКАЯ (эксп.)",
+    "code": "076404",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "LUJSKAIA (EKSP.)"
   },
   {
     "name": "ЛУЗА",
@@ -30366,7 +30366,7 @@
     "latin_name": "MAMONOVO"
   },
   {
-    "name": "МАМОНОВО",
+    "name": "МАМОНОВО (эксп.)",
     "code": "102806",
     "country": "Россия",
     "country_code": "RU",
@@ -30548,7 +30548,7 @@
     "latin_name": "MAHALINO"
   },
   {
-    "name": "МАХАЛИНО",
+    "name": "МАХАЛИНО (эксп.)",
     "code": "986404",
     "country": "Россия",
     "country_code": "RU",
@@ -30569,18 +30569,18 @@
     "latin_name": "MAHACHKALA (PEREV.)"
   },
   {
-    "name": "МАХАЧКАЛА",
-    "code": "543405",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "MAHACHKALA (EKSP.)"
-  },
-  {
-    "name": "МАХАЧКАЛА (ПАРОМ",
+    "name": "МАХАЧКАЛА (ПАРОМ (эксп.)",
     "code": "543602",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "MAHACHKALA (PAROM EKSP.)"
+  },
+  {
+    "name": "МАХАЧКАЛА (эксп.)",
+    "code": "543405",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "MAHACHKALA (EKSP.)"
   },
   {
     "name": "МАЯЧНАЯ",
@@ -31199,7 +31199,7 @@
     "latin_name": "MOSKVA-IUJNYI PORT (PEREV.)"
   },
   {
-    "name": "МОСКВА-ЮЖНЫЙ ПОРТ",
+    "name": "МОСКВА-ЮЖНЫЙ ПОРТ (эксп.)",
     "code": "199905",
     "country": "Россия",
     "country_code": "RU",
@@ -31269,7 +31269,7 @@
     "latin_name": "MOHOVYE GORY (PEREV.)"
   },
   {
-    "name": "МОХОВЫЕ ГОРЫ",
+    "name": "МОХОВЫЕ ГОРЫ (эксп.)",
     "code": "265204",
     "country": "Россия",
     "country_code": "RU",
@@ -31360,7 +31360,7 @@
     "latin_name": "MURMANSK (PEREV.)"
   },
   {
-    "name": "МУРМАНСК",
+    "name": "МУРМАНСК (эксп.)",
     "code": "018502",
     "country": "Россия",
     "country_code": "RU",
@@ -31486,7 +31486,7 @@
     "latin_name": "MYS ASTAFEVA (PEREV.)"
   },
   {
-    "name": "МЫС АСТАФЬЕВА",
+    "name": "МЫС АСТАФЬЕВА (эксп.)",
     "code": "985702",
     "country": "Россия",
     "country_code": "RU",
@@ -31507,7 +31507,7 @@
     "latin_name": "MYS-CHURKIN (PEREV.)"
   },
   {
-    "name": "МЫС-ЧУРКИН",
+    "name": "МЫС-ЧУРКИН (эксп.)",
     "code": "980906",
     "country": "Россия",
     "country_code": "RU",
@@ -31780,18 +31780,18 @@
     "latin_name": "NAHODKA (PEREV.)"
   },
   {
-    "name": "НАХОДКА",
-    "code": "984700",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "NAHODKA (EKSP.)"
-  },
-  {
     "name": "НАХОДКА (ЭКСП.)",
     "code": "984803",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "NAHODKA (EKSP.) UGOL"
+  },
+  {
+    "name": "НАХОДКА (эксп.)",
+    "code": "984700",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "NAHODKA (EKSP.)"
   },
   {
     "name": "НАХОДКА-ВОСТОЧНАЯ",
@@ -31808,7 +31808,7 @@
     "latin_name": "NAHODKA-VOSTOCHNAIA (PEREV.)"
   },
   {
-    "name": "НАХОДКА-ВОСТОЧНАЯ",
+    "name": "НАХОДКА-ВОСТОЧНАЯ (эксп.)",
     "code": "986103",
     "country": "Россия",
     "country_code": "RU",
@@ -31899,7 +31899,7 @@
     "latin_name": "NEJEGOL"
   },
   {
-    "name": "НЕЖЕГОЛЬ",
+    "name": "НЕЖЕГОЛЬ (эксп.)",
     "code": "434000",
     "country": "Россия",
     "country_code": "RU",
@@ -32053,7 +32053,7 @@
     "latin_name": "NESTEROV"
   },
   {
-    "name": "НЕСТЕРОВ",
+    "name": "НЕСТЕРОВ (эксп.)",
     "code": "100406",
     "country": "Россия",
     "country_code": "RU",
@@ -32067,7 +32067,7 @@
     "latin_name": "NEFTEKAMSK"
   },
   {
-    "name": "НЕФТЕКАМСК",
+    "name": "НЕФТЕКАМСК (эксп.)",
     "code": "257903",
     "country": "Россия",
     "country_code": "RU",
@@ -32515,7 +32515,7 @@
     "latin_name": "NOVOLESNAIA (perev.)"
   },
   {
-    "name": "НОВОЛЕСНАЯ",
+    "name": "НОВОЛЕСНАЯ (эксп.)",
     "code": "619500",
     "country": "Россия",
     "country_code": "RU",
@@ -32599,7 +32599,7 @@
     "latin_name": "NOVOROSSIISK (PEREV.)"
   },
   {
-    "name": "НОВОРОССИЙСК",
+    "name": "НОВОРОССИЙСК (эксп.)",
     "code": "521001",
     "country": "Россия",
     "country_code": "RU",
@@ -32796,13 +32796,6 @@
   },
   {
     "name": "НОВЫЙ",
-    "code": "035809",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "NOVYI PORT"
-  },
-  {
-    "name": "НОВЫЙ",
     "code": "011503",
     "country": "Россия",
     "country_code": "RU",
@@ -32830,6 +32823,13 @@
     "latin_name": "NOVYI URENGOI"
   },
   {
+    "name": "НОВЫЙ (порт)",
+    "code": "035809",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "NOVYI PORT"
+  },
+  {
     "name": "НОВЫЙ ПОРТ",
     "code": "035103",
     "country": "Россия",
@@ -32837,7 +32837,7 @@
     "latin_name": "NOVYI PORT (PEREV.)"
   },
   {
-    "name": "НОВЫЙ ПОРТ",
+    "name": "НОВЫЙ ПОРТ (эксп.)",
     "code": "035902",
     "country": "Россия",
     "country_code": "RU",
@@ -33194,7 +33194,7 @@
     "latin_name": "OZINKI"
   },
   {
-    "name": "ОЗИНКИ",
+    "name": "ОЗИНКИ (эксп.)",
     "code": "628508",
     "country": "Россия",
     "country_code": "RU",
@@ -33215,7 +33215,7 @@
     "latin_name": "OKTIABRSK"
   },
   {
-    "name": "ОКТЯБРЬСК",
+    "name": "ОКТЯБРЬСК (эксп.)",
     "code": "638709",
     "country": "Россия",
     "country_code": "RU",
@@ -33404,7 +33404,7 @@
     "latin_name": "ORANIENBAUM"
   },
   {
-    "name": "ОРАНИЕНБАУМ",
+    "name": "ОРАНИЕНБАУМ (эксп.)",
     "code": "075806",
     "country": "Россия",
     "country_code": "RU",
@@ -33467,7 +33467,7 @@
     "latin_name": "OROSITELNYI"
   },
   {
-    "name": "ОРСК-НОВЫЙ-ГОРОД",
+    "name": "ОРСК-НОВЫЙ-ГОРОД (эксп.)",
     "code": "814509",
     "country": "Россия",
     "country_code": "RU",
@@ -33789,7 +33789,7 @@
     "latin_name": "PARNAS"
   },
   {
-    "name": "ПАРНАС",
+    "name": "ПАРНАС (эксп.)",
     "code": "038600",
     "country": "Россия",
     "country_code": "RU",
@@ -33950,7 +33950,7 @@
     "latin_name": "PERVAIA RECHKA"
   },
   {
-    "name": "ПЕРВАЯ РЕЧКА",
+    "name": "ПЕРВАЯ РЕЧКА (эксп.)",
     "code": "981203",
     "country": "Россия",
     "country_code": "RU",
@@ -34090,7 +34090,7 @@
     "latin_name": "PERM II (PEREV.)"
   },
   {
-    "name": "ПЕРМЬ II",
+    "name": "ПЕРМЬ II (эксп.)",
     "code": "761301",
     "country": "Россия",
     "country_code": "RU",
@@ -34237,7 +34237,7 @@
     "latin_name": "PETROPAVLOVSK"
   },
   {
-    "name": "ПЕТРОПАВЛОВСК",
+    "name": "ПЕТРОПАВЛОВСК (эксп.)",
     "code": "820105",
     "country": "Россия",
     "country_code": "RU",
@@ -34300,7 +34300,7 @@
     "latin_name": "PECHORY-PSKOVSKIE"
   },
   {
-    "name": "ПЕЧОРЫ-ПСКОВСКИЕ",
+    "name": "ПЕЧОРЫ-ПСКОВСКИЕ (эксп.)",
     "code": "077209",
     "country": "Россия",
     "country_code": "RU",
@@ -34405,7 +34405,7 @@
     "latin_name": "PIONERSKII KURORT"
   },
   {
-    "name": "ПИОНЕРСКИЙ КУРОРТ",
+    "name": "ПИОНЕРСКИЙ КУРОРТ (эксп.)",
     "code": "100209",
     "country": "Россия",
     "country_code": "RU",
@@ -34531,7 +34531,7 @@
     "latin_name": "PLEHANOVO"
   },
   {
-    "name": "ПЛЕШАКОВО",
+    "name": "ПЛЕШАКОВО (эксп.)",
     "code": "580103",
     "country": "Россия",
     "country_code": "RU",
@@ -34811,7 +34811,7 @@
     "latin_name": "POKROVKA-PRISTAN (PEREV.)"
   },
   {
-    "name": "ПОКРОВКА-ПРИСТАНЬ",
+    "name": "ПОКРОВКА-ПРИСТАНЬ (эксп.)",
     "code": "971004",
     "country": "Россия",
     "country_code": "RU",
@@ -34825,7 +34825,7 @@
     "latin_name": "POKROVSK-PRIVOLJSKII"
   },
   {
-    "name": "ПОКРОВСК-ПРИВОЛЖСКИЙ",
+    "name": "ПОКРОВСК-ПРИВОЛЖСКИЙ (эксп.)",
     "code": "625709",
     "country": "Россия",
     "country_code": "RU",
@@ -35035,7 +35035,7 @@
     "latin_name": "PONIATOVKA"
   },
   {
-    "name": "ПОНЯТОВКА",
+    "name": "ПОНЯТОВКА (эксп.)",
     "code": "177906",
     "country": "Россия",
     "country_code": "RU",
@@ -35077,7 +35077,7 @@
     "latin_name": "PORT OLIA (perev.)"
   },
   {
-    "name": "ПОРТ ОЛЯ",
+    "name": "ПОРТ ОЛЯ (эксп.)",
     "code": "614507",
     "country": "Россия",
     "country_code": "RU",
@@ -35105,7 +35105,7 @@
     "latin_name": "POSELOK"
   },
   {
-    "name": "ПОСИНЬ (РЗД)",
+    "name": "ПОСИНЬ (РЗД) (эксп.)",
     "code": "065908",
     "country": "Россия",
     "country_code": "RU",
@@ -35147,7 +35147,7 @@
     "latin_name": "POSET (perev.)"
   },
   {
-    "name": "ПОСЬЕТ",
+    "name": "ПОСЬЕТ (эксп.)",
     "code": "987801",
     "country": "Россия",
     "country_code": "RU",
@@ -35217,7 +35217,7 @@
     "latin_name": "POIARKOVO (PEREV.)"
   },
   {
-    "name": "ПОЯРКОВО",
+    "name": "ПОЯРКОВО (эксп.)",
     "code": "956201",
     "country": "Россия",
     "country_code": "RU",
@@ -35259,7 +35259,7 @@
     "latin_name": "PRAVYI BEREG (perev.)"
   },
   {
-    "name": "ПРАВЫЙ БЕРЕГ",
+    "name": "ПРАВЫЙ БЕРЕГ (эксп.)",
     "code": "619604",
     "country": "Россия",
     "country_code": "RU",
@@ -35280,7 +35280,7 @@
     "latin_name": "PREDPORTOVAIA"
   },
   {
-    "name": "ПРЕДПОРТОВАЯ",
+    "name": "ПРЕДПОРТОВАЯ (эксп.)",
     "code": "036200",
     "country": "Россия",
     "country_code": "RU",
@@ -35553,7 +35553,7 @@
     "latin_name": "PROTOKA"
   },
   {
-    "name": "ПРОТОКА",
+    "name": "ПРОТОКА (эксп.)",
     "code": "529200",
     "country": "Россия",
     "country_code": "RU",
@@ -35651,7 +35651,7 @@
     "latin_name": "PUKSA"
   },
   {
-    "name": "ПУРВМАЛА",
+    "name": "ПУРВМАЛА (эксп.)",
     "code": "078109",
     "country": "Россия",
     "country_code": "RU",
@@ -36309,7 +36309,7 @@
     "latin_name": "RUDNIA"
   },
   {
-    "name": "РУДНЯ",
+    "name": "РУДНЯ (эксп.)",
     "code": "172008",
     "country": "Россия",
     "country_code": "RU",
@@ -36414,7 +36414,7 @@
     "latin_name": "RYBNIKI (perev.)"
   },
   {
-    "name": "РЫБНИКИ",
+    "name": "РЫБНИКИ (эксп.)",
     "code": "985100",
     "country": "Россия",
     "country_code": "RU",
@@ -36596,7 +36596,7 @@
     "latin_name": "SALA"
   },
   {
-    "name": "САЛА",
+    "name": "САЛА (эксп.)",
     "code": "073209",
     "country": "Россия",
     "country_code": "RU",
@@ -36708,7 +36708,7 @@
     "latin_name": "SAMUR"
   },
   {
-    "name": "САМУР",
+    "name": "САМУР (эксп.)",
     "code": "544906",
     "country": "Россия",
     "country_code": "RU",
@@ -36778,14 +36778,14 @@
     "latin_name": "SANKT-PETERBURG- FINLIANDSKII"
   },
   {
-    "name": "САНКТ-ПЕТЕРБУРГ- БАЛТИЙСКИЙ",
+    "name": "САНКТ-ПЕТЕРБУРГ- БАЛТИЙСКИЙ (эксп.)",
     "code": "035300",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "SANKT-PETERBURG- BALTIISKII (eksp.)"
   },
   {
-    "name": "САНКТ-ПЕТЕРБУРГ- ФИНЛЯНДСКИЙ",
+    "name": "САНКТ-ПЕТЕРБУРГ- ФИНЛЯНДСКИЙ (эксп.)",
     "code": "038402",
     "country": "Россия",
     "country_code": "RU",
@@ -36890,7 +36890,7 @@
     "latin_name": "SARATOV-PORT (PEREV.)"
   },
   {
-    "name": "САРАТОВ-ПОРТ",
+    "name": "САРАТОВ-ПОРТ (эксп.)",
     "code": "629004",
     "country": "Россия",
     "country_code": "RU",
@@ -37037,7 +37037,7 @@
     "latin_name": "SVETOGORSK"
   },
   {
-    "name": "СВЕТОГОРСК",
+    "name": "СВЕТОГОРСК (эксп.)",
     "code": "021901",
     "country": "Россия",
     "country_code": "RU",
@@ -37597,7 +37597,7 @@
     "latin_name": "SKALINO"
   },
   {
-    "name": "СКАНГАЛИ (РЗД)",
+    "name": "СКАНГАЛИ (РЗД) (эксп.)",
     "code": "078503",
     "country": "Россия",
     "country_code": "RU",
@@ -37758,21 +37758,21 @@
     "latin_name": "SOVETSK"
   },
   {
-    "name": "СОВЕТСК",
+    "name": "СОВЕТСК (эксп.)",
     "code": "105005",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "SOVETSK (EKSP.)"
   },
   {
-    "name": "СОВЕТСКАЯ ГАВАНЬ (ГОРОД)",
+    "name": "СОВЕТСКАЯ ГАВАНЬ (ГОРОД) (эксп.)",
     "code": "968500",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "SOVETSKAIA GAVAN (GOROD) (EKSP.)"
   },
   {
-    "name": "СОВЕТСКАЯ ГАВАНЬ (СОРТ.)",
+    "name": "СОВЕТСКАЯ ГАВАНЬ (СОРТ.) (эксп.)",
     "code": "968105",
     "country": "Россия",
     "country_code": "RU",
@@ -37884,7 +37884,7 @@
     "latin_name": "SOLNCEVO"
   },
   {
-    "name": "СОЛОВЕЙ",
+    "name": "СОЛОВЕЙ (эксп.)",
     "code": "439701",
     "country": "Россия",
     "country_code": "RU",
@@ -37898,7 +37898,7 @@
     "latin_name": "SOLOVEVSK"
   },
   {
-    "name": "СОЛОВЬЕВСК",
+    "name": "СОЛОВЬЕВСК (эксп.)",
     "code": "945002",
     "country": "Россия",
     "country_code": "RU",
@@ -37933,7 +37933,7 @@
     "latin_name": "SOLOMBALKA (perev.)"
   },
   {
-    "name": "СОЛОМБАЛКА",
+    "name": "СОЛОМБАЛКА (эксп.)",
     "code": "291904",
     "country": "Россия",
     "country_code": "RU",
@@ -38598,13 +38598,6 @@
     "latin_name": "SUZEMKA"
   },
   {
-    "name": "СУЗЕМКА",
-    "code": "204408",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "SUZEMKA (EKSP.)"
-  },
-  {
     "name": "СУЗУН",
     "code": "836809",
     "country": "Россия",
@@ -38738,7 +38731,7 @@
     "latin_name": "SURAJ"
   },
   {
-    "name": "СУРАЖ",
+    "name": "СУРАЖ (эксп.)",
     "code": "202807",
     "country": "Россия",
     "country_code": "RU",
@@ -38829,7 +38822,7 @@
     "latin_name": "SUHANOVKA (PEREV.)"
   },
   {
-    "name": "СУХАНОВКА",
+    "name": "СУХАНОВКА (эксп.)",
     "code": "987207",
     "country": "Россия",
     "country_code": "RU",
@@ -39018,6 +39011,13 @@
     "latin_name": "Sol-Iletsk I"
   },
   {
+    "name": "Суземка (эксп.)",
+    "code": "204408",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Suzemka (eksp.)"
+  },
+  {
     "name": "ТАБСАВЭЙ",
     "code": "799606",
     "country": "Россия",
@@ -39067,7 +39067,7 @@
     "latin_name": "TAGANROG (PEREV.)"
   },
   {
-    "name": "ТАГАНРОГ",
+    "name": "ТАГАНРОГ (эксп.)",
     "code": "511601",
     "country": "Россия",
     "country_code": "RU",
@@ -39452,7 +39452,7 @@
     "latin_name": "TEMRIUK (PEREV.)"
   },
   {
-    "name": "ТЕМРЮК",
+    "name": "ТЕМРЮК (эксп.)",
     "code": "527807",
     "country": "Россия",
     "country_code": "RU",
@@ -39536,7 +39536,7 @@
     "latin_name": "TETKINO"
   },
   {
-    "name": "ТЕТКИНО",
+    "name": "ТЕТКИНО (эксп.)",
     "code": "207001",
     "country": "Россия",
     "country_code": "RU",
@@ -39571,7 +39571,7 @@
     "latin_name": "TIMASHEVSKAIA"
   },
   {
-    "name": "ТИМАШЕВСКАЯ",
+    "name": "ТИМАШЕВСКАЯ (эксп.)",
     "code": "529107",
     "country": "Россия",
     "country_code": "RU",
@@ -39662,7 +39662,7 @@
     "latin_name": "TIHORECKAIA"
   },
   {
-    "name": "ТИХОРЕЦКАЯ",
+    "name": "ТИХОРЕЦКАЯ (эксп.)",
     "code": "520206",
     "country": "Россия",
     "country_code": "RU",
@@ -39781,7 +39781,7 @@
     "latin_name": "TOLIATTI"
   },
   {
-    "name": "ТОЛЬЯТТИ",
+    "name": "ТОЛЬЯТТИ (эксп.)",
     "code": "637405",
     "country": "Россия",
     "country_code": "RU",
@@ -40103,7 +40103,7 @@
     "latin_name": "TRUSOVO (perev.)"
   },
   {
-    "name": "ТРУСОВО",
+    "name": "ТРУСОВО (эксп.)",
     "code": "619407",
     "country": "Россия",
     "country_code": "RU",
@@ -40125,17 +40125,17 @@
   },
   {
     "name": "ТУАПСЕ-СОРТИРОВОЧНАЯ",
-    "code": "533102",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "TUAPSE-SORTIROVOCHNAIA (EKSP.)"
-  },
-  {
-    "name": "ТУАПСЕ-СОРТИРОВОЧНАЯ",
     "code": "533507",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "TUAPSE-SORTIROVOCHNAIA SLIV"
+  },
+  {
+    "name": "ТУАПСЕ-СОРТИРОВОЧНАЯ (эксп.)",
+    "code": "533102",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "TUAPSE-SORTIROVOCHNAIA (EKSP.)"
   },
   {
     "name": "ТУБИНСКАЯ",
@@ -40957,7 +40957,7 @@
     "latin_name": "USPENSKAIA"
   },
   {
-    "name": "УСПЕНСКАЯ",
+    "name": "УСПЕНСКАЯ (эксп.)",
     "code": "511002",
     "country": "Россия",
     "country_code": "RU",
@@ -41006,7 +41006,7 @@
     "latin_name": "UST-DONECKAIA (PEREV.)"
   },
   {
-    "name": "УСТЬ-ДОНЕЦКАЯ",
+    "name": "УСТЬ-ДОНЕЦКАЯ (эксп.)",
     "code": "513908",
     "country": "Россия",
     "country_code": "RU",
@@ -41048,7 +41048,7 @@
     "latin_name": "UST-LUGA"
   },
   {
-    "name": "УСТЬ-ЛУГА",
+    "name": "УСТЬ-ЛУГА (эксп.)",
     "code": "076103",
     "country": "Россия",
     "country_code": "RU",
@@ -41384,7 +41384,7 @@
     "latin_name": "HABAROVSK I (PEREV.)"
   },
   {
-    "name": "ХАБАРОВСК I",
+    "name": "ХАБАРОВСК I (эксп.)",
     "code": "970603",
     "country": "Россия",
     "country_code": "RU",
@@ -41559,7 +41559,7 @@
     "latin_name": "HASAN"
   },
   {
-    "name": "ХАСАН",
+    "name": "ХАСАН (эксп.)",
     "code": "987106",
     "country": "Россия",
     "country_code": "RU",
@@ -41650,7 +41650,7 @@
     "latin_name": "HMYLOVSKII (RZD) (PEREV.)"
   },
   {
-    "name": "ХМЫЛОВСКИЙ (РЗД)",
+    "name": "ХМЫЛОВСКИЙ (РЗД) (эксп.)",
     "code": "984907",
     "country": "Россия",
     "country_code": "RU",
@@ -41706,7 +41706,7 @@
     "latin_name": "HOLMSK (PEREV.)"
   },
   {
-    "name": "ХОЛМСК",
+    "name": "ХОЛМСК (эксп.)",
     "code": "993501",
     "country": "Россия",
     "country_code": "RU",
@@ -42385,7 +42385,7 @@
     "latin_name": "CHERNIAHOVSK"
   },
   {
-    "name": "ЧЕРНЯХОВСК",
+    "name": "ЧЕРНЯХОВСК (эксп.)",
     "code": "100904",
     "country": "Россия",
     "country_code": "RU",
@@ -42413,7 +42413,7 @@
     "latin_name": "CHERTKOVO"
   },
   {
-    "name": "ЧЕРТКОВО",
+    "name": "ЧЕРТКОВО (эксп.)",
     "code": "580508",
     "country": "Россия",
     "country_code": "RU",
@@ -43015,7 +43015,7 @@
     "latin_name": "SHIPOVKA"
   },
   {
-    "name": "ШИПОВКА",
+    "name": "ШИПОВКА (эксп.)",
     "code": "102007",
     "country": "Россия",
     "country_code": "RU",
@@ -43155,7 +43155,7 @@
     "latin_name": "SHUSHARY"
   },
   {
-    "name": "ШУШАРЫ",
+    "name": "ШУШАРЫ (эксп.)",
     "code": "032904",
     "country": "Россия",
     "country_code": "RU",
@@ -43638,7 +43638,7 @@
     "latin_name": "IANDYKI"
   },
   {
-    "name": "ЯНДЫКИ",
+    "name": "ЯНДЫКИ (эксп.)",
     "code": "541109",
     "country": "Россия",
     "country_code": "RU",
@@ -43729,7 +43729,7 @@
     "latin_name": "IAROSLAVL-PRISTAN (PEREV.)"
   },
   {
-    "name": "ЯРОСЛАВЛЬ-ПРИСТАНЬ",
+    "name": "ЯРОСЛАВЛЬ-ПРИСТАНЬ (эксп.)",
     "code": "310404",
     "country": "Россия",
     "country_code": "RU",
@@ -54474,7 +54474,7 @@
     "latin_name": "Nishan"
   },
   {
-    "name": "Нишан",
+    "name": "Нишан (порт)",
     "code": "734408",
     "country": "Узбекистан",
     "country_code": "UZ",
@@ -54607,7 +54607,7 @@
     "latin_name": "Savay"
   },
   {
-    "name": "Савай",
+    "name": "Савай (порт)",
     "code": "744005",
     "country": "Узбекистан",
     "country_code": "UZ",
@@ -54894,7 +54894,7 @@
     "latin_name": "Xanabad"
   },
   {
-    "name": "Ханабад",
+    "name": "Ханабад (порт)",
     "code": "744404",
     "country": "Узбекистан",
     "country_code": "UZ",
@@ -55146,7 +55146,7 @@
     "latin_name": "Haiphong"
   },
   {
-    "name": "Хайфон",
+    "name": "Хайфон (порт)",
     "code": "020058",
     "country": "Вьетнам",
     "country_code": "VN",
