@@ -58,20 +58,25 @@ ACTIVE_COUNTRIES = {code: name for code, name in COUNTRIES.items() if code not i
 # РУЧНЫЕ ДОПОЛНЕНИЯ (Станции, которых нет в PDF ОСЖД)
 # ============================================================
 MANUAL_ADDITIONS = [
-    # Казахстан (граница с РФ)
+    # Казахстан (граница с РФ и внутренние)
     {"name": "Илецк I (эксп.)", "code": "666501", "country": "Казахстан", "country_code": "KZ", "latin_name": "Iletsk I"},
     {"name": "Ак-Булак", "code": "667307", "country": "Казахстан", "country_code": "KZ", "latin_name": "Ak-Bulak"},
     {"name": "Чашкан", "code": "667203", "country": "Казахстан", "country_code": "KZ", "latin_name": "Chashkan"},
+    {"name": "Зыряновск", "code": "714601", "country": "Казахстан", "country_code": "KZ", "latin_name": "Zyryanovsk"},
+    
     # Россия (граница с КЗ)
     {"name": "Карталы I", "code": "816203", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I"},
     {"name": "Карталы I (эксп.)", "code": "816504", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I (eksp.)"},
     {"name": "Орск", "code": "810006", "country": "Россия", "country_code": "RU", "latin_name": "Orsk"},
     {"name": "Соль-Илецк I", "code": "811905", "country": "Россия", "country_code": "RU", "latin_name": "Sol-Iletsk I"},
+    
     # Россия (граница с Беларусью)
     {"name": "Смоленск", "code": "170108", "country": "Россия", "country_code": "RU", "latin_name": "Smolensk"},
     {"name": "Рославль I", "code": "177408", "country": "Россия", "country_code": "RU", "latin_name": "Roslavl I"},
+    
     # Россия (граница с Китаем)
     {"name": "Забайкальск", "code": "946801", "country": "Россия", "country_code": "RU", "latin_name": "Zabaykalsk"},
+    
     # Россия (граница с Монголией)
     {"name": "Наушки", "code": "937200", "country": "Россия", "country_code": "RU", "latin_name": "Naushki"}
 ]
