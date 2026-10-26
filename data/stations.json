@@ -5551,11 +5551,25 @@
     "latin_name": "Aktogajj"
   },
   {
+    "name": "Акшолак",
+    "code": "707307",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Aksholak"
+  },
+  {
     "name": "Акыртобе",
     "code": "707400",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Akyrtobe"
+  },
+  {
+    "name": "Алабас",
+    "code": "671001",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Alabas"
   },
   {
     "name": "Алабас Алажиде",
@@ -5626,6 +5640,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Amankaragajj"
+  },
+  {
+    "name": "Анар",
+    "code": "690500",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Anar"
   },
   {
     "name": "Анар Апановка",
@@ -5873,6 +5894,13 @@
     "latin_name": "Bershugir"
   },
   {
+    "name": "Бесарык",
+    "code": "672700",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Besaryk"
+  },
+  {
     "name": "Бесколь",
     "code": "708206",
     "country": "Казахстан",
@@ -5908,11 +5936,11 @@
     "latin_name": "Bolashak"
   },
   {
-    "name": "Болашак Бопай",
+    "name": "Бопай",
     "code": "664506",
     "country": "Казахстан",
     "country_code": "KZ",
-    "latin_name": "Bopajj"
+    "latin_name": "Bopay"
   },
   {
     "name": "Бопай Боранкул",
@@ -5927,6 +5955,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Bukhtarma"
+  },
+  {
+    "name": "Боранды",
+    "code": "705903",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Borandy"
   },
   {
     "name": "Боранды Боржакты",
@@ -6181,6 +6216,20 @@
     "latin_name": "Zhaksy"
   },
   {
+    "name": "Жаксымай",
+    "code": "660401",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Zhaksymajj"
+  },
+  {
+    "name": "Жалтыр",
+    "code": "691109",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Zhaltyr"
+  },
+  {
     "name": "Жалтыр Жаланашколь",
     "code": "708302",
     "country": "Казахстан",
@@ -6223,11 +6272,25 @@
     "latin_name": "Zhanaaul"
   },
   {
+    "name": "Жанакорган",
+    "code": "672502",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Janakorgan"
+  },
+  {
     "name": "Жанатас",
     "code": "706408",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Zhanatas"
+  },
+  {
+    "name": "Жанысбай",
+    "code": "681906",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Zhanysbai"
   },
   {
     "name": "Жанысбай Жарлы",
@@ -6265,6 +6328,13 @@
     "latin_name": "Zhezkazgan"
   },
   {
+    "name": "Железорудная",
+    "code": "683901",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Zhelezorudnaya"
+  },
+  {
     "name": "Железорудная Жем",
     "code": "669406",
     "country": "Казахстан",
@@ -6277,6 +6347,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Zhilaevo"
+  },
+  {
+    "name": "Жетыбай",
+    "code": "663700",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Zhetybajj"
   },
   {
     "name": "Жетыбай Жетыген",
@@ -6326,6 +6403,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Zhuryn"
+  },
+  {
+    "name": "Зааятская",
+    "code": "679003",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Zaayatskaya"
   },
   {
     "name": "Зааятская Заводинка",
@@ -6433,11 +6517,39 @@
     "latin_name": "Kazybek-Bek"
   },
   {
+    "name": "Кайдауыл",
+    "code": "669800",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Kaidauyl"
+  },
+  {
     "name": "Кайрат",
     "code": "704309",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Kajjrat"
+  },
+  {
+    "name": "Калкаман",
+    "code": "695400",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Kalkaman"
+  },
+  {
+    "name": "Капчагай",
+    "code": "700702",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Kapchagajj"
+  },
+  {
+    "name": "Кара-Адыр",
+    "code": "690905",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Kara-Adyr"
   },
   {
     "name": "Карабас",
@@ -6461,11 +6573,25 @@
     "latin_name": "Karagajj"
   },
   {
+    "name": "Карагайлы",
+    "code": "675206",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Karagajjly"
+  },
+  {
     "name": "Караконыр",
     "code": "697603",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Karakonyr"
+  },
+  {
+    "name": "Карауылкелды",
+    "code": "660609",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Karauylkeldy"
   },
   {
     "name": "Кардон Каражал",
@@ -6494,6 +6620,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Kyzylorda"
+  },
+  {
+    "name": "Киыршык",
+    "code": "680104",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Kiyrchyk"
   },
   {
     "name": "Киялы",
@@ -6622,6 +6755,13 @@
     "latin_name": "Kul"
   },
   {
+    "name": "Кундызды",
+    "code": "704807",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Kundyzdy"
+  },
+  {
     "name": "Курык-порт",
     "code": "691607",
     "country": "Казахстан",
@@ -6634,6 +6774,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Kushmurun"
+  },
+  {
+    "name": "Кызылжар",
+    "code": "676700",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Kyzylzhar"
   },
   {
     "name": "Лепсы",
@@ -6697,6 +6844,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Majjmak"
+  },
+  {
+    "name": "Макинка",
+    "code": "692807",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Makinka"
   },
   {
     "name": "Макинка Малай-Сары",
@@ -6795,6 +6949,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Mugalzhar"
+  },
+  {
+    "name": "Мынарал",
+    "code": "705706",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Mynaral"
   },
   {
     "name": "Мырза Неверовская",
@@ -7077,6 +7238,13 @@
     "latin_name": "Sagiz"
   },
   {
+    "name": "Сазанкурак",
+    "code": "662209",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Sazankurak"
+  },
+  {
     "name": "Сайрам",
     "code": "698803",
     "country": "Казахстан",
@@ -7089,6 +7257,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Sajjotes"
+  },
+  {
+    "name": "Сарша (рзд)",
+    "code": "710901",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Sarsha (rzd)"
   },
   {
     "name": "Сарша (рзд) Сас-Тобе",
@@ -7110,6 +7285,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Sary-Ozek"
+  },
+  {
+    "name": "Сарыбел",
+    "code": "673609",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Sarybel"
   },
   {
     "name": "Сарыбел Сарыжал",
@@ -7145,6 +7327,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Sary-Shagan"
+  },
+  {
+    "name": "Саумалколь",
+    "code": "686702",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Saumalkol"
   },
   {
     "name": "Саяк",
@@ -7196,6 +7385,13 @@
     "latin_name": "Sokyr"
   },
   {
+    "name": "Сороковая",
+    "code": "690200",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Sorokovaya"
+  },
+  {
     "name": "Сороковая Строительная",
     "code": "714705",
     "country": "Казахстан",
@@ -7208,6 +7404,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Sulutobe"
+  },
+  {
+    "name": "Сулы",
+    "code": "686100",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Suly"
   },
   {
     "name": "Сулы Сурган",
@@ -7259,6 +7462,13 @@
     "latin_name": "Taldykorgan"
   },
   {
+    "name": "Тальщик",
+    "code": "688500",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Tal"
+  },
+  {
     "name": "Тальщик Тамды",
     "code": "668403",
     "country": "Казахстан",
@@ -7299,6 +7509,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Tackala"
+  },
+  {
+    "name": "Таскарасу (рзд)",
+    "code": "705806",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Taskarasu (rzd)"
   },
   {
     "name": "Таскудык",
@@ -7399,6 +7616,20 @@
     "latin_name": "Togus"
   },
   {
+    "name": "Тогыз",
+    "code": "670009",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Togyz"
+  },
+  {
+    "name": "Токмансай",
+    "code": "669001",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Tokmansajj"
+  },
+  {
     "name": "Токмансай Токырау",
     "code": "677807",
     "country": "Казахстан",
@@ -7432,6 +7663,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Turgajj"
+  },
+  {
+    "name": "Тургусун",
+    "code": "714508",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Turgusun"
   },
   {
     "name": "Туркестан",
@@ -7483,11 +7721,25 @@
     "latin_name": "Ushbijjk"
   },
   {
+    "name": "Ушбулак",
+    "code": "707203",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Ushbulak"
+  },
+  {
     "name": "Ушкулын",
     "code": "695203",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Ushkulyn"
+  },
+  {
+    "name": "Фестивальная",
+    "code": "712409",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Festival"
   },
   {
     "name": "Фестивальная Фурмановский",
@@ -7532,11 +7784,25 @@
     "latin_name": "Chagan"
   },
   {
+    "name": "Чаглинка",
+    "code": "687207",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Chaglinka"
+  },
+  {
     "name": "Чашкан",
     "code": "667203",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Chashkan"
+  },
+  {
+    "name": "Черемшанка",
+    "code": "713401",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Cheremshanka"
   },
   {
     "name": "Черемшанка Чильбастау",
@@ -7560,11 +7826,25 @@
     "latin_name": "Shagyr"
   },
   {
+    "name": "Шайкорык",
+    "code": "706906",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Shajjkoryk"
+  },
+  {
     "name": "Шакат",
     "code": "696704",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Shakat"
+  },
+  {
+    "name": "Шалабай",
+    "code": "712004",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Shalabajj"
   },
   {
     "name": "Шалабай Шар",
@@ -7637,6 +7917,20 @@
     "latin_name": "Shokajj"
   },
   {
+    "name": "Шоккарагай (рзд)",
+    "code": "684105",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Shokkaragajj (rzd)"
+  },
+  {
+    "name": "Шокпар",
+    "code": "703109",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Shokpar"
+  },
+  {
     "name": "Шолпан Шомиш",
     "code": "670206",
     "country": "Казахстан",
@@ -7700,6 +7994,13 @@
     "latin_name": "Shyngyrlau"
   },
   {
+    "name": "Щебзавод",
+    "code": "685004",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Shhebzavod"
+  },
+  {
     "name": "Щебзавод Шелек",
     "code": "702200",
     "country": "Казахстан",
@@ -7756,69 +8057,6 @@
     "latin_name": "Kazykurt"
   },
   {
-    "name": "ай Акшолак",
-    "code": "707307",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Aksholak"
-  },
-  {
-    "name": "ай Анар",
-    "code": "690500",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Anar"
-  },
-  {
-    "name": "ай Кара-Адыр",
-    "code": "690905",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kara-Adyr"
-  },
-  {
-    "name": "ай Карагайлы",
-    "code": "675206",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Karagajjly"
-  },
-  {
-    "name": "ай Карауылкелды",
-    "code": "660609",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Karauylkeldy"
-  },
-  {
-    "name": "ай Таскарасу (рзд)",
-    "code": "705806",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Taskarasu (rzd)"
-  },
-  {
-    "name": "ай Тургусун",
-    "code": "714508",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Turgusun"
-  },
-  {
-    "name": "ай Шоккарагай (рзд)",
-    "code": "684105",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Shokkaragajj (rzd)"
-  },
-  {
-    "name": "ай Шокпар",
-    "code": "703109",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Shokpar"
-  },
-  {
     "name": "айдауыл Кайранкуль",
     "code": "686204",
     "country": "Казахстан",
@@ -7852,13 +8090,6 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Nura"
-  },
-  {
-    "name": "ал Кундызды",
-    "code": "704807",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kundyzdy"
   },
   {
     "name": "ала Тастак",
@@ -7917,48 +8148,6 @@
     "latin_name": "Kandyagash"
   },
   {
-    "name": "ан Жанысбай",
-    "code": "681906",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Zhanysbai"
-  },
-  {
-    "name": "ан Железорудная",
-    "code": "683901",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Zhelezorudnaya"
-  },
-  {
-    "name": "ан Сарша (рзд)",
-    "code": "710901",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Sarsha (rzd)"
-  },
-  {
-    "name": "ан Тальщик",
-    "code": "688500",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Tal"
-  },
-  {
-    "name": "ан Чаглинка",
-    "code": "687207",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Chaglinka"
-  },
-  {
-    "name": "ан Черемшанка",
-    "code": "713401",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Cheremshanka"
-  },
-  {
     "name": "анды Жанаарка",
     "code": "676202",
     "country": "Казахстан",
@@ -7985,13 +8174,6 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Kardon"
-  },
-  {
-    "name": "ар Шалабай",
-    "code": "712004",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Shalabajj"
   },
   {
     "name": "ара Бугунь",
@@ -8064,46 +8246,11 @@
     "latin_name": "Koskol"
   },
   {
-    "name": "ат Макинка",
-    "code": "692807",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Makinka"
-  },
-  {
     "name": "атас Жангиз-Тобе",
     "code": "709001",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Zhangiz-Tobe"
-  },
-  {
-    "name": "ач Зааятская",
-    "code": "679003",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Zaayatskaya"
-  },
-  {
-    "name": "аш Жалтыр",
-    "code": "691109",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Zhaltyr"
-  },
-  {
-    "name": "аш Капчагай",
-    "code": "700702",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kapchagajj"
-  },
-  {
-    "name": "аш Сарыбел",
-    "code": "673609",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Sarybel"
   },
   {
     "name": "бай Мойынты",
@@ -8118,41 +8265,6 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Uglerudnaya"
-  },
-  {
-    "name": "бе Алабас",
-    "code": "671001",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Alabas"
-  },
-  {
-    "name": "бе Жанакорган",
-    "code": "672502",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Janakorgan"
-  },
-  {
-    "name": "бе Саумалколь",
-    "code": "686702",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Saumalkol"
-  },
-  {
-    "name": "бе Сулы",
-    "code": "686100",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Suly"
-  },
-  {
-    "name": "бе Фестивальная",
-    "code": "712409",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Festival"
   },
   {
     "name": "ген Жетысай",
@@ -8330,20 +8442,6 @@
     "latin_name": "Ridder"
   },
   {
-    "name": "рт Кайдауыл",
-    "code": "669800",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kaidauyl"
-  },
-  {
-    "name": "рт Ушбулак",
-    "code": "707203",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Ushbulak"
-  },
-  {
     "name": "ртау Тендык",
     "code": "661508",
     "country": "Казахстан",
@@ -8435,20 +8533,6 @@
     "latin_name": "Kyzgaldakty"
   },
   {
-    "name": "су Жетыбай",
-    "code": "663700",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Zhetybajj"
-  },
-  {
-    "name": "сы Жаксымай",
-    "code": "660401",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Zhaksymajj"
-  },
-  {
     "name": "сымай Жалагаш",
     "code": "671406",
     "country": "Казахстан",
@@ -8484,60 +8568,11 @@
     "latin_name": "Sarga (rzd)"
   },
   {
-    "name": "ты Киыршык",
-    "code": "680104",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kiyrchyk"
-  },
-  {
-    "name": "ты Кызылжар",
-    "code": "676700",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kyzylzhar"
-  },
-  {
-    "name": "ты Щебзавод",
-    "code": "685004",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Shhebzavod"
-  },
-  {
-    "name": "ул Боранды",
-    "code": "705903",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Borandy"
-  },
-  {
     "name": "шке Житикара",
     "code": "683808",
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Zhitikara"
-  },
-  {
-    "name": "ыз Сазанкурак",
-    "code": "662209",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Sazankurak"
-  },
-  {
-    "name": "ыз Тогыз",
-    "code": "670009",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Togyz"
-  },
-  {
-    "name": "ыз Токмансай",
-    "code": "669001",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Tokmansajj"
   },
   {
     "name": "ызыл Шолпан",
@@ -8573,41 +8608,6 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Kiik"
-  },
-  {
-    "name": "ыр Бесарык",
-    "code": "672700",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Besaryk"
-  },
-  {
-    "name": "ыр Калкаман",
-    "code": "695400",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kalkaman"
-  },
-  {
-    "name": "ыр Мынарал",
-    "code": "705706",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Mynaral"
-  },
-  {
-    "name": "ыр Сороковая",
-    "code": "690200",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Sorokovaya"
-  },
-  {
-    "name": "ыр Шайкорык",
-    "code": "706906",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Shajjkoryk"
   },
   {
     "name": "ырау Томенарык",
@@ -9611,6 +9611,13 @@
     "latin_name": "Rezekne II"
   },
   {
+    "name": "Рига-Краста)",
+    "code": "094900",
+    "country": "Латвия",
+    "country_code": "LV",
+    "latin_name": "Zemitani (the"
+  },
+  {
     "name": "Рига-Пасажиеру",
     "code": "090100",
     "country": "Латвия",
@@ -9756,13 +9763,6 @@
     "country": "Латвия",
     "country_code": "LV",
     "latin_name": "Yaunkalsnava"
-  },
-  {
-    "name": "км Рига-Краста)",
-    "code": "094900",
-    "country": "Латвия",
-    "country_code": "LV",
-    "latin_name": "Zemitani (the"
   },
   {
     "name": "Абаклия",
@@ -10416,6 +10416,13 @@
     "latin_name": "Khonkhor"
   },
   {
+    "name": "Улаантолгой",
+    "code": "011601",
+    "country": "Монголия",
+    "country_code": "MN",
+    "latin_name": "Ulaantolgoi"
+  },
+  {
     "name": "Улаантолгой Улаан-Уул",
     "code": "010850",
     "country": "Монголия",
@@ -10512,13 +10519,6 @@
     "country": "Монголия",
     "country_code": "MN",
     "latin_name": "Tunkh"
-  },
-  {
-    "name": "нх Улаантолгой",
-    "code": "011601",
-    "country": "Монголия",
-    "country_code": "MN",
-    "latin_name": "Ulaantolgoi"
   },
   {
     "name": "нхаараа Дзунбаян",
@@ -17512,6 +17512,13 @@
     "country": "Польша",
     "country_code": "PL",
     "latin_name": "JASZCZOW"
+  },
+  {
+    "name": "(РЗД) (ЭКСП.)",
+    "code": "586608",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "KARER"
   },
   {
     "name": "АБАГУР-ЛЕСНОЙ",
@@ -26773,13 +26780,6 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "RAZEZD"
-  },
-  {
-    "name": "КМ (РЗД) (ЭКСП.)",
-    "code": "586608",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "KARER"
   },
   {
     "name": "КНЕВИЦЫ",
@@ -44163,13 +44163,6 @@
     "latin_name": "Aydyng A"
   },
   {
-    "name": "Ак ёл",
-    "code": "751009",
-    "country": "Туркменистан",
-    "country_code": "TM",
-    "latin_name": "Ak yol"
-  },
-  {
     "name": "Акджагуйма",
     "code": "753926",
     "country": "Туркменистан",
@@ -45549,11 +45542,25 @@
     "latin_name": "Turkmenabashi-"
   },
   {
+    "name": "ёл",
+    "code": "751009",
+    "country": "Туркменистан",
+    "country_code": "TM",
+    "latin_name": "yol"
+  },
+  {
     "name": "АДАБАШ АДАМПОЛЬ",
     "code": "337604",
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "ADAMPIL"
+  },
+  {
+    "name": "АЗОВСКАЯ",
+    "code": "472303",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "AZOVSKA"
   },
   {
     "name": "АЗОВСЬКА АЙВАЗОВСКАЯ",
@@ -45596,6 +45603,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "INZHENERNE"
+  },
+  {
+    "name": "АНТОНОВКА",
+    "code": "355203",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "ANTONIVKA"
   },
   {
     "name": "АНТРАЦИТ АПОСТОЛОВО",
@@ -45990,6 +46004,13 @@
     "latin_name": "BORYSIVKA"
   },
   {
+    "name": "БОРКИ",
+    "code": "443457",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "BIRKY"
+  },
+  {
     "name": "БОРОДЯНКА БОРОМЛЯ",
     "code": "445804",
     "country": "Украина",
@@ -46296,41 +46317,6 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "PIVDENNOUKRAINSKA"
-  },
-  {
-    "name": "ВЕ ЕСЕНЬ",
-    "code": "382408",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "ESEN"
-  },
-  {
-    "name": "ВЕ ЗАПЫТОВ",
-    "code": "370701",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "ZAPYTIV"
-  },
-  {
-    "name": "ВЕ КУБЛИЧ",
-    "code": "420205",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "KUBLYCH"
-  },
-  {
-    "name": "ВЕ МИКУЛИНЦЫ-СТРУСОВ",
-    "code": "362809",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "MYKULYNTSI-STRUSIV"
-  },
-  {
-    "name": "ВЕ НЕМИРОВ",
-    "code": "336202",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "NEMYRIV"
   },
   {
     "name": "ВЕЛЕДНИКИ",
@@ -47656,13 +47642,6 @@
     "latin_name": "ROHAN"
   },
   {
-    "name": "ВО КЛЕВАНЬ",
-    "code": "359308",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "KLEVAN"
-  },
-  {
     "name": "ВОБЕРЕЖНА ЛЕЖИНО",
     "code": "463709",
     "country": "Украина",
@@ -48622,6 +48601,13 @@
     "latin_name": "ERASTIVKA"
   },
   {
+    "name": "ЕСЕНЬ",
+    "code": "382408",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "ESEN"
+  },
+  {
     "name": "ЕСЕНЬ ЖАШКОВ",
     "code": "338509",
     "country": "Украина",
@@ -48811,6 +48797,13 @@
     "latin_name": "ZAPORIZHZHIA-VANTAZHNE"
   },
   {
+    "name": "ЗАПЫТОВ",
+    "code": "370701",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "ZAPYTIV"
+  },
+  {
     "name": "ЗАРУДИНЦЫ",
     "code": "339304",
     "country": "Украина",
@@ -48916,6 +48909,13 @@
     "latin_name": "ZLATOPIL"
   },
   {
+    "name": "ЗЛОЧЕВ",
+    "code": "360502",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "ZLOCHIV"
+  },
+  {
     "name": "ЗМИЕВ",
     "code": "444303",
     "country": "Украина",
@@ -48993,6 +48993,13 @@
     "latin_name": "IVANO-FRANKIVSK"
   },
   {
+    "name": "ИГРЕНЬ",
+    "code": "453105",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "IHREN"
+  },
+  {
     "name": "ИЗОВ",
     "code": "352506",
     "country": "Украина",
@@ -49005,6 +49012,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "IRPIN"
+  },
+  {
+    "name": "ИРША",
+    "code": "347601",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "IRSHA"
   },
   {
     "name": "ИЧНЯ",
@@ -49098,11 +49112,25 @@
     "latin_name": "KALMIUS"
   },
   {
+    "name": "КАЛЬЧИК",
+    "code": "485708",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "KALCHYK"
+  },
+  {
     "name": "КАЛЬЧИК КАМЕНЕЦ-ПОДОЛЬСКИЙ",
     "code": "332907",
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "KAMIANETS-PODILSKYI"
+  },
+  {
+    "name": "КАМЕНСКОЕ",
+    "code": "455806",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "KAMIANSKE"
   },
   {
     "name": "КАМКА КАМЫШ-ЗАРЯ",
@@ -49175,6 +49203,13 @@
     "latin_name": "KAKHOVKA"
   },
   {
+    "name": "КАРПОВО",
+    "code": "405474",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "KARPOVE"
+  },
+  {
     "name": "КАХОВКА КВАРЦЕВЫЙ",
     "code": "441907",
     "country": "Украина",
@@ -49245,6 +49280,13 @@
     "latin_name": "KYRYKIVKA"
   },
   {
+    "name": "КЛЕВАНЬ",
+    "code": "359308",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "KLEVAN"
+  },
+  {
     "name": "КЛЕВАНЬ КЛЕМБОВКА",
     "code": "340602",
     "country": "Украина",
@@ -49278,13 +49320,6 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "ROZIZD"
-  },
-  {
-    "name": "КМ РАКИТНО",
-    "code": "344105",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "ROKYTNE"
   },
   {
     "name": "КНЯЖЕВЕ КОБЕЛЯКИ",
@@ -49399,6 +49434,13 @@
     "latin_name": "KINDRATIVKA"
   },
   {
+    "name": "КОНОНОВКА",
+    "code": "323109",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "KONONIVKA"
+  },
+  {
     "name": "КОНОТОП КОНСТАНТИНОВКА",
     "code": "491200",
     "country": "Украина",
@@ -49474,6 +49516,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "KORCHAKIVKA"
+  },
+  {
+    "name": "КОСТРИЖЕВКА",
+    "code": "365309",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "KOSTRYZHIVKA"
   },
   {
     "name": "КОТЛАБУХ КОТЛЯРОВО",
@@ -49567,6 +49616,13 @@
     "latin_name": "KRIUKIV-NA-DNIPRI"
   },
   {
+    "name": "КРИНИЦЯ БЕЛАЯ ЦЕРКОВЬ",
+    "code": "343808",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "BILA TSERKVA"
+  },
+  {
     "name": "КРИНИЧНА КРОЛЕВЕЦ",
     "code": "327805",
     "country": "Украина",
@@ -49609,11 +49665,25 @@
     "latin_name": "KRYZHOPIL"
   },
   {
+    "name": "КРЫМ",
+    "code": "470308",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "KRYM"
+  },
+  {
     "name": "КСЕНИЕВО",
     "code": "406602",
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "KSENIIEVE"
+  },
+  {
+    "name": "КУБЛИЧ",
+    "code": "420205",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "KUBLYCH"
   },
   {
     "name": "КУБЛИЧ КУДАШЕВКА",
@@ -49691,27 +49761,6 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "LADYZHYN"
-  },
-  {
-    "name": "ЛА КРИНИЦЯ БЕЛАЯ ЦЕРКОВЬ",
-    "code": "343808",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "BILA TSERKVA"
-  },
-  {
-    "name": "ЛА СМОЛКА",
-    "code": "345201",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "SMOLKA"
-  },
-  {
-    "name": "ЛА ЦЕРКВА БЕЛАЯ-ЧЕРТКОВСКАЯ",
-    "code": "364804",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "BILA-CHORTKIVSKA"
   },
   {
     "name": "ЛАДИЖИН ЛАЗОРКИ",
@@ -49964,83 +50013,6 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "LYSIANKA"
-  },
-  {
-    "name": "ЛЬ АЗОВСКАЯ",
-    "code": "472303",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "AZOVSKA"
-  },
-  {
-    "name": "ЛЬ БОРКИ",
-    "code": "443457",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "BIRKY"
-  },
-  {
-    "name": "ЛЬ ЗЛОЧЕВ",
-    "code": "360502",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "ZLOCHIV"
-  },
-  {
-    "name": "ЛЬ ИГРЕНЬ",
-    "code": "453105",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "IHREN"
-  },
-  {
-    "name": "ЛЬ КОНОНОВКА",
-    "code": "323109",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "KONONIVKA"
-  },
-  {
-    "name": "ЛЬ КОСТРИЖЕВКА",
-    "code": "365309",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "KOSTRYZHIVKA"
-  },
-  {
-    "name": "ЛЬ КРЫМ",
-    "code": "470308",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "KRYM"
-  },
-  {
-    "name": "ЛЬ МИХАЙЛЕНКИ",
-    "code": "342203",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "MYKHAILENKY"
-  },
-  {
-    "name": "ЛЬ СОРОКА",
-    "code": "420703",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "SOROKA"
-  },
-  {
-    "name": "ЛЬ ТЕРНЫ",
-    "code": "457303",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "TERNY"
-  },
-  {
-    "name": "ЛЬ ЯНЦЕВО",
-    "code": "464608",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "YANTSEVE"
   },
   {
     "name": "ЛЬКА ОРЕХОВСКАЯ",
@@ -50414,6 +50386,13 @@
     "latin_name": "MOZH"
   },
   {
+    "name": "МИКУЛИНЦЫ-СТРУСОВ",
+    "code": "362809",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "MYKULYNTSI-STRUSIV"
+  },
+  {
     "name": "МИНЕРАЛЬНАЯ",
     "code": "452901",
     "country": "Украина",
@@ -50433,6 +50412,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "MYRONIVKA"
+  },
+  {
+    "name": "МИХАЙЛЕНКИ",
+    "code": "342203",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "MYKHAILENKY"
   },
   {
     "name": "МИХАЙЛЕНКИ МИХАЙЛОВКА",
@@ -50512,13 +50498,6 @@
     "latin_name": "NEPOLOKIVTSI"
   },
   {
-    "name": "НА КАРПОВО",
-    "code": "405474",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "KARPOVE"
-  },
-  {
     "name": "НАСВЕТЕВИЧ",
     "code": "498604",
     "country": "Украина",
@@ -50554,6 +50533,13 @@
     "latin_name": "NELHIVKA"
   },
   {
+    "name": "НЕМИРОВ",
+    "code": "336202",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "NEMYRIV"
+  },
+  {
     "name": "НЕМЧИНО",
     "code": "489003",
     "country": "Украина",
@@ -50573,13 +50559,6 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "NESVICH-VOLYNSKYI"
-  },
-  {
-    "name": "НИ АНТОНОВКА",
-    "code": "355203",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "ANTONIVKA"
   },
   {
     "name": "НИЖНЬОКРИНКА НИЗЫ",
@@ -50650,13 +50629,6 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "VYNOHRADIV-ZAKARPATSKYI"
-  },
-  {
-    "name": "НО ПЛАСТЫ",
-    "code": "482409",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "PLASTY"
   },
   {
     "name": "НОВА БОРОВА НОВГОРОД-СЕВЕРСКИЙ",
@@ -50771,25 +50743,11 @@
     "latin_name": "YUSKIVTSI"
   },
   {
-    "name": "НЬ ИРША",
-    "code": "347601",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "IRSHA"
-  },
-  {
     "name": "НЬ-ВЕЛИКИЙ ЛЮБЛИНЕЦ-ВОЛЫНСКИЙ (РЗД)",
     "code": "353903",
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "LIUBLYNETS-VOLYNSKYI (RZD)"
-  },
-  {
-    "name": "НЯ ЯСНАЯ ЗАРЯ",
-    "code": "419602",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "YASNA ZORIA"
   },
   {
     "name": "ОБВОДНАЯ",
@@ -50995,6 +50953,13 @@
     "latin_name": "PAVLOPILLIA"
   },
   {
+    "name": "ПАНТАЕВКА",
+    "code": "410203",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "PANTAIVKA"
+  },
+  {
     "name": "ПЕРЕГОНОВКА",
     "code": "422802",
     "country": "Украина",
@@ -51063,6 +51028,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "PLETENYI TASHLYK"
+  },
+  {
+    "name": "ПЛАСТЫ",
+    "code": "482409",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "PLASTY"
   },
   {
     "name": "ПЛЕТЕНИЙ ТАШЛИК ПОВУРСК",
@@ -51296,13 +51268,6 @@
     "latin_name": "PIATYKHATKY"
   },
   {
-    "name": "РА ПАНТАЕВКА",
-    "code": "410203",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "PANTAIVKA"
-  },
-  {
     "name": "РАВА-РУСЬКА РАДЕНСКОЕ",
     "code": "418807",
     "country": "Украина",
@@ -51350,6 +51315,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "ROZDILNA-SORTUVALNA"
+  },
+  {
+    "name": "РАКИТНО",
+    "code": "344105",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "ROKYTNE"
   },
   {
     "name": "РАХНИ РАХОВ",
@@ -51877,13 +51849,6 @@
     "latin_name": "SIROHOZY"
   },
   {
-    "name": "СИ СЧАСТЛИВАЯ",
-    "code": "410608",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "SHCHASLYVA"
-  },
-  {
     "name": "СИГНАЕВКА",
     "code": "422107",
     "country": "Украина",
@@ -52059,6 +52024,13 @@
     "latin_name": "SNIHURIVKA"
   },
   {
+    "name": "СМОЛКА",
+    "code": "345201",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "SMOLKA"
+  },
+  {
     "name": "СМОЛКА СМЫГА",
     "code": "350407",
     "country": "Украина",
@@ -52122,6 +52094,13 @@
     "latin_name": "YANIVSKYI (RZD)"
   },
   {
+    "name": "СОРОКА",
+    "code": "420703",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "SOROKA"
+  },
+  {
     "name": "СОРОКА СОРОКИНО",
     "code": "505009",
     "country": "Украина",
@@ -52162,13 +52141,6 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "ICHKI"
-  },
-  {
-    "name": "СТ КАМЕНСКОЕ",
-    "code": "455806",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "KAMIANSKE"
   },
   {
     "name": "СТАРЫЙ САМБОР",
@@ -52304,6 +52276,13 @@
     "latin_name": "SUKHOLISY"
   },
   {
+    "name": "СЧАСТЛИВАЯ",
+    "code": "410608",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "SHCHASLYVA"
+  },
+  {
     "name": "СЬКА ЧЕРНОМОРСКАЯ",
     "code": "401100",
     "country": "Украина",
@@ -52386,6 +52365,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "TERNOPIL"
+  },
+  {
+    "name": "ТЕРНЫ",
+    "code": "457303",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "TERNY"
   },
   {
     "name": "ТЕТИЕВ",
@@ -52647,13 +52633,6 @@
     "latin_name": "USATOVE"
   },
   {
-    "name": "УС КАЛЬЧИК",
-    "code": "485708",
-    "country": "Украина",
-    "country_code": "UA",
-    "latin_name": "KALCHYK"
-  },
-  {
     "name": "УСАТОВЕ УСТИМОВКА",
     "code": "343704",
     "country": "Украина",
@@ -52806,6 +52785,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "TSVITKOVE"
+  },
+  {
+    "name": "ЦЕРКВА БЕЛАЯ-ЧЕРТКОВСКАЯ",
+    "code": "364804",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "BILA-CHORTKIVSKA"
   },
   {
     "name": "ЦИБУЛЕВЕ ЧАПЛИНО",
@@ -53354,6 +53340,13 @@
     "latin_name": "YANY KAPU"
   },
   {
+    "name": "ЯНЦЕВО",
+    "code": "464608",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "YANTSEVE"
+  },
+  {
     "name": "ЯР ЧЕПОВИЧИ",
     "code": "347300",
     "country": "Украина",
@@ -53387,6 +53380,13 @@
     "country": "Украина",
     "country_code": "UA",
     "latin_name": "YASINIA"
+  },
+  {
+    "name": "ЯСНАЯ ЗАРЯ",
+    "code": "419602",
+    "country": "Украина",
+    "country_code": "UA",
+    "latin_name": "YASNA ZORIA"
   },
   {
     "name": "ЯТИХАТКИ РАВА-РУССКАЯ",
