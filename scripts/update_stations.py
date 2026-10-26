@@ -152,6 +152,8 @@ def is_noise_name(value: str) -> bool:
 
 def clean_station_name(value: str) -> str:
     value = normalize_space(value)
+    # Удаляем одиночные буквы в начале строки (например, "л Болашак" -> "Болашак")
+    value = re.sub(r'^[А-Яа-яЁёA-Za-z]\s+', '', value)
     return re.sub(r"^[|;:,]+|[|;:,]+$", "", value).strip()
 
 def valid_name(value: str) -> bool:
@@ -258,6 +260,8 @@ def parse_text_page(text: str, country_code: str) -> list[dict]:
         
         left = re.sub(r'\s+([,\.\)])', r'\1', left)
         left = re.sub(r'([\(])\s+', r'\1', left)
+        # Очистка от одиночных букв в начале
+        left = re.sub(r'^[А-Яа-яЁёA-Za-z]\s+', '', left)
         
         lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right_raw)
         if not lat_match: continue
@@ -299,6 +303,8 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
                     left = ru_match.group(1).strip()
                     left = re.sub(r'\s+([,\.\)])', r'\1', left)
                     left = re.sub(r'([\(])\s+', r'\1', left)
+                    # Очистка от одиночных букв в начале
+                    left = re.sub(r'^[А-Яа-яЁёA-Za-z]\s+', '', left)
             
             lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right)
             if not lat_match: continue
@@ -382,22 +388,14 @@ def main():
             if not old_count:
                 raise RuntimeError(f"Фатальная ошибка: нет данных для {code}")
 
-    # Объединение: берем старые данные для тех стран, которые не обновились
     new_countries = {r["country_code"] for r in all_new}
     merged = [r for r in existing if r.get("country_code") not in new_countries]
     merged.extend(all_new)
     
-    # ДОБАВЛЯЕМ РУЧНЫЕ СТАНЦИИ (наивысший приоритет, перезаписывают PDF)
     manual_keys = {(m["country_code"], m["code"]) for m in MANUAL_ADDITIONS}
-    
-    # Сначала удаляем из базы всё, что совпадает по коду с ручными станциями
     merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
-    
-    # Затем добавляем чистые ручные станции
     merged.extend(MANUAL_ADDITIONS)
-    print(f"  + Добавлены ручные станции (приоритет над PDF)")
-
-    # Финальная сортировка и валидация
+    
     merged = sorted(merged, key=lambda r: (r["country_code"], r["name"]))
     
     counters = Counter(s.get("country_code") for s in merged)
