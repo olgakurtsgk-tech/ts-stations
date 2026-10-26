@@ -63,7 +63,6 @@ MANUAL_ADDITIONS = [
     {"name": "Ак-Булак", "code": "667307", "country": "Казахстан", "country_code": "KZ", "latin_name": "Ak-Bulak"},
     {"name": "Чашкан", "code": "667203", "country": "Казахстан", "country_code": "KZ", "latin_name": "Chashkan"},
     {"name": "Зыряновск", "code": "714601", "country": "Казахстан", "country_code": "KZ", "latin_name": "Zyryanovsk"},
-    # ИСПРАВЛЕНИЕ ГЛЮКОВ ПАРСЕРА (Болашак и Бопай)
     {"name": "Бопай", "code": "664506", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bopay"},
     {"name": "Болашак", "code": "664600", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bolashak"},
     
@@ -81,7 +80,12 @@ MANUAL_ADDITIONS = [
     {"name": "Забайкальск", "code": "946801", "country": "Россия", "country_code": "RU", "latin_name": "Zabaykalsk"},
     
     # Россия (граница с Монголией)
-    {"name": "Наушки", "code": "937200", "country": "Россия", "country_code": "RU", "latin_name": "Naushki"}
+    {"name": "Наушки", "code": "937200", "country": "Россия", "country_code": "RU", "latin_name": "Naushki"},
+
+    # Монголия (исправление склейки строк)
+    {"name": "Толгойт", "code": "010769", "country": "Монголия", "country_code": "MN", "latin_name": "Tolgoit"},
+    {"name": "Сухэ-Батор", "code": "010686", "country": "Монголия", "country_code": "MN", "latin_name": "Sukhbaatar"},
+    {"name": "Салхит", "code": "010694", "country": "Монголия", "country_code": "MN", "latin_name": "Salkhit"}
 ]
 
 # ============================================================
@@ -155,7 +159,6 @@ def is_noise_name(value: str) -> bool:
 
 def clean_station_name(value: str) -> str:
     value = normalize_space(value)
-    # УЛУЧШЕННАЯ ОЧИСТКА: удаляем 1 или 2 символа (буквы/цифры) в начале строки, если после них идет пробел
     value = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', value)
     return re.sub(r"^[|;:,]+|[|;:,]+$", "", value).strip()
 
@@ -242,41 +245,67 @@ def get_pdf_urls() -> dict[str, str]:
 # ============================================================
 
 def parse_text_page(text: str, country_code: str) -> list[dict]:
+    """Читает текст построчно, чтобы не склеивать соседние строки."""
     records = []
-    text = normalize_space(text.replace('\n', ' '))
-    matches = list(re.finditer(r'(?<!\d)(\d{6})(?!\d)', text))
-    
-    for i, match in enumerate(matches):
-        code = match.group(1)
-        start_pos = matches[i-1].end() if i > 0 else 0
-        left_raw = text[start_pos:match.start()].strip()
-        end_pos = matches[i+1].start() if i + 1 < len(matches) else len(text)
-        right_raw = text[match.end():end_pos].strip()
+    lines = text.split('\n')
+    buffer_name = ""
+
+    for line in lines:
+        line = normalize_space(line)
+        if not line: continue
+
+        matches = list(re.finditer(r'(?<!\d)(\d{6})(?!\d)', line))
         
-        ru_match = re.search(r'([А-Яа-яЁё][А-Яа-яЁё\s\-\(\)\.,]*)$', left_raw)
-        if not ru_match: continue
-        left = ru_match.group(1).strip()
-        
-        left = re.sub(r'\s+([,\.\)])', r'\1', left)
-        left = re.sub(r'([\(])\s+', r'\1', left)
-        
-        lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right_raw)
-        if not lat_match: continue
-        lat = lat_match.group(1).strip()
-        
-        if strict_station_name(left, "ru") and strict_station_name(lat, "latin"):
-            rec = make_record(country_code, code, left, lat)
-            if rec: records.append(rec)
+        if not matches:
+            if re.search(r'[А-Яа-яЁёA-Za-z]', line):
+                if buffer_name and re.match(r'^[а-яё\(\,\.]', line):
+                    buffer_name += " " + line
+                else:
+                    buffer_name = line
+            continue
+
+        for i, match in enumerate(matches):
+            code = match.group(1)
+            
+            if i == 0:
+                left = line[:match.start()].strip()
+                if not left and buffer_name:
+                    left = buffer_name
+                elif left and buffer_name and re.match(r'^[а-яё\(\,\.]', left):
+                    left = buffer_name + " " + left
+                buffer_name = ""
+            else:
+                left = line[matches[i-1].end():match.start()].strip()
+
+            if i + 1 < len(matches):
+                right = line[match.end():matches[i+1].start()].strip()
+            else:
+                right = line[match.end():].strip()
+
+            # Отрезаем всё, что было до предыдущего 6-значного кода (лечим склейку строк)
+            left = re.sub(r'.*\d{6}\s*', '', left)
+            
+            left = re.sub(r'\s+([,\.\)])', r'\1', left)
+            left = re.sub(r'([\(])\s+', r'\1', left)
+            left = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', left)
+
+            lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right)
+            if lat_match:
+                lat = lat_match.group(1).strip()
+                if strict_station_name(left, "ru") and strict_station_name(lat, "latin"):
+                    rec = make_record(country_code, code, left, lat)
+                    if rec: records.append(rec)
     return records
 
 def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
     records = []
     if not words: return records
     groups = []
+    # Уменьшили допуск до 5.0, чтобы строки не склеивались по вертикали
     for word in sorted(words, key=lambda i: (round(float(i[1]), 1), float(i[0]))):
         placed = False
         for g in groups[-30:]:
-            if abs(float(word[1]) - g["y"]) <= 10.0:
+            if abs(float(word[1]) - g["y"]) <= 5.0:
                 g["words"].append(word); g["y"] = sum(float(w[1]) for w in g["words"])/len(g["words"]); placed=True; break
         if not placed: groups.append({"y": float(word[1]), "words": [word]})
         
@@ -298,6 +327,7 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
                     left = ru_match.group(1).strip()
                     left = re.sub(r'\s+([,\.\)])', r'\1', left)
                     left = re.sub(r'([\(])\s+', r'\1', left)
+                    left = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', left)
             
             lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right)
             if not lat_match: continue
