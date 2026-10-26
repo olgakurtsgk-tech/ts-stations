@@ -5544,13 +5544,6 @@
     "latin_name": "Almaty"
   },
   {
-    "name": "Алтай",
-    "code": "714601",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Altay"
-  },
-  {
     "name": "Алтынсарин Алтынтау",
     "code": "693903",
     "country": "Казахстан",
@@ -6018,6 +6011,13 @@
     "country": "Казахстан",
     "country_code": "KZ",
     "latin_name": "Igilik"
+  },
+  {
+    "name": "Зыряновск",
+    "code": "714601",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "latin_name": "Zyryanovsk"
   },
   {
     "name": "Илецк",
