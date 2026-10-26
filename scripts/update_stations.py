@@ -71,8 +71,12 @@ MANUAL_ADDITIONS = [
     {"name": "Карталы I (эксп.)", "code": "816504", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I (eksp.)"},
     {"name": "Орск", "code": "810006", "country": "Россия", "country_code": "RU", "latin_name": "Orsk"},
     {"name": "Соль-Илецк I", "code": "811905", "country": "Россия", "country_code": "RU", "latin_name": "Sol-Iletsk I"},
-    {"name": "Суземка (эксп.)", "code": "204408", "country": "Россия", "country_code": "RU", "latin_name": "Suzemka (eksp.)"}, # Добавили сюда на всякий случай
+    {"name": "Суземка (эксп.)", "code": "204408", "country": "Россия", "country_code": "RU", "latin_name": "Suzemka (eksp.)"},
     
+    # Россия (Астрахань и другие)
+    {"name": "Астрахань I", "code": "616803", "country": "Россия", "country_code": "RU", "latin_name": "Astrakhan I"},
+    {"name": "Астрахань II", "code": "616907", "country": "Россия", "country_code": "RU", "latin_name": "Astrakhan II"},
+
     # Россия (граница с Беларусью)
     {"name": "Смоленск", "code": "170108", "country": "Россия", "country_code": "RU", "latin_name": "Smolensk"},
     {"name": "Рославль I", "code": "177408", "country": "Россия", "country_code": "RU", "latin_name": "Roslavl I"},
