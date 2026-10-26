@@ -65,7 +65,14 @@ MANUAL_ADDITIONS = [
     {"name": "Зыряновск", "code": "714601", "country": "Казахстан", "country_code": "KZ", "latin_name": "Zyryanovsk"},
     {"name": "Бопай", "code": "664506", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bopay"},
     {"name": "Болашак", "code": "664600", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bolashak"},
+    {"name": "Арал Тенизи", "code": "670309", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aral Tenizi"},
     
+    # Казахстан (Достык)
+    {"name": "Достык", "code": "708403", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk"},
+    {"name": "Достык (эксп.)", "code": "708507", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk (eksp.)"},
+    {"name": "Достык (эксп. перев.)", "code": "710403", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk (eksp. perev.)"},
+    {"name": "Достык (эксп. перев. авто)", "code": "710102", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk (eksp. perev. avto)"},
+
     # Россия (граница с КЗ)
     {"name": "Карталы I", "code": "816203", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I"},
     {"name": "Карталы I (эксп.)", "code": "816504", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I (eksp.)"},
@@ -90,7 +97,16 @@ MANUAL_ADDITIONS = [
     # Монголия (исправление склейки строк)
     {"name": "Толгойт", "code": "010769", "country": "Монголия", "country_code": "MN", "latin_name": "Tolgoit"},
     {"name": "Сухэ-Батор", "code": "010686", "country": "Монголия", "country_code": "MN", "latin_name": "Sukhbaatar"},
-    {"name": "Салхит", "code": "010694", "country": "Монголия", "country_code": "MN", "latin_name": "Salkhit"}
+    {"name": "Салхит", "code": "010694", "country": "Монголия", "country_code": "MN", "latin_name": "Salkhit"},
+
+    # Азербайджан
+    {"name": "Астара (эксп.)", "code": "554503", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Astara (eksp.)"},
+    {"name": "Гаджи Зайналабдин", "code": "546302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Hacı Zeynalabdin"},
+
+    # Россия (Туапсе и Автово)
+    {"name": "Автово (перев.)", "code": "035404", "country": "Россия", "country_code": "RU", "latin_name": "Avtovo (perev.)"},
+    {"name": "Туапсе-Сортировочная (перев.)", "code": "533600", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (perev.)"},
+    {"name": "Туапсе-Сортировочная (слив.)", "code": "533507", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (sliv.)"}
 ]
 
 # ============================================================
@@ -164,6 +180,7 @@ def is_noise_name(value: str) -> bool:
 
 def clean_station_name(value: str) -> str:
     value = normalize_space(value)
+    # Удаляем одиночные буквы/цифры в начале (артефакты PDF)
     value = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', value)
     return re.sub(r"^[|;:,]+|[|;:,]+$", "", value).strip()
 
@@ -186,11 +203,18 @@ def make_record(country_code, code, ru, lat, border_code=""):
     ru = clean_station_name(ru)
     lat = clean_station_name(lat)
     
-    # ⚡ АВТО-ИСПРАВЛЕНИЕ СУФФИКСОВ: Если в латинском названии есть (eksp), (port) или (parom),
-    # но в русском нет (эксп.), (порт) или (паром) — добавляем их автоматически!
+    # ⚡ СИСТЕМНОЕ АВТО-ИСПРАВЛЕНИЕ СУФФИКСОВ
+    # Если в латинском названии есть спец. метки, но в русском их нет — дописываем!
     lat_lower = lat.lower()
+    
     if "eksp" in lat_lower and "эксп" not in ru.lower():
         ru += " (эксп.)"
+    elif "perev" in lat_lower and "перев" not in ru.lower():
+        ru += " (перев.)"
+    elif "sliv" in lat_lower and "слив" not in ru.lower():
+        ru += " (слив.)"
+    elif "sort" in lat_lower and "сорт" not in ru.lower() and "сортировоч" not in ru.lower():
+        ru += " (сорт.)"
     elif "port" in lat_lower and "порт" not in ru.lower():
         ru += " (порт)"
     elif "parom" in lat_lower and "паром" not in ru.lower():
@@ -425,6 +449,7 @@ def main():
     merged = [r for r in existing if r.get("country_code") not in new_countries]
     merged.extend(all_new)
     
+    # ПРИМЕНЯЕМ РУЧНЫЕ СТАНЦИИ
     manual_keys = {(m["country_code"], m["code"]) for m in MANUAL_ADDITIONS}
     merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
     merged.extend(MANUAL_ADDITIONS)
