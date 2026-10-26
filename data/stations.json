@@ -25536,13 +25536,6 @@
     "latin_name": "KARPUNINO"
   },
   {
-    "name": "КАРТАЛЫ",
-    "code": "816203",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "KARTALY I"
-  },
-  {
     "name": "КАРТЕЛЬ",
     "code": "965906",
     "country": "Россия",
@@ -28159,6 +28152,20 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "KIAPPESELGA"
+  },
+  {
+    "name": "Карталы I",
+    "code": "816203",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Kartaly I"
+  },
+  {
+    "name": "Карталы I (эксп.)",
+    "code": "816504",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Kartaly I (eksp.)"
   },
   {
     "name": "ЛАБИНСКАЯ",
@@ -43237,13 +43244,6 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "EVORON"
-  },
-  {
-    "name": "ЭКСП.)",
-    "code": "816504",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "KARTALY I (EKSP.)"
   },
   {
     "name": "ЭКСП.)",
