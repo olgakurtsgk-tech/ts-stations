@@ -55,6 +55,33 @@ EXCLUDED_COUNTRIES = {"IR", "CN", "CZ", "KR", "RO", "LA"}
 ACTIVE_COUNTRIES = {code: name for code, name in COUNTRIES.items() if code not in EXCLUDED_COUNTRIES}
 
 # ============================================================
+# РУЧНЫЕ ДОПОЛНЕНИЯ (Станции, которых нет в PDF ОСЖД)
+# ============================================================
+MANUAL_ADDITIONS = [
+    {
+        "name": "Илецк I (эксп.)",
+        "code": "666501",
+        "country": "Казахстан",
+        "country_code": "KZ",
+        "latin_name": "Iletsk I (eksp.)"
+    },
+    {
+        "name": "Карталы I",
+        "code": "816203",
+        "country": "Россия",
+        "country_code": "RU",
+        "latin_name": "Kartaly I"
+    },
+    {
+        "name": "Карталы I (эксп.)",
+        "code": "816504",
+        "country": "Россия",
+        "country_code": "RU",
+        "latin_name": "Kartaly I (eksp.)"
+    }
+]
+
+# ============================================================
 # FALLBACK PDF URLS (Наивысший приоритет)
 # ============================================================
 
@@ -139,7 +166,7 @@ def strict_station_name(value: str, script: str) -> bool:
     if re.search(r"(?<!\d)\d{6}(?!\d)", value): return False
     if script == "ru" and not re.search(r"[А-Яа-яЁё]", value): return False
     if script == "latin" and not re.search(r"[A-Za-z]", value): return False
-    if len(value.split()) > 10: return False # немного увеличили лимит слов для длинных названий
+    if len(value.split()) > 10: return False 
     return True
 
 def make_record(country_code, code, ru, lat, border_code=""):
@@ -212,7 +239,6 @@ def get_pdf_urls() -> dict[str, str]:
 def parse_text_page(text: str, country_code: str) -> list[dict]:
     """Парсит сплошной текст, склеивая переносы строк."""
     records = []
-    # Склеиваем весь текст в одну строку, чтобы переносы строк не разрывали названия
     text = normalize_space(text.replace('\n', ' '))
     
     matches = list(re.finditer(r'(?<!\d)(\d{6})(?!\d)', text))
@@ -226,16 +252,13 @@ def parse_text_page(text: str, country_code: str) -> list[dict]:
         end_pos = matches[i+1].start() if i + 1 < len(matches) else len(text)
         right_raw = text[match.end():end_pos].strip()
         
-        # Ищем последнее вхождение русского названия
         ru_match = re.search(r'([А-Яа-яЁё][А-Яа-яЁё\s\-\(\)\.,]*)$', left_raw)
         if not ru_match: continue
         left = ru_match.group(1).strip()
         
-        # Очищаем от лишних пробелов внутри скобок и перед запятыми
         left = re.sub(r'\s+([,\.\)])', r'\1', left)
         left = re.sub(r'([\(])\s+', r'\1', left)
         
-        # Ищем латинское название
         lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right_raw)
         if not lat_match: continue
         lat = lat_match.group(1).strip()
@@ -251,7 +274,6 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
     if not words: return records
     
     groups = []
-    # Увеличили допуск по Y до 10.0
     for word in sorted(words, key=lambda i: (round(float(i[1]), 1), float(i[0]))):
         placed = False
         for g in groups[-30:]:
@@ -301,7 +323,6 @@ def parse_pdf(pdf_bytes: bytes, country_code: str) -> list[dict]:
 
     final = []
     seen = set()
-    # Приоритет отдаем парсеру текста, так как он лучше справляется с переносами
     for source in (t_recs, w_recs):
         for r in source:
             if r["code"] not in seen:
@@ -361,9 +382,21 @@ def main():
             if not old_count:
                 raise RuntimeError(f"Фатальная ошибка: нет данных для {code}")
 
+    # Объединение: берем старые данные для тех стран, которые не обновились
     new_countries = {r["country_code"] for r in all_new}
     merged = [r for r in existing if r.get("country_code") not in new_countries]
     merged.extend(all_new)
+    
+    # ДОБАВЛЯЕМ РУЧНЫЕ СТАНЦИИ (если их еще нет в базе)
+    existing_keys = {(r["country_code"], r["code"]) for r in merged}
+    for manual_rec in MANUAL_ADDITIONS:
+        key = (manual_rec["country_code"], manual_rec["code"])
+        if key not in existing_keys:
+            merged.append(manual_rec)
+            print(f"  + Добавлена вручную: {manual_rec['name']} ({manual_rec['code']})")
+
+    # Финальная сортировка и валидация
+    merged = sorted(merged, key=lambda r: (r["country_code"], r["name"]))
     
     counters = Counter(s.get("country_code") for s in merged)
     missing = [c for c in ACTIVE_COUNTRIES if counters.get(c, 0) == 0]
