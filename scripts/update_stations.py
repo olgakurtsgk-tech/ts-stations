@@ -71,6 +71,7 @@ MANUAL_ADDITIONS = [
     {"name": "Карталы I (эксп.)", "code": "816504", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I (eksp.)"},
     {"name": "Орск", "code": "810006", "country": "Россия", "country_code": "RU", "latin_name": "Orsk"},
     {"name": "Соль-Илецк I", "code": "811905", "country": "Россия", "country_code": "RU", "latin_name": "Sol-Iletsk I"},
+    {"name": "Суземка (эксп.)", "code": "204408", "country": "Россия", "country_code": "RU", "latin_name": "Suzemka (eksp.)"}, # Добавили сюда на всякий случай
     
     # Россия (граница с Беларусью)
     {"name": "Смоленск", "code": "170108", "country": "Россия", "country_code": "RU", "latin_name": "Smolensk"},
@@ -180,6 +181,17 @@ def strict_station_name(value: str, script: str) -> bool:
 def make_record(country_code, code, ru, lat, border_code=""):
     ru = clean_station_name(ru)
     lat = clean_station_name(lat)
+    
+    # ⚡ АВТО-ИСПРАВЛЕНИЕ СУФФИКСОВ: Если в латинском названии есть (eksp), (port) или (parom),
+    # но в русском нет (эксп.), (порт) или (паром) — добавляем их автоматически!
+    lat_lower = lat.lower()
+    if "eksp" in lat_lower and "эксп" not in ru.lower():
+        ru += " (эксп.)"
+    elif "port" in lat_lower and "порт" not in ru.lower():
+        ru += " (порт)"
+    elif "parom" in lat_lower and "паром" not in ru.lower():
+        ru += " (паром)"
+        
     if not normalize_code(code) or not valid_name(ru) or not valid_name(lat): return None
     rec = {"name": ru, "code": normalize_code(code), "country": COUNTRIES[country_code], "country_code": country_code, "latin_name": lat}
     if border_code and normalize_code(border_code): rec["border_code"] = normalize_code(border_code)
@@ -245,7 +257,6 @@ def get_pdf_urls() -> dict[str, str]:
 # ============================================================
 
 def parse_text_page(text: str, country_code: str) -> list[dict]:
-    """Читает текст построчно, чтобы не склеивать соседние строки."""
     records = []
     lines = text.split('\n')
     buffer_name = ""
@@ -282,9 +293,7 @@ def parse_text_page(text: str, country_code: str) -> list[dict]:
             else:
                 right = line[match.end():].strip()
 
-            # Отрезаем всё, что было до предыдущего 6-значного кода (лечим склейку строк)
             left = re.sub(r'.*\d{6}\s*', '', left)
-            
             left = re.sub(r'\s+([,\.\)])', r'\1', left)
             left = re.sub(r'([\(])\s+', r'\1', left)
             left = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', left)
@@ -301,7 +310,6 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
     records = []
     if not words: return records
     groups = []
-    # Уменьшили допуск до 5.0, чтобы строки не склеивались по вертикали
     for word in sorted(words, key=lambda i: (round(float(i[1]), 1), float(i[0]))):
         placed = False
         for g in groups[-30:]:
@@ -413,7 +421,6 @@ def main():
     merged = [r for r in existing if r.get("country_code") not in new_countries]
     merged.extend(all_new)
     
-    # ПРИМЕНЯЕМ РУЧНЫЕ СТАНЦИИ (наивысший приоритет)
     manual_keys = {(m["country_code"], m["code"]) for m in MANUAL_ADDITIONS}
     merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
     merged.extend(MANUAL_ADDITIONS)
