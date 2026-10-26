@@ -18585,20 +18585,6 @@
     "latin_name": "ASTAPKOVICHI"
   },
   {
-    "name": "АСТРАХАНЬ",
-    "code": "616803",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "ASTRAHAN I"
-  },
-  {
-    "name": "АСТРАХАНЬ",
-    "code": "616907",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "ASTRAHAN II"
-  },
-  {
     "name": "АСФАЛЬТНАЯ",
     "code": "800309",
     "country": "Россия",
@@ -18730,6 +18716,20 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "AIAT"
+  },
+  {
+    "name": "Астрахань I",
+    "code": "616803",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Astrakhan I"
+  },
+  {
+    "name": "Астрахань II",
+    "code": "616907",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Astrakhan II"
   },
   {
     "name": "БАБАЕВО",
