@@ -387,13 +387,15 @@ def main():
     merged = [r for r in existing if r.get("country_code") not in new_countries]
     merged.extend(all_new)
     
-    # ДОБАВЛЯЕМ РУЧНЫЕ СТАНЦИИ (если их еще нет в базе)
-    existing_keys = {(r["country_code"], r["code"]) for r in merged}
-    for manual_rec in MANUAL_ADDITIONS:
-        key = (manual_rec["country_code"], manual_rec["code"])
-        if key not in existing_keys:
-            merged.append(manual_rec)
-            print(f"  + Добавлена вручную: {manual_rec['name']} ({manual_rec['code']})")
+    # ДОБАВЛЯЕМ РУЧНЫЕ СТАНЦИИ (наивысший приоритет, перезаписывают PDF)
+    manual_keys = {(m["country_code"], m["code"]) for m in MANUAL_ADDITIONS}
+    
+    # Сначала удаляем из базы всё, что совпадает по коду с ручными станциями
+    merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
+    
+    # Затем добавляем чистые ручные станции
+    merged.extend(MANUAL_ADDITIONS)
+    print(f"  + Добавлены ручные станции (приоритет над PDF)")
 
     # Финальная сортировка и валидация
     merged = sorted(merged, key=lambda r: (r["country_code"], r["name"]))
