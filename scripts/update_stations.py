@@ -38,6 +38,45 @@ HEADERS = {
 }
 
 # ============================================================
+# RAILWAY PREFIXES (Определение дороги по коду ЕСР)
+# ============================================================
+RAILWAY_PREFIXES = {
+    "00": "Финляндская", "01": "Октябрьская", "02": "Октябрьская", "03": "Октябрьская", "04": "Октябрьская", "05": "Октябрьская",
+    "06": "Московская", "07": "Московская", "08": "Московская", "09": "Московская",
+    "10": "Калининградская", "11": "Белорусская", "12": "Белорусская", "13": "Белорусская", "14": "Белорусская", "15": "Белорусская", "16": "Белорусская",
+    "17": "Московская", "18": "Московская", "19": "Московская", "20": "Московская",
+    "21": "Юго-Восточная", "22": "Юго-Восточная", "23": "Юго-Восточная", "24": "Юго-Восточная",
+    "25": "Горьковская", "26": "Горьковская", "27": "Горьковская", "28": "Горьковская",
+    "29": "Северная", "30": "Северная", "31": "Северная", "32": "Северная",
+    "33": "Украинская", "34": "Украинская", "35": "Украинская", "36": "Украинская", "37": "Украинская", 
+    "38": "Украинская", "39": "Украинская", "40": "Украинская", "41": "Украинская", "42": "Украинская", 
+    "43": "Украинская", "44": "Украинская", "45": "Украинская", "46": "Украинская", "47": "Украинская", 
+    "48": "Украинская", "49": "Украинская",
+    "51": "Молдавская",
+    "54": "Азербайджанская", "55": "Азербайджанская",
+    "56": "Грузинская", "57": "Грузинская",
+    "58": "Армянская",
+    "61": "Северо-Кавказская", "62": "Северо-Кавказская", "63": "Северо-Кавказская", "64": "Северо-Кавказская",
+    "65": "Куйбышевская", "66": "Куйбышевская", "67": "Куйбышевская", "68": "Куйбышевская",
+    "69": "Приволжская", "70": "Приволжская",
+    "71": "Южно-Уральская", "72": "Южно-Уральская", "73": "Южно-Уральская", "74": "Южно-Уральская",
+    "75": "Забайкальская",
+    "76": "Свердловская", "77": "Свердловская", "78": "Свердловская", "79": "Свердловская",
+    "80": "Западно-Сибирская", "81": "Западно-Сибирская", "82": "Западно-Сибирская", "83": "Западно-Сибирская", "84": "Западно-Сибирская",
+    "85": "Красноярская", "86": "Красноярская", "87": "Красноярская",
+    "88": "Восточно-Сибирская", "89": "Восточно-Сибирская",
+    "90": "Дальневосточная", "91": "Дальневосточная", "92": "Дальневосточная", "93": "Дальневосточная", 
+    "94": "Дальневосточная", "95": "Дальневосточная", "96": "Дальневосточная", "97": "Дальневосточная", 
+    "98": "Дальневосточная", "99": "Дальневосточная",
+}
+
+def get_railway(code: str | None) -> str:
+    if not code or len(code) < 2:
+        return ""
+    prefix = code[:2]
+    return RAILWAY_PREFIXES.get(prefix, "")
+
+# ============================================================
 # COUNTRIES
 # ============================================================
 
@@ -59,7 +98,7 @@ ACTIVE_COUNTRIES = {code: name for code, name in COUNTRIES.items() if code not i
 # РУЧНЫЕ ДОПОЛНЕНИЯ И ИСПРАВЛЕНИЯ
 # ============================================================
 MANUAL_ADDITIONS = [
-    # --- ВАШИ ПРОВЕРЕННЫЕ СТАНЦИИ (Внесены вручную) ---
+    # --- ВАШИ ПРОВЕРЕННЫЕ СТАНЦИИ ---
     {"name": "Лахти", "code": "001000", "country": "Финляндия", "country_code": "FI", "latin_name": "Lahti"},
     {"name": "Пори", "code": "002200", "country": "Финляндия", "country_code": "FI", "latin_name": "Pori"},
     {"name": "Алхолма", "code": "003080", "country": "Финляндия", "country_code": "FI", "latin_name": "Alholma"},
@@ -119,6 +158,7 @@ MANUAL_ADDITIONS = [
     {"name": "БЛАГОДАТНОЕ", "code": "424244", "country": "Украина", "country_code": "UA", "latin_name": "Blagodatnoe"},
     {"name": "Кутейниково", "code": "901507", "country": "Россия", "country_code": "RU", "latin_name": "Kuteynikovo"},
     {"name": "Легендарная", "code": "958103", "country": "Россия", "country_code": "RU", "latin_name": "Legendarnaya"},
+    {"name": "Ала-Тоо (эксп.)", "code": "719802", "country": "Кыргызстан", "country_code": "KG", "latin_name": "Ala-Too (eksp.)"},
 
     # --- СТАРЫЕ РУЧНЫЕ ДОПОЛНЕНИЯ ---
     {"name": "Илецк I (эксп.)", "code": "666501", "country": "Казахстан", "country_code": "KZ", "latin_name": "Iletsk I"},
@@ -170,13 +210,9 @@ MANUAL_ADDITIONS = [
     {"name": "Москва-Товарная-Смоленская", "code": "198207", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Smolenskaya"},
     {"name": "Москва-Товарная-Киевская", "code": "198002", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kievskaya"},
     {"name": "Гатчина-Товарная-Балтийская", "code": "034007", "country": "Россия", "country_code": "RU", "latin_name": "Gatchina-Tovarnaya-Baltiyskaya"},
-    
-    # Кыргызстан
-    {"name": "Ала-Тоо (эксп.)", "code": "719802", "country": "Кыргызстан", "country_code": "KG", "latin_name": "Ala-Too (eksp.)"},
-        # ============================================================
+
     # УЗБЕКИСТАН (Переименования с 23.03.2026)
-    # ============================================================
-    {"name": "Турткул", "code": "739609", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Turtgul"},
+    {"name": "Туртгул", "code": "739609", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Turtgul"},
     {"name": "Хужайли", "code": "737603", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Khuzhayli"},
     {"name": "Жумуртов", "code": "737904", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Zhumurtov"},
     {"name": "Назархон", "code": "739505", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Nazarkhon"},
@@ -423,10 +459,8 @@ def fix_ocr_and_case(text: str) -> str:
 
 def clean_station_name(value: str) -> str:
     value = normalize_space(value)
-    # Удаляем одиночные буквы/цифры в начале (артефакты PDF)
     value = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', value)
     value = re.sub(r"^[|;:,]+|[|;:,]+$", "", value).strip()
-    # Применяем OCR-фиксы
     value = fix_ocr_and_case(value)
     return value
 
@@ -449,13 +483,11 @@ def make_record(country_code, code, ru, lat, border_code=""):
     ru = clean_station_name(ru)
     lat = clean_station_name(lat)
     
-    # Сначала удаляем старые/битые скобки, чтобы не было дублей
     ru = re.sub(r'\(\s*[^)]*\s*\)', '', ru).strip()
     
     ru_lower = ru.lower()
     lat_lower = lat.lower()
     
-    # Синхронизируем суффиксы
     if "eksp" in lat_lower or "exp" in lat_lower:
         ru += " (эксп.)"
     elif "perev" in lat_lower or "perevoz" in lat_lower:
@@ -477,6 +509,7 @@ def make_record(country_code, code, ru, lat, border_code=""):
         "code": normalize_code(code), 
         "country": COUNTRIES[country_code], 
         "country_code": country_code, 
+        "railway": get_railway(normalize_code(code)), # ДОБАВЛЕНО АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ
         "latin_name": lat
     }
     if border_code and normalize_code(border_code): 
@@ -711,6 +744,11 @@ def main():
     merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
     merged.extend(MANUAL_ADDITIONS)
     
+    # ДОБАВЛЯЕМ RAILWAY И К РУЧНЫМ СТАНЦИЯМ, ЕСЛИ ЕГО ТАМ НЕТ
+    for m in merged:
+        if "railway" not in m or not m["railway"]:
+            m["railway"] = get_railway(m["code"])
+
     merged = sorted(merged, key=lambda r: (r["country_code"], r["name"]))
     
     counters = Counter(s.get("country_code") for s in merged)
