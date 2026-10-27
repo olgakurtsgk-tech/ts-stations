@@ -53781,25 +53781,25 @@
     "latin_name": "Ablik"
   },
   {
-    "name": "Аджибугут",
-    "code": "732402",
+    "name": "Ажиниёз",
+    "code": "737124",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Adjibugut"
+    "latin_name": "Azhiniyez"
   },
   {
-    "name": "Айрытам",
+    "name": "Айритом",
     "code": "733405",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Ayritam"
+    "latin_name": "Ayritom"
   },
   {
-    "name": "Акалтын",
-    "code": "724904",
+    "name": "Актубе",
+    "code": "737048",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Akaltin"
+    "latin_name": "Aktube"
   },
   {
     "name": "Акча",
@@ -53807,34 +53807,6 @@
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Akcha"
-  },
-  {
-    "name": "Алат",
-    "code": "730708",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Alat"
-  },
-  {
-    "name": "Алатун",
-    "code": "733301",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Alatun"
-  },
-  {
-    "name": "Алмазар",
-    "code": "724302",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Almazar"
-  },
-  {
-    "name": "Алтыарык",
-    "code": "742404",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Altiarik"
   },
   {
     "name": "Амузанг",
@@ -53858,18 +53830,18 @@
     "latin_name": "Angren"
   },
   {
-    "name": "Андижан",
+    "name": "Андижон 1",
     "code": "743604",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Andijan I"
+    "latin_name": "Andizhon 1"
   },
   {
-    "name": "Андижан",
+    "name": "Андижон 2",
     "code": "742003",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Andijan II"
+    "latin_name": "Andizhon 2"
   },
   {
     "name": "Аранчи",
@@ -53879,18 +53851,11 @@
     "latin_name": "Aranchi"
   },
   {
-    "name": "Ассаке",
+    "name": "Асака",
     "code": "743407",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Assake"
-  },
-  {
-    "name": "Ахангаран",
-    "code": "723009",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Axangaran"
+    "latin_name": "Asaka"
   },
   {
     "name": "Ахтачи",
@@ -53898,20 +53863,6 @@
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Axtachi"
-  },
-  {
-    "name": "Ахунбабаева",
-    "code": "743209",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Axunbabaeva"
-  },
-  {
-    "name": "Багат",
-    "code": "738502",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Bagat"
   },
   {
     "name": "Бадай",
@@ -53935,32 +53886,11 @@
     "latin_name": "Barraj"
   },
   {
-    "name": "Барса-Кельмес",
-    "code": "744607",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Barsa-Kelmes"
-  },
-  {
     "name": "Бахт",
     "code": "724800",
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Baxt"
-  },
-  {
-    "name": "Баяут",
-    "code": "725108",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Bayaut"
-  },
-  {
-    "name": "Бекабад",
-    "code": "726100",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Bekabad"
   },
   {
     "name": "Бекабад (эксп.)",
@@ -53970,11 +53900,25 @@
     "latin_name": "Bekabad (exp.) -"
   },
   {
-    "name": "Беруни",
+    "name": "Бекобод",
+    "code": "726100",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Bekobod"
+  },
+  {
+    "name": "Бердак",
+    "code": "737020",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Berdak"
+  },
+  {
+    "name": "Беруний",
     "code": "734605",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Beruni"
+    "latin_name": "Beruniy"
   },
   {
     "name": "Бинокор",
@@ -53984,11 +53928,11 @@
     "latin_name": "Binokor"
   },
   {
-    "name": "Бозсу",
-    "code": "721408",
+    "name": "Богот",
+    "code": "738502",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Bozsu"
+    "latin_name": "Bogot"
   },
   {
     "name": "Бойсун",
@@ -54005,11 +53949,25 @@
     "latin_name": "Boytog"
   },
   {
-    "name": "Болдыр",
+    "name": "Болдир",
     "code": "739401",
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Boldir"
+  },
+  {
+    "name": "Борсакелмас",
+    "code": "744607",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Borsakelmas"
+  },
+  {
+    "name": "Боёвут",
+    "code": "725108",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Boyovut"
   },
   {
     "name": "Бувайда",
@@ -54019,6 +53977,13 @@
     "latin_name": "Buvayda"
   },
   {
+    "name": "Бузсув",
+    "code": "721408",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Buzsuv"
+  },
+  {
     "name": "Булунгур",
     "code": "727508",
     "country": "Узбекистан",
@@ -54026,18 +53991,25 @@
     "latin_name": "Bulungur"
   },
   {
-    "name": "Бухара",
+    "name": "Бустон",
+    "code": "744908",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Buston"
+  },
+  {
+    "name": "Бухоро 1",
     "code": "730002",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Buxara-"
+    "latin_name": "Bukhoro 1"
   },
   {
-    "name": "Бухара",
+    "name": "Бухоро 2",
     "code": "730106",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Buxara II"
+    "latin_name": "Bukhoro 2"
   },
   {
     "name": "Галаба",
@@ -54054,32 +54026,39 @@
     "latin_name": "Galaba (exp.) - G"
   },
   {
-    "name": "Галлярал",
+    "name": "Галлаорол",
     "code": "727207",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Gallyaral"
+    "latin_name": "Gallaorol"
   },
   {
-    "name": "Гузар",
+    "name": "Гузор",
     "code": "733706",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Guzar"
+    "latin_name": "Guzor"
   },
   {
-    "name": "Гулистан",
+    "name": "Гулистон",
     "code": "725004",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Gulistan"
+    "latin_name": "Guliston"
   },
   {
-    "name": "Далигузар",
+    "name": "Давтена",
+    "code": "744503",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Davtena"
+  },
+  {
+    "name": "Далагузар",
     "code": "722307",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Daliguzar"
+    "latin_name": "Dalaguzar"
   },
   {
     "name": "Дарбанд",
@@ -54103,11 +54082,11 @@
     "latin_name": "Dashtobod"
   },
   {
-    "name": "Денау",
+    "name": "Денов",
     "code": "736009",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Denau"
+    "latin_name": "Denov"
   },
   {
     "name": "Дехконобод",
@@ -54115,20 +54094,6 @@
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Dexkonobod"
-  },
-  {
-    "name": "Джамбай",
-    "code": "727601",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Djambay"
-  },
-  {
-    "name": "Джаркурган",
-    "code": "735400",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Djarkurgan"
   },
   {
     "name": "Джизак",
@@ -54143,13 +54108,6 @@
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Djuma"
-  },
-  {
-    "name": "Джумуртау",
-    "code": "737904",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Djumurtau"
   },
   {
     "name": "Дустлик",
@@ -54173,60 +54131,81 @@
     "latin_name": "Jalaquduq"
   },
   {
-    "name": "Жалоир",
+    "name": "Жалойир",
     "code": "723403",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Jaloir"
+    "latin_name": "Zhaloyir"
   },
   {
-    "name": "Жаслык",
+    "name": "Жаркургон",
+    "code": "735400",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Zharkurgon"
+  },
+  {
+    "name": "Жаслик",
     "code": "737001",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Jaslik"
+    "latin_name": "ZHaslik"
   },
   {
-    "name": "Зарафшан",
+    "name": "Жом",
+    "code": "728036",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Zhom"
+  },
+  {
+    "name": "Жомбой",
+    "code": "727601",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Zhomboy"
+  },
+  {
+    "name": "Жумуртов",
+    "code": "737904",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Zhumurtov"
+  },
+  {
+    "name": "Зарафшон",
     "code": "727705",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Zarafshan"
+    "latin_name": "Zarafshon"
   },
   {
-    "name": "Зарбдар",
+    "name": "Зарбдор",
     "code": "726702",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Zarbdar"
+    "latin_name": "Zarbdor"
   },
   {
-    "name": "Зафарабад",
+    "name": "Зафаробод",
     "code": "731607",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Zafarabad"
+    "latin_name": "Zafarobod"
   },
   {
-    "name": "Зиевуддин",
-    "code": "728708",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Zievuddin"
-  },
-  {
-    "name": "Зирабулак",
+    "name": "Зирабулок",
     "code": "728604",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Zirabulak"
+    "latin_name": "Zirabulok"
   },
   {
-    "name": "Ирджарская",
-    "code": "725502",
+    "name": "Зиёвуддин",
+    "code": "728708",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Irdjarskaya"
+    "latin_name": "Ziyovuddin"
   },
   {
     "name": "Истиклол",
@@ -54236,18 +54215,11 @@
     "latin_name": "Istiklol"
   },
   {
-    "name": "Каган",
-    "code": "740606",
+    "name": "Кайрокота",
+    "code": "731700",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kagan"
-  },
-  {
-    "name": "Кадырья",
-    "code": "721200",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Kadirya"
+    "latin_name": "Kayrokota"
   },
   {
     "name": "Какир",
@@ -54262,48 +54234,6 @@
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Kamashi"
-  },
-  {
-    "name": "Канимех",
-    "code": "731503",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Kanimex"
-  },
-  {
-    "name": "Каракалпакстан",
-    "code": "736901",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Karakalpakstan"
-  },
-  {
-    "name": "Каракатта",
-    "code": "731700",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Karakatta"
-  },
-  {
-    "name": "Каракуль",
-    "code": "730604",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Karakul"
-  },
-  {
-    "name": "Караозек",
-    "code": "732506",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Karaozek"
-  },
-  {
-    "name": "Караулбазар",
-    "code": "730303",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Karaulbazar"
   },
   {
     "name": "Кармана",
@@ -54327,25 +54257,18 @@
     "latin_name": "Karshi"
   },
   {
-    "name": "Касан",
-    "code": "733000",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Kasan"
-  },
-  {
-    "name": "Каттакурган",
+    "name": "Каттакургон",
     "code": "728407",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kattakurgan"
+    "latin_name": "Kattakurgon"
   },
   {
-    "name": "Кашкадарья",
+    "name": "Кашкадарё",
     "code": "733208",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kashkadarya"
+    "latin_name": "Kashkadaryo"
   },
   {
     "name": "Келес",
@@ -54369,6 +54292,41 @@
     "latin_name": "Kengsoy"
   },
   {
+    "name": "Кизилкудук",
+    "code": "731804",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kizilkuduk"
+  },
+  {
+    "name": "Кизилкум",
+    "code": "731819",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kizilkum"
+  },
+  {
+    "name": "Кизилтепа",
+    "code": "731005",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kiziltepa"
+  },
+  {
+    "name": "Кийикли",
+    "code": "729715",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kiyikli"
+  },
+  {
+    "name": "Кийиксой",
+    "code": "737054",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kiyiksoy"
+  },
+  {
     "name": "Киргили",
     "code": "742705",
     "country": "Узбекистан",
@@ -54376,18 +54334,39 @@
     "latin_name": "Kirgili"
   },
   {
-    "name": "Китаб",
+    "name": "Кирккиз",
+    "code": "737105",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kirkkiz"
+  },
+  {
+    "name": "Китоб",
     "code": "734107",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kitab"
+    "latin_name": "Kitob"
   },
   {
-    "name": "Коканд",
-    "code": "740004",
+    "name": "Когон",
+    "code": "740606",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kokand I"
+    "latin_name": "Kogon"
+  },
+  {
+    "name": "Кодирия",
+    "code": "721200",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kodiriya"
+  },
+  {
+    "name": "Конимех",
+    "code": "731503",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Konimekh"
   },
   {
     "name": "Конликул",
@@ -54397,11 +54376,46 @@
     "latin_name": "Qonliko"
   },
   {
-    "name": "Корли",
+    "name": "Коракалпогистон",
+    "code": "736901",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Korakalpokiston"
+  },
+  {
+    "name": "Коракул",
+    "code": "730604",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Korakul"
+  },
+  {
+    "name": "Кораузак",
+    "code": "732506",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Korauzak"
+  },
+  {
+    "name": "Корлитог",
     "code": "729700",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Korli tog"
+    "latin_name": "Korlitog"
+  },
+  {
+    "name": "Коровулбозор",
+    "code": "730303",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Korovulbozor"
+  },
+  {
+    "name": "Косон",
+    "code": "733000",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Koson"
   },
   {
     "name": "Кува",
@@ -54411,18 +54425,25 @@
     "latin_name": "Kuva"
   },
   {
-    "name": "Кувасай",
+    "name": "Кувасой",
     "code": "742902",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kuvasay"
+    "latin_name": "Kuvasoy"
   },
   {
-    "name": "Кувасай (эксп.)",
+    "name": "Кувасой (эксп.)",
     "code": "743002",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kuvasay (exp.) -"
+    "latin_name": "Kuvasoy (eksp.)"
+  },
+  {
+    "name": "Кувониш",
+    "code": "737143",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kuvonish"
   },
   {
     "name": "Кудукли (эксп.)",
@@ -54432,6 +54453,27 @@
     "latin_name": "Kudukli (exp.) -"
   },
   {
+    "name": "Куйбокли",
+    "code": "739647",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kuybokli"
+  },
+  {
+    "name": "Кукон",
+    "code": "740004",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kukon"
+  },
+  {
+    "name": "Кул",
+    "code": "722646",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kul"
+  },
+  {
     "name": "Кумкургон",
     "code": "735608",
     "country": "Узбекистан",
@@ -54439,18 +54481,25 @@
     "latin_name": "Kumkurgon"
   },
   {
-    "name": "Кунград",
+    "name": "Кумшунгул",
+    "code": "739204",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Kumshungul"
+  },
+  {
+    "name": "Кунгирот",
     "code": "737209",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kungrad"
+    "latin_name": "Kungirot"
   },
   {
-    "name": "Кунходжа",
+    "name": "Кунхужа",
     "code": "739702",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kunxodja"
+    "latin_name": "Kunkhuzha"
   },
   {
     "name": "Кучлук",
@@ -54460,39 +54509,18 @@
     "latin_name": "Kuchluk"
   },
   {
-    "name": "Кызылкудук",
-    "code": "731804",
+    "name": "Кушминор",
+    "code": "741736",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Kizilkuduk"
+    "latin_name": "Kushminor"
   },
   {
-    "name": "Кызылтепа",
-    "code": "731005",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Kiziltepa"
-  },
-  {
-    "name": "Кырк-кыз",
-    "code": "737105",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Kirk-kiz"
-  },
-  {
-    "name": "Майлисай",
-    "code": "732309",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Maylisay"
-  },
-  {
-    "name": "Маргилан",
+    "name": "Маргилон",
     "code": "742508",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Margilan"
+    "latin_name": "Margilon"
   },
   {
     "name": "Марджонбулок",
@@ -54516,6 +54544,13 @@
     "latin_name": "Mash"
   },
   {
+    "name": "Мехнатобод",
+    "code": "742315",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Mekhnatobod"
+  },
+  {
     "name": "Мискин",
     "code": "739806",
     "country": "Узбекистан",
@@ -54523,11 +54558,18 @@
     "latin_name": "Miskin"
   },
   {
-    "name": "Мубарек",
+    "name": "Мойлисой",
+    "code": "732309",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Moylisoy"
+  },
+  {
+    "name": "Муборак",
     "code": "732703",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Mubarek"
+    "latin_name": "Muborak"
   },
   {
     "name": "Мургак",
@@ -54558,11 +54600,18 @@
     "latin_name": "Navbaxor"
   },
   {
-    "name": "Навои",
+    "name": "Навоий",
     "code": "731306",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Navoi"
+    "latin_name": "Navoiy"
+  },
+  {
+    "name": "Навшахар",
+    "code": "734906",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Navshakhar"
   },
   {
     "name": "Назарбек",
@@ -54572,25 +54621,25 @@
     "latin_name": "Nazarbek"
   },
   {
-    "name": "Назархан",
+    "name": "Назархон",
     "code": "739505",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Nazarxan"
+    "latin_name": "Nazarkhon"
   },
   {
-    "name": "Найманкуль",
+    "name": "Найманкул",
     "code": "737707",
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Naymankul"
   },
   {
-    "name": "Найманкуль (эксп.)",
+    "name": "Найманкул (эксп.)",
     "code": "737800",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Naymankul (exp.) -"
+    "latin_name": "Naymankul (eksp.)"
   },
   {
     "name": "Наманган",
@@ -54600,32 +54649,25 @@
     "latin_name": "Namangan"
   },
   {
-    "name": "Наушахар",
-    "code": "734906",
+    "name": "Нефтчилар",
+    "code": "743209",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Naushaxar"
+    "latin_name": "Neftchilar"
   },
   {
-    "name": "Нишан",
+    "name": "Нишон",
     "code": "734200",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Nishan"
+    "latin_name": "Nishon"
   },
   {
-    "name": "Нишан (эксп.)",
+    "name": "Нишон (эксп.)",
     "code": "734408",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Nishan export -"
-  },
-  {
-    "name": "Новый",
-    "code": "724502",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Noviy Chinaz"
+    "latin_name": "Nishon (eksp.)"
   },
   {
     "name": "Нукус",
@@ -54649,6 +54691,13 @@
     "latin_name": "Nurhayot"
   },
   {
+    "name": "Облик",
+    "code": "722011",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Oblik"
+  },
+  {
     "name": "Озодлик",
     "code": "723102",
     "country": "Узбекистан",
@@ -54663,6 +54712,13 @@
     "latin_name": "Okjar"
   },
   {
+    "name": "Околтин",
+    "code": "724904",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Okoltin"
+  },
+  {
     "name": "Окработ",
     "code": "729005",
     "country": "Узбекистан",
@@ -54670,18 +54726,46 @@
     "latin_name": "Okrabot"
   },
   {
-    "name": "Пайтуг",
-    "code": "741908",
+    "name": "Олатун",
+    "code": "733301",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Paytug"
+    "latin_name": "Olatun"
   },
   {
-    "name": "Пап",
-    "code": "740702",
+    "name": "Олмазор",
+    "code": "724302",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Pap"
+    "latin_name": "Olmazor"
+  },
+  {
+    "name": "Олот",
+    "code": "730708",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Olot"
+  },
+  {
+    "name": "Олтиарик",
+    "code": "742404",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Oltiarik"
+  },
+  {
+    "name": "Охангарон",
+    "code": "723009",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Okhangaron"
+  },
+  {
+    "name": "Парвоз",
+    "code": "729819",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Parvoz"
   },
   {
     "name": "Пахта",
@@ -54705,32 +54789,53 @@
     "latin_name": "Paxtaobod"
   },
   {
-    "name": "Питняк",
+    "name": "Питнак",
     "code": "738705",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Pitnyak"
+    "latin_name": "Pitnak"
   },
   {
-    "name": "Питняк (эксп.)",
+    "name": "Питнак (эксп.)",
     "code": "738803",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Pitnyak (exp.) -"
+    "latin_name": "Pitnak (eksp.)"
   },
   {
-    "name": "Рапкан",
+    "name": "Пойтук",
+    "code": "741908",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Poytuk"
+  },
+  {
+    "name": "Поп 1",
+    "code": "740702",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Pop 1"
+  },
+  {
+    "name": "Пулихоким",
+    "code": "729217",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Pulikhokim"
+  },
+  {
+    "name": "Равшан",
+    "code": "737213",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Ravshan"
+  },
+  {
+    "name": "Рапкон",
     "code": "740305",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Rapkan"
-  },
-  {
-    "name": "Раустан",
-    "code": "741007",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Raustan"
+    "latin_name": "Rapkon"
   },
   {
     "name": "Рахимова",
@@ -54738,6 +54843,13 @@
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Rahimova"
+  },
+  {
+    "name": "Ровустон",
+    "code": "741007",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Rovuston"
   },
   {
     "name": "Савай",
@@ -54754,11 +54866,11 @@
     "latin_name": "Savay export -"
   },
   {
-    "name": "Салар",
+    "name": "Салор",
     "code": "720903",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Salar"
+    "latin_name": "Salor"
   },
   {
     "name": "Самарканд",
@@ -54768,11 +54880,11 @@
     "latin_name": "Samarkand"
   },
   {
-    "name": "Сарыасия",
+    "name": "Сариосиё",
     "code": "736102",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Sariasiya"
+    "latin_name": "Sariosiyo"
   },
   {
     "name": "Сергели",
@@ -54780,6 +54892,27 @@
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Sergeli"
+  },
+  {
+    "name": "Сирдарё",
+    "code": "724707",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Sirdaryo"
+  },
+  {
+    "name": "Сирдарё (эксп.)",
+    "code": "725305",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Sirdaryo (eksp.)"
+  },
+  {
+    "name": "Собир Рахимов",
+    "code": "723040",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Sobir Rakhimov"
   },
   {
     "name": "Сувонобод (эксп.)",
@@ -54796,32 +54929,25 @@
     "latin_name": "Sultanabad (exp.) -"
   },
   {
-    "name": "Сурхан",
+    "name": "Сурхон",
     "code": "735504",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Surxan"
+    "latin_name": "Surkhon"
   },
   {
-    "name": "Сурханабад (эксп.)",
+    "name": "Сурхонобод",
+    "code": "734714",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Surkhonobod"
+  },
+  {
+    "name": "Сурхонобод (эксп.)",
     "code": "734709",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Surxanabad (exp.) -"
-  },
-  {
-    "name": "Сырдарьинская",
-    "code": "724707",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Sirdarinskaya"
-  },
-  {
-    "name": "Такыркуль",
-    "code": "739100",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Takirkul"
+    "latin_name": "Surkhonobod (eksp.)"
   },
   {
     "name": "Тангимуш",
@@ -54838,11 +54964,18 @@
     "latin_name": "Tanxoz"
   },
   {
-    "name": "Ташкент",
-    "code": "722400",
+    "name": "Тахиатош пристани",
+    "code": "738907",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Toshkent"
+    "latin_name": "Takhiotosh pristani"
+  },
+  {
+    "name": "Тахиркул",
+    "code": "739100",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Takhirkul"
   },
   {
     "name": "Темирйулобод",
@@ -54852,18 +54985,25 @@
     "latin_name": "Temiryulobod"
   },
   {
-    "name": "Термез",
+    "name": "Термиз",
     "code": "735109",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Termez"
+    "latin_name": "Termiz"
   },
   {
-    "name": "Термез-Порт (порт)",
+    "name": "Термиз порти",
     "code": "736704",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Termez-Port"
+    "latin_name": "Termiz porti"
+  },
+  {
+    "name": "Термиз порти (эксп.)",
+    "code": "735203",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Termiz porti (eksp.)"
   },
   {
     "name": "Тинчлик",
@@ -54873,11 +55013,25 @@
     "latin_name": "Tinchlik"
   },
   {
-    "name": "Той-тепа",
+    "name": "Тошкент",
+    "code": "722400",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Toshkent"
+  },
+  {
+    "name": "Тошкент Жанубий",
+    "code": "723615",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Toshkent Zhanubiy"
+  },
+  {
+    "name": "Туйтепа",
     "code": "723206",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Toy-tepa"
+    "latin_name": "Tuytpa"
   },
   {
     "name": "Тукимачи",
@@ -54887,18 +55041,25 @@
     "latin_name": "Tukimachi"
   },
   {
-    "name": "Туракурган",
+    "name": "Туракургон",
     "code": "740907",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Turakurgan"
+    "latin_name": "Turakurgon"
   },
   {
-    "name": "Туртгуль",
+    "name": "Туртгул",
     "code": "739609",
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Turtgul"
+  },
+  {
+    "name": "Узбекистон",
+    "code": "723827",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Uzbekiston"
   },
   {
     "name": "Уйчи",
@@ -54915,67 +55076,67 @@
     "latin_name": "Ulugbek"
   },
   {
-    "name": "Ургенч",
+    "name": "Урганч",
     "code": "738305",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Urgench"
+    "latin_name": "Urganch"
   },
   {
-    "name": "Урта-аул",
+    "name": "Уртаовул",
     "code": "723808",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Urta-aul"
+    "latin_name": "Urtaovul"
   },
   {
-    "name": "Учкудук",
-    "code": "732101",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Uchkuduk I"
-  },
-  {
-    "name": "Учкудук",
-    "code": "732205",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Uchkuduk II"
-  },
-  {
-    "name": "Учкурган",
-    "code": "741401",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Uchkurgan"
-  },
-  {
-    "name": "Учкурган (эксп.)",
-    "code": "741505",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Uchkurgan (exp.) -"
-  },
-  {
-    "name": "Учкызыл",
+    "name": "Учкизил",
     "code": "735006",
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Uchkizil"
   },
   {
-    "name": "Фархад",
-    "code": "726007",
+    "name": "Учкудук 1",
+    "code": "732101",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Farxad"
+    "latin_name": "Uchkuduk 1"
   },
   {
-    "name": "Фергана",
+    "name": "Учкудук 2",
+    "code": "732205",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Uchkuduk 2"
+  },
+  {
+    "name": "Учкургон",
+    "code": "741401",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Uchkurgon"
+  },
+  {
+    "name": "Учкургон (эксп.)",
+    "code": "741505",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Uchkurgon (eksp.)"
+  },
+  {
+    "name": "Фаргона 2",
     "code": "742809",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Fergana-"
+    "latin_name": "Fargona 2"
+  },
+  {
+    "name": "Фарход",
+    "code": "726007",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Farkhod"
   },
   {
     "name": "Фуркат",
@@ -54985,32 +55146,25 @@
     "latin_name": "Furkat"
   },
   {
-    "name": "Хаваст",
-    "code": "725803",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Xavast"
-  },
-  {
-    "name": "Хазарасп",
+    "name": "Хазорасп",
     "code": "738606",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Xazarasp"
+    "latin_name": "Khazorasp"
   },
   {
-    "name": "Хайрабад",
+    "name": "Хайробод",
     "code": "735909",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Xayrabad"
+    "latin_name": "Khayrobod"
   },
   {
-    "name": "Хаккулабад",
+    "name": "Хаккулобод",
     "code": "741806",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Xakkulabad"
+    "latin_name": "Khakkulobod"
   },
   {
     "name": "Халкабад",
@@ -55027,27 +55181,6 @@
     "latin_name": "Xamza"
   },
   {
-    "name": "Ханабад",
-    "code": "744109",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Xanabad"
-  },
-  {
-    "name": "Ханабад (эксп.)",
-    "code": "744404",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Xanabad export -"
-  },
-  {
-    "name": "Ханки",
-    "code": "738409",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Xanki"
-  },
-  {
     "name": "Хатеп",
     "code": "737500",
     "country": "Узбекистан",
@@ -55055,25 +55188,67 @@
     "latin_name": "Xatep"
   },
   {
-    "name": "Хизирбобо",
+    "name": "Хизрбобо",
     "code": "729607",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Xizirbobo"
+    "latin_name": "Khizrbobo"
   },
   {
-    "name": "Ходжейли",
+    "name": "Ховос",
+    "code": "725803",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Khovos"
+  },
+  {
+    "name": "Хожибугот",
+    "code": "732402",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Khozh bugot"
+  },
+  {
+    "name": "Хонка",
+    "code": "738409",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Khonka"
+  },
+  {
+    "name": "Хонобод",
+    "code": "744109",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Khonobod"
+  },
+  {
+    "name": "Хонобод (эксп.)",
+    "code": "744404",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Khonobod (eksp.)"
+  },
+  {
+    "name": "Хужадавлат",
+    "code": "730712",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Khuzhadavlat"
+  },
+  {
+    "name": "Хужайли",
     "code": "737603",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Xodjeyli"
+    "latin_name": "Khuzhayli"
   },
   {
-    "name": "Ходжикент",
+    "name": "Хужакент",
     "code": "722006",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Xodjikent"
+    "latin_name": "Khuzhakent"
   },
   {
     "name": "Чаманзор",
@@ -55083,32 +55258,25 @@
     "latin_name": "Chamanzor"
   },
   {
-    "name": "Чартак",
-    "code": "741204",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Chartak"
-  },
-  {
-    "name": "Чимбай",
+    "name": "Чимбой",
     "code": "739308",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Chimbay"
+    "latin_name": "Chimboy"
   },
   {
-    "name": "Чимкурган",
+    "name": "Чимкургон",
     "code": "726401",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Chimkurgan"
+    "latin_name": "Chimkurgon"
   },
   {
-    "name": "Чиназ",
+    "name": "Чиноз",
     "code": "724406",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Chinaz"
+    "latin_name": "Chinoz"
   },
   {
     "name": "Чирчик",
@@ -55116,6 +55284,13 @@
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Chirchik"
+  },
+  {
+    "name": "Чорток",
+    "code": "741204",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Chortok"
   },
   {
     "name": "Чукурсай",
@@ -55132,32 +55307,32 @@
     "latin_name": "Chust"
   },
   {
-    "name": "Шават",
-    "code": "738108",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Shavat"
-  },
-  {
-    "name": "Шават (эксп.)",
-    "code": "738201",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Shavat (exp.) -"
-  },
-  {
-    "name": "Шахрихан",
+    "name": "Шахрихон",
     "code": "743500",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Shaxrixan"
+    "latin_name": "Shakhrikhon"
   },
   {
-    "name": "Шерабад",
+    "name": "Шеробод",
     "code": "734802",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Sherabad"
+    "latin_name": "Sherobod"
+  },
+  {
+    "name": "Шовот",
+    "code": "738108",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Shovot"
+  },
+  {
+    "name": "Шовот (эксп.)",
+    "code": "738201",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Shovot (eksp.)"
   },
   {
     "name": "Шуртан",
@@ -55174,11 +55349,25 @@
     "latin_name": "Shurchi"
   },
   {
-    "name": "Элликкала",
+    "name": "Элбаён",
+    "code": "735701",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Elbayon"
+  },
+  {
+    "name": "Элликальга",
     "code": "734501",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Ellikkala"
+    "latin_name": "Ellikalga"
+  },
+  {
+    "name": "Эржар",
+    "code": "725502",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Erzhar"
   },
   {
     "name": "Яйпан",
@@ -55188,25 +55377,32 @@
     "latin_name": "Yaypan"
   },
   {
-    "name": "Якатут",
-    "code": "730500",
-    "country": "Узбекистан",
-    "country_code": "UZ",
-    "latin_name": "Yakatut"
-  },
-  {
-    "name": "Яккобаг",
+    "name": "Яккабог",
     "code": "733903",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Yakkobag"
+    "latin_name": "Yakkabog"
   },
   {
-    "name": "Янгиабад",
-    "code": "729908",
+    "name": "Яккатут",
+    "code": "730500",
     "country": "Узбекистан",
     "country_code": "UZ",
-    "latin_name": "Yangiabad"
+    "latin_name": "Yakkatut"
+  },
+  {
+    "name": "Янги Андижон",
+    "code": "743623",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Yangi Andizhon"
+  },
+  {
+    "name": "Янги Чиноз",
+    "code": "724502",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Yangi Chinoz"
   },
   {
     "name": "Янгиер",
@@ -55216,11 +55412,25 @@
     "latin_name": "Yangier"
   },
   {
-    "name": "Янгиюль",
+    "name": "Янгиер 2",
+    "code": "725409",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Yangier 2"
+  },
+  {
+    "name": "Янгийул",
     "code": "724001",
     "country": "Узбекистан",
     "country_code": "UZ",
     "latin_name": "Yangiyul"
+  },
+  {
+    "name": "Янгиобод",
+    "code": "729908",
+    "country": "Узбекистан",
+    "country_code": "UZ",
+    "latin_name": "Yangiobod"
   },
   {
     "name": "Яхшилик",
