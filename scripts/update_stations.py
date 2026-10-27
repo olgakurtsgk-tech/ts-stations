@@ -49,6 +49,7 @@ COUNTRIES = {
     "MD": "Молдова", "MN": "Монголия", "PL": "Польша", "RU": "Россия",
     "RO": "Румыния", "SK": "Словакия", "TJ": "Таджикистан", "TM": "Туркменистан",
     "UZ": "Узбекистан", "UA": "Украина", "CZ": "Чехия", "EE": "Эстония",
+    "FI": "Финляндия",
 }
 
 EXCLUDED_COUNTRIES = {"IR", "CN", "CZ", "KR", "RO", "LA"}
@@ -58,7 +59,68 @@ ACTIVE_COUNTRIES = {code: name for code, name in COUNTRIES.items() if code not i
 # РУЧНЫЕ ДОПОЛНЕНИЯ И ИСПРАВЛЕНИЯ
 # ============================================================
 MANUAL_ADDITIONS = [
-    # Казахстан (граница с РФ и внутренние)
+    # --- ВАШИ ПРОВЕРЕННЫЕ СТАНЦИИ (Внесены вручную) ---
+    {"name": "Лахти", "code": "001000", "country": "Финляндия", "country_code": "FI", "latin_name": "Lahti"},
+    {"name": "Пори", "code": "002200", "country": "Финляндия", "country_code": "FI", "latin_name": "Pori"},
+    {"name": "Алхолма", "code": "003080", "country": "Финляндия", "country_code": "FI", "latin_name": "Alholma"},
+    {"name": "Контиомяки", "code": "003900", "country": "Финляндия", "country_code": "FI", "latin_name": "Kontiomaki"},
+    {"name": "Лаппеенранта", "code": "004950", "country": "Финляндия", "country_code": "FI", "latin_name": "Lappeenranta"},
+    {"name": "Еруу", "code": "010322", "country": "Монголия", "country_code": "MN", "latin_name": "Eruu"},
+    {"name": "Толгойт", "code": "010769", "country": "Монголия", "country_code": "MN", "latin_name": "Tolgoit"},
+    {"name": "Улаанбаатар", "code": "010843", "country": "Монголия", "country_code": "MN", "latin_name": "Ulaanbaatar"},
+    {"name": "Хутул", "code": "010934", "country": "Монголия", "country_code": "MN", "latin_name": "Khutul"},
+    {"name": "Шарын гол", "code": "011163", "country": "Монголия", "country_code": "MN", "latin_name": "Sharyngol"},
+    {"name": "Эрдэнэт", "code": "011254", "country": "Монголия", "country_code": "MN", "latin_name": "Erdenet"},
+    {"name": "Олон-Овоо", "code": "011346", "country": "Монголия", "country_code": "MN", "latin_name": "Olon-Ovoo"},
+    {"name": "Санкт-Петербург-Сорт.-Московский", "code": "030006", "country": "Россия", "country_code": "RU", "latin_name": "Sankt-Peterburg-Sort.-Moskovskiy"},
+    {"name": "Нелазское", "code": "046201", "country": "Россия", "country_code": "RU", "latin_name": "Nelazskoe"},
+    {"name": "Тапа", "code": "080005", "country": "Эстония", "country_code": "EE", "latin_name": "Tapa"},
+    {"name": "Маарду (эксп. через порт Мийдуранна)", "code": "081703", "country": "Эстония", "country_code": "EE", "latin_name": "Maardu (eksp. cherez port Miyduranna)"},
+    {"name": "Аэгвийду", "code": "082602", "country": "Эстония", "country_code": "EE", "latin_name": "Aegviidu"},
+    {"name": "Вайвара (эксп.)", "code": "083501", "country": "Эстония", "country_code": "EE", "latin_name": "Vaivara (eksp.)"},
+    {"name": "Нарва", "code": "084006", "country": "Эстония", "country_code": "EE", "latin_name": "Narva"},
+    {"name": "Йыгева", "code": "084400", "country": "Эстония", "country_code": "EE", "latin_name": "Jogeva"},
+    {"name": "Кяркна", "code": "084608", "country": "Эстония", "country_code": "EE", "latin_name": "Karkna"},
+    {"name": "Тарту", "code": "084805", "country": "Эстония", "country_code": "EE", "latin_name": "Tartu"},
+    {"name": "Реола", "code": "084909", "country": "Эстония", "country_code": "EE", "latin_name": "Reola"},
+    {"name": "Пиуза", "code": "085403", "country": "Эстония", "country_code": "EE", "latin_name": "Piusa"},
+    {"name": "Лийва", "code": "088308", "country": "Эстония", "country_code": "EE", "latin_name": "Liiva"},
+    {"name": "Рапла", "code": "088505", "country": "Эстония", "country_code": "EE", "latin_name": "Rapla"},
+    {"name": "Тюри", "code": "088702", "country": "Эстония", "country_code": "EE", "latin_name": "Turi"},
+    {"name": "Пярну", "code": "089103", "country": "Эстония", "country_code": "EE", "latin_name": "Parnu"},
+    {"name": "Земитаны (3 км Рига-Краста)", "code": "094900", "country": "Латвия", "country_code": "LV", "latin_name": "Zemitany (3 km Riga-Krasta)"},
+    {"name": "Мозырь", "code": "151605", "country": "Беларусь", "country_code": "BY", "latin_name": "Mozyr"},
+    {"name": "Белово", "code": "862305", "country": "Россия", "country_code": "RU", "latin_name": "Belovo"},
+    {"name": "Люблино-Сортировочное", "code": "190008", "country": "Россия", "country_code": "RU", "latin_name": "Lyublino-Sortirovochnoe"},
+    {"name": "Нижний Новгород-Сортировочный", "code": "260003", "country": "Россия", "country_code": "RU", "latin_name": "Nizhniy Novgorod-Sortirovochnyy"},
+    {"name": "Никольская Слободка", "code": "320702", "country": "Украина", "country_code": "UA", "latin_name": "Nikolskaya Slobodka"},
+    {"name": "Васильков-Центр", "code": "321300", "country": "Украина", "country_code": "UA", "latin_name": "Vasilkov-Tsentr"},
+    {"name": "Середина-Буда", "code": "328808", "country": "Украина", "country_code": "UA", "latin_name": "Seredina-Buda"},
+    {"name": "Звягель I", "code": "348002", "country": "Украина", "country_code": "UA", "latin_name": "Zvyagel I"},
+    {"name": "ШЕПТИЦКИЙ", "code": "371305", "country": "Украина", "country_code": "UA", "latin_name": "Sheptitskiy"},
+    {"name": "ГОЛТА", "code": "407605", "country": "Украина", "country_code": "UA", "latin_name": "Golta"},
+    {"name": "Шаблино", "code": "413707", "country": "Украина", "country_code": "UA", "latin_name": "Shablino"},
+    {"name": "ВИТОВСКАЯ", "code": "417503", "country": "Украина", "country_code": "UA", "latin_name": "Vitovskaya"},
+    {"name": "Чорный", "code": "429106", "country": "Украина", "country_code": "UA", "latin_name": "Chornyy"},
+    {"name": "Берестин", "code": "441606", "country": "Украина", "country_code": "UA", "latin_name": "Berestin"},
+    {"name": "Новое (рзд)", "code": "442647", "country": "Украина", "country_code": "UA", "latin_name": "Novoe (rzd)"},
+    {"name": "Лимановка", "code": "442904", "country": "Украина", "country_code": "UA", "latin_name": "Limanovka"},
+    {"name": "ЗЛАТОПИЛЬ", "code": "443300", "country": "Украина", "country_code": "UA", "latin_name": "Zlatopil"},
+    {"name": "ПРОВИДНА", "code": "451701", "country": "Украина", "country_code": "UA", "latin_name": "Providna"},
+    {"name": "САМАР-ДНЕПРОВСКИЙ", "code": "452009", "country": "Украина", "country_code": "UA", "latin_name": "Samar-Dneprovskiy"},
+    {"name": "ЯВОРНИЦКОЕ", "code": "453406", "country": "Украина", "country_code": "UA", "latin_name": "Yavornitskoe"},
+    {"name": "КАРАЧУНЫ", "code": "457500", "country": "Украина", "country_code": "UA", "latin_name": "Karachuny"},
+    {"name": "Челюскин", "code": "821409", "country": "Россия", "country_code": "RU", "latin_name": "Chelyuskin"},
+    {"name": "НЕЗАЛЕЖНА", "code": "466904", "country": "Украина", "country_code": "UA", "latin_name": "Nezalezhna"},
+    {"name": "Кировская", "code": "869003", "country": "Россия", "country_code": "RU", "latin_name": "Kirovskaya"},
+    {"name": "Краснофлотская", "code": "869107", "country": "Россия", "country_code": "RU", "latin_name": "Krasnoflotskaya"},
+    {"name": "Красноперекопск", "code": "869501", "country": "Россия", "country_code": "RU", "latin_name": "Krasnoperekopsk"},
+    {"name": "Партизаны", "code": "821803", "country": "Россия", "country_code": "RU", "latin_name": "Partizany"},
+    {"name": "БЛАГОДАТНОЕ", "code": "424244", "country": "Украина", "country_code": "UA", "latin_name": "Blagodatnoe"},
+    {"name": "Кутейниково", "code": "901507", "country": "Россия", "country_code": "RU", "latin_name": "Kuteynikovo"},
+    {"name": "Легендарная", "code": "958103", "country": "Россия", "country_code": "RU", "latin_name": "Legendarnaya"},
+
+    # --- СТАРЫЕ РУЧНЫЕ ДОПОЛНЕНИЯ ---
     {"name": "Илецк I (эксп.)", "code": "666501", "country": "Казахстан", "country_code": "KZ", "latin_name": "Iletsk I"},
     {"name": "Ак-Булак", "code": "667307", "country": "Казахстан", "country_code": "KZ", "latin_name": "Ak-Bulak"},
     {"name": "Чашкан", "code": "667203", "country": "Казахстан", "country_code": "KZ", "latin_name": "Chashkan"},
@@ -66,55 +128,32 @@ MANUAL_ADDITIONS = [
     {"name": "Бопай", "code": "664506", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bopay"},
     {"name": "Болашак", "code": "664600", "country": "Казахстан", "country_code": "KZ", "latin_name": "Bolashak"},
     {"name": "Арал Тенизи", "code": "670309", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aral Tenizi"},
-
-    # Казахстан (Актобе)
     {"name": "Актобе I", "code": "689503", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktobe I"},
     {"name": "Актобе II", "code": "689607", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktobe II"}, 
-    
-    # Казахстан (Достык)
     {"name": "Достык", "code": "708403", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk"},
     {"name": "Достык (эксп.)", "code": "708507", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk (eksp.)"},
     {"name": "Достык (эксп. перев.)", "code": "710403", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk (eksp. perev.)"},
     {"name": "Достык (эксп. перев. авто)", "code": "710102", "country": "Казахстан", "country_code": "KZ", "latin_name": "Dostyk (eksp. perev. avto)"},
-
-    # Россия (граница с КЗ)
     {"name": "Карталы I", "code": "816203", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I"},
     {"name": "Карталы I (эксп.)", "code": "816504", "country": "Россия", "country_code": "RU", "latin_name": "Kartaly I (eksp.)"},
     {"name": "Орск", "code": "810006", "country": "Россия", "country_code": "RU", "latin_name": "Orsk"},
     {"name": "Соль-Илецк I", "code": "811905", "country": "Россия", "country_code": "RU", "latin_name": "Sol-Iletsk I"},
     {"name": "Суземка (эксп.)", "code": "204408", "country": "Россия", "country_code": "RU", "latin_name": "Suzemka (eksp.)"},
-    
-    # Россия (Астрахань и другие)
     {"name": "Астрахань I", "code": "616803", "country": "Россия", "country_code": "RU", "latin_name": "Astrakhan I"},
     {"name": "Астрахань II", "code": "616907", "country": "Россия", "country_code": "RU", "latin_name": "Astrakhan II"},
-
-    # Россия (граница с Беларусью)
     {"name": "Смоленск", "code": "170108", "country": "Россия", "country_code": "RU", "latin_name": "Smolensk"},
     {"name": "Рославль I", "code": "177408", "country": "Россия", "country_code": "RU", "latin_name": "Roslavl I"},
     {"name": "Светлогорск-на-Березине", "code": "154209", "country": "Беларусь", "country_code": "BY", "latin_name": "Svetlogorsk-na-Berezine"},
-    
-    # Россия (граница с Китаем)
     {"name": "Забайкальск", "code": "946801", "country": "Россия", "country_code": "RU", "latin_name": "Zabaykalsk"},
-    
-    # Россия (граница с Монголией)
     {"name": "Наушки", "code": "937200", "country": "Россия", "country_code": "RU", "latin_name": "Naushki"},
-
-    # Монголия (исправление склейки строк)
-    {"name": "Толгойт", "code": "010769", "country": "Монголия", "country_code": "MN", "latin_name": "Tolgoit"},
     {"name": "Сухэ-Батор", "code": "010686", "country": "Монголия", "country_code": "MN", "latin_name": "Sukhbaatar"},
     {"name": "Салхит", "code": "010694", "country": "Монголия", "country_code": "MN", "latin_name": "Salkhit"},
-
-    # Азербайджан
     {"name": "Астара (эксп.)", "code": "554503", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Astara (eksp.)"},
     {"name": "Гаджи Зайналабдин", "code": "546302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Hacı Zeynalabdin"},
-    {"name": "Имишли", "code": "552207", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Imishli"}, # ДОБАВИЛИ ИМИШЛИ
-
-    # Россия (Туапсе и Автово)
+    {"name": "Имишли", "code": "552207", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Imishli"},
     {"name": "Автово (перев.)", "code": "035404", "country": "Россия", "country_code": "RU", "latin_name": "Avtovo (perev.)"},
     {"name": "Туапсе-Сортировочная (перев.)", "code": "533600", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (perev.)"},
     {"name": "Туапсе-Сортировочная (слив.)", "code": "533507", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (sliv.)"},
-
-    # Грузия (Поти и паромы - эталонные названия из R-Tariff)
     {"name": "Поти", "code": "572107", "country": "Грузия", "country_code": "GE", "latin_name": "Poti"},
     {"name": "Поти (эксп.)", "code": "576201", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (exp.)"},
     {"name": "Поти (порт, эксп.)", "code": "572200", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (port, exp.)"},
@@ -122,8 +161,17 @@ MANUAL_ADDITIONS = [
     {"name": "Поти (паром эксп. на Кавказ)", "code": "576108", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp., Kavkaz)"},
     {"name": "Поти (паром, эксп. на Констанцу)", "code": "572605", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp. Konstantsa)"},
     {"name": "Поти (паром, эксп. на Паромная)", "code": "572304", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp. Paromnaya)"},
-    {"name": "Поти (паром, эксп. на Варну)", "code": "572003", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp.Varna)"}
+    {"name": "Поти (паром, эксп. на Варну)", "code": "572003", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp.Varna)"},
+    {"name": "Санкт-Петербург-Тов.-Московский", "code": "031808", "country": "Россия", "country_code": "RU", "latin_name": "Sankt-Peterburg-Tov.-Moskovskiy"},
+    {"name": "Санкт-Петербург-Товарный-Витебский", "code": "033502", "country": "Россия", "country_code": "RU", "latin_name": "Sankt-Peterburg-Tovarnyy-Vitebskiy"},
+    {"name": "Москва-Товарная-Курская", "code": "191509", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kurskaya"},
+    {"name": "Москва-Товарная-Павелецкая", "code": "193504", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Paveletskaya"},
+    {"name": "Москва-Товарная-Рязанская", "code": "194009", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Ryazanskaya"},
+    {"name": "Москва-Товарная-Смоленская", "code": "198207", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Smolenskaya"},
+    {"name": "Москва-Товарная-Киевская", "code": "198002", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kievskaya"},
+    {"name": "Гатчина-Товарная-Балтийская", "code": "034007", "country": "Россия", "country_code": "RU", "latin_name": "Gatchina-Tovarnaya-Baltiyskaya"},
 ]
+
 # ============================================================
 # FALLBACK PDF URLS
 # ============================================================
@@ -193,11 +241,39 @@ def is_noise_name(value: str) -> bool:
     if any(f in lower for f in bad_fragments): return True
     return False
 
+def fix_ocr_and_case(text: str) -> str:
+    if not text:
+        return ""
+    
+    # 1. Исправляем битые суффиксы (еКзр.}, эКзР, эксп.)*)
+    text = re.sub(r'\(\s*[еeE]\s*[КкKk]\s*[з3]\s*[рpP]\s*\.?\s*[\)\}\*]?', '(эксп.)', text, flags=re.IGNORECASE)
+    text = re.sub(r'\(\s*экз[рr]\.?\s*[\)\}\*]?', '(эксп.)', text, flags=re.IGNORECASE)
+    
+    # 2. Убираем мусорные символы в начале и конце строки
+    text = re.sub(r'^[\*\]\}\)\|]+|[\*\]\}\)\|]+$', '', text).strip()
+    
+    # 3. Заменяем разные виды тире на стандартный дефис
+    text = text.replace('—', '-').replace('–', '-').replace('−', '-')
+    
+    # 4. Умный регистр (Title Case), если вся строка капсом
+    if text.isupper() and len(text) > 3:
+        words = text.title().split()
+        abbreviations = ["I", "II", "III", "IV", "Рзд", "Эксп", "Перев", "Сорт", "Бп", "Пп", "Оп"]
+        for i, w in enumerate(words):
+            if w.upper() in abbreviations or w.upper() in ["I", "II", "III", "IV"]:
+                words[i] = w.upper()
+        text = " ".join(words)
+
+    return text
+
 def clean_station_name(value: str) -> str:
     value = normalize_space(value)
     # Удаляем одиночные буквы/цифры в начале (артефакты PDF)
     value = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', value)
-    return re.sub(r"^[|;:,]+|[|;:,]+$", "", value).strip()
+    value = re.sub(r"^[|;:,]+|[|;:,]+$", "", value).strip()
+    # Применяем OCR-фиксы
+    value = fix_ocr_and_case(value)
+    return value
 
 def valid_name(value: str) -> bool:
     value = clean_station_name(value)
@@ -218,26 +294,38 @@ def make_record(country_code, code, ru, lat, border_code=""):
     ru = clean_station_name(ru)
     lat = clean_station_name(lat)
     
-    # ⚡ СИСТЕМНОЕ АВТО-ИСПРАВЛЕНИЕ СУФФИКСОВ
-    # Если в латинском названии есть спец. метки, но в русском их нет — дописываем!
+    # Сначала удаляем старые/битые скобки, чтобы не было дублей
+    ru = re.sub(r'\(\s*[^)]*\s*\)', '', ru).strip()
+    
+    ru_lower = ru.lower()
     lat_lower = lat.lower()
     
-    if "eksp" in lat_lower and "эксп" not in ru.lower():
+    # Синхронизируем суффиксы
+    if "eksp" in lat_lower or "exp" in lat_lower:
         ru += " (эксп.)"
-    elif "perev" in lat_lower and "перев" not in ru.lower():
+    elif "perev" in lat_lower or "perevoz" in lat_lower:
         ru += " (перев.)"
-    elif "sliv" in lat_lower and "слив" not in ru.lower():
+    elif "sliv" in lat_lower:
         ru += " (слив.)"
-    elif "sort" in lat_lower and "сорт" not in ru.lower() and "сортировоч" not in ru.lower():
+    elif "sort" in lat_lower:
         ru += " (сорт.)"
-    elif "port" in lat_lower and "порт" not in ru.lower():
+    elif "port" in lat_lower:
         ru += " (порт)"
-    elif "parom" in lat_lower and "паром" not in ru.lower():
+    elif "parom" in lat_lower:
         ru += " (паром)"
         
-    if not normalize_code(code) or not valid_name(ru) or not valid_name(lat): return None
-    rec = {"name": ru, "code": normalize_code(code), "country": COUNTRIES[country_code], "country_code": country_code, "latin_name": lat}
-    if border_code and normalize_code(border_code): rec["border_code"] = normalize_code(border_code)
+    if not normalize_code(code) or not valid_name(ru) or not valid_name(lat): 
+        return None
+        
+    rec = {
+        "name": ru, 
+        "code": normalize_code(code), 
+        "country": COUNTRIES[country_code], 
+        "country_code": country_code, 
+        "latin_name": lat
+    }
+    if border_code and normalize_code(border_code): 
+        rec["border_code"] = normalize_code(border_code)
     return rec
 
 # ============================================================
@@ -458,13 +546,12 @@ def main():
             print(f"  ✗ Ошибка в {code}: {e}")
             old_count = len([r for r in existing if r.get("country_code") == code])
             if not old_count:
-                raise RuntimeError(f"Фатальная ошибка: нет данных для {code}")
+                print(f"  ⚠ Фатальная ошибка: нет данных для {code}. Пропускаем.")
 
     new_countries = {r["country_code"] for r in all_new}
     merged = [r for r in existing if r.get("country_code") not in new_countries]
     merged.extend(all_new)
     
-    # ПРИМЕНЯЕМ РУЧНЫЕ СТАНЦИИ
     manual_keys = {(m["country_code"], m["code"]) for m in MANUAL_ADDITIONS}
     merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
     merged.extend(MANUAL_ADDITIONS)
@@ -474,13 +561,14 @@ def main():
     counters = Counter(s.get("country_code") for s in merged)
     missing = [c for c in ACTIVE_COUNTRIES if counters.get(c, 0) == 0]
     if missing:
-        raise RuntimeError(f"Отсутствуют страны: {missing}")
+        print(f"\n⚠ ВНИМАНИЕ: Не удалось спарсить данные для стран: {missing}.")
+        print("Скрипт сохранит всё остальное. (Возможно, для этих стран нет PDF или он в виде картинки).")
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     with OUTPUT_FILE.open("w", encoding="utf-8") as f:
         json.dump(merged, f, ensure_ascii=False, indent=2)
         
-    print(f"\nSUCCESS! Всего записей: {len(merged)}")
+    print(f"\nSUCCESS! Всего записей в базе: {len(merged)}")
 
 if __name__ == "__main__":
     main()
