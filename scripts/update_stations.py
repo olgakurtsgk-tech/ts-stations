@@ -176,7 +176,7 @@ MANUAL_ADDITIONS = [
         # ============================================================
     # УЗБЕКИСТАН (Переименования с 23.03.2026)
     # ============================================================
-    {"name": "Туртгул", "code": "739609", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Turtgul"},
+    {"name": "Турткул", "code": "739609", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Turtgul"},
     {"name": "Хужайли", "code": "737603", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Khuzhayli"},
     {"name": "Жумуртов", "code": "737904", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Zhumurtov"},
     {"name": "Назархон", "code": "739505", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Nazarkhon"},
