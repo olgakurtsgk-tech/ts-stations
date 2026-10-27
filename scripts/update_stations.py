@@ -170,6 +170,9 @@ MANUAL_ADDITIONS = [
     {"name": "Москва-Товарная-Смоленская", "code": "198207", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Smolenskaya"},
     {"name": "Москва-Товарная-Киевская", "code": "198002", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kievskaya"},
     {"name": "Гатчина-Товарная-Балтийская", "code": "034007", "country": "Россия", "country_code": "RU", "latin_name": "Gatchina-Tovarnaya-Baltiyskaya"},
+    
+    # Кыргызстан
+    {"name": "Ала-Тоо (эксп.)", "code": "719802", "country": "Кыргызстан", "country_code": "KG", "latin_name": "Ala-Too (eksp.)"},
 ]
 
 # ============================================================
