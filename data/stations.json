@@ -26017,14 +26017,6 @@
   },
   {
     "name": "Гродеково",
-    "code": "989205",
-    "country": "Россия",
-    "country_code": "RU",
-    "railway": "Дальневосточная",
-    "latin_name": "Grodekovo"
-  },
-  {
-    "name": "Гродеково",
     "code": "989101",
     "country": "Россия",
     "country_code": "RU",
@@ -26032,20 +26024,28 @@
     "latin_name": "Grodekovo II"
   },
   {
-    "name": "Гродеково (Эксп. (эксп.)",
+    "name": "Гродеково",
+    "code": "989205",
+    "country": "Россия",
+    "country_code": "RU",
+    "railway": "Дальневосточная",
+    "latin_name": "Grodekovo"
+  },
+  {
+    "name": "Гродеково (эксп. ЗЧ)",
     "code": "989402",
     "country": "Россия",
     "country_code": "RU",
     "railway": "Дальневосточная",
-    "latin_name": "Grodekovo (Eksp.) Zch"
+    "latin_name": "Grodekovo (eksp. ZCH)"
   },
   {
-    "name": "Гродеково (Эксп. (эксп.)",
+    "name": "Гродеково (эксп. КЖД)",
     "code": "989309",
     "country": "Россия",
     "country_code": "RU",
     "railway": "Дальневосточная",
-    "latin_name": "Grodekovo (Eksp.) Kjd"
+    "latin_name": "Grodekovo (eksp. KZHD)"
   },
   {
     "name": "Грозный",
