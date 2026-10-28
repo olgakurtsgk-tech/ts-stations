@@ -70,9 +70,25 @@ RAILWAY_PREFIXES = {
     "98": "Дальневосточная", "99": "Дальневосточная",
 }
 
+# ИСКЛЮЧЕНИЯ ДЛЯ ДОРОГ (Принудительно правильные)
+RAILWAY_OVERRIDES = {
+    "668600": "Казахстанская", # Никельтау
+    "696102": "Казахстанская", # Павлодар
+    "696403": "Казахстанская", # Павлодар-Порт
+    "696303": "Казахстанская", # Павлодар-Северный
+    "696206": "Казахстанская", # Павлодар-Южный
+    "820001": "Южно-Уральская", # Петропавловск
+    "820105": "Южно-Уральская", # Петропавловск (эксп.)
+}
+
 def get_railway(code: str | None) -> str:
     if not code or len(code) < 2:
         return ""
+    
+    # Сначала проверяем наши жесткие исключения
+    if code in RAILWAY_OVERRIDES:
+        return RAILWAY_OVERRIDES[code]
+        
     prefix = code[:2]
     return RAILWAY_PREFIXES.get(prefix, "")
 
@@ -185,33 +201,17 @@ MANUAL_ADDITIONS = [
     {"name": "Рославль I", "code": "177408", "country": "Россия", "country_code": "RU", "latin_name": "Roslavl I"},
     {"name": "Светлогорск-на-Березине", "code": "154209", "country": "Беларусь", "country_code": "BY", "latin_name": "Svetlogorsk-na-Berezine"},
     {"name": "Забайкальск", "code": "946801", "country": "Россия", "country_code": "RU", "latin_name": "Zabaykalsk"},
+    {"name": "Забайкальск (эксп.ДСВН)", "code": "946905", "country": "Россия", "country_code": "RU", "latin_name": "Zabaykalsk (eksp.DSVN)"},
+    {"name": "Забайкальск (эксп.ЗЧ)", "code": "947109", "country": "Россия", "country_code": "RU", "latin_name": "Zabaykalsk (eksp.ZCH)"},
+    {"name": "Забайкальск (эксп.КЖД)", "code": "947005", "country": "Россия", "country_code": "RU", "latin_name": "Zabaykalsk (eksp.KZHD)"},
     {"name": "Наушки", "code": "937200", "country": "Россия", "country_code": "RU", "latin_name": "Naushki"},
     {"name": "Сухэ-Батор", "code": "010686", "country": "Монголия", "country_code": "MN", "latin_name": "Sukhbaatar"},
     {"name": "Салхит", "code": "010694", "country": "Монголия", "country_code": "MN", "latin_name": "Salkhit"},
+    
+    # Азербайджан
     {"name": "Астара (эксп.)", "code": "554503", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Astara (eksp.)"},
     {"name": "Гаджи Зайналабдин", "code": "546302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Hacı Zeynalabdin"},
     {"name": "Имишли", "code": "552207", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Imishli"},
-    {"name": "Автово (перев.)", "code": "035404", "country": "Россия", "country_code": "RU", "latin_name": "Avtovo (perev.)"},
-    {"name": "Туапсе-Сортировочная (перев.)", "code": "533600", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (perev.)"},
-    {"name": "Туапсе-Сортировочная (слив.)", "code": "533507", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (sliv.)"},
-    {"name": "Поти", "code": "572107", "country": "Грузия", "country_code": "GE", "latin_name": "Poti"},
-    {"name": "Поти (эксп.)", "code": "576201", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (exp.)"},
-    {"name": "Поти (порт, эксп.)", "code": "572200", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (port, exp.)"},
-    {"name": "Поти (паромная-эксп. на Керчь)", "code": "576409", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp., Kerch)"},
-    {"name": "Поти (паром эксп. на Кавказ)", "code": "576108", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp., Kavkaz)"},
-    {"name": "Поти (паром, эксп. на Констанцу)", "code": "572605", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp. Konstantsa)"},
-    {"name": "Поти (паром, эксп. на Паромная)", "code": "572304", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp. Paromnaya)"},
-    {"name": "Поти (паром, эксп. на Варну)", "code": "572003", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp.Varna)"},
-    {"name": "Санкт-Петербург-Тов.-Московский", "code": "031808", "country": "Россия", "country_code": "RU", "latin_name": "Sankt-Peterburg-Tov.-Moskovskiy"},
-    {"name": "Санкт-Петербург-Товарный-Витебский", "code": "033502", "country": "Россия", "country_code": "RU", "latin_name": "Sankt-Peterburg-Tovarnyy-Vitebskiy"},
-    {"name": "Москва-Товарная-Курская", "code": "191509", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kurskaya"},
-    {"name": "Москва-Товарная-Павелецкая", "code": "193504", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Paveletskaya"},
-    {"name": "Москва-Товарная-Рязанская", "code": "194009", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Ryazanskaya"},
-    {"name": "Москва-Товарная-Смоленская", "code": "198207", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Smolenskaya"},
-    {"name": "Москва-Товарная-Киевская", "code": "198002", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kievskaya"},
-    {"name": "Гатчина-Товарная-Балтийская", "code": "034007", "country": "Россия", "country_code": "RU", "latin_name": "Gatchina-Tovarnaya-Baltiyskaya"},
-
-    # --- ДОБАВЛЕНО СЕГОДНЯ (Азербайджан: Баку, Алят; Казахстан: Курык) ---
     {"name": "Баку-Товарная", "code": "547105", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Baku-Tovarnaya"},
     {"name": "Баку-Товарная (на терминал)", "code": "547603", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Baku-Tovarnaya (na terminal)"},
     {"name": "Баку-Торговая Пристань", "code": "547302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Baku-Torgovaya Pristan"},
@@ -222,10 +222,40 @@ MANUAL_ADDITIONS = [
     {"name": "Алят (эксп. на Курык)", "code": "553002", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Alat (eksp. na Kuryk)"},
     {"name": "Алят (эксп. на Туркменбаши I)", "code": "548803", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Alat (eksp. na Turkmenbashi I)"},
     {"name": "Алят-Новая", "code": "548703", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Alat-Novaya"},
-    {"name": "Курык-Порт", "code": "691607", "country": "Казахстан", "country_code": "KZ", "latin_name": "Kuryk-port"},
-    {"name": "Курык-Порт эксп.", "code": "693602", "country": "Казахстан", "country_code": "KZ", "latin_name": "Kuryk-port eksp."},
-    {"name": "Курык-Порт эксп. паром", "code": "693807", "country": "Казахстан", "country_code": "KZ", "latin_name": "Kuryk-port eksp. parom"},
-    {"name": "Курык-Порт эксп. перев.", "code": "693706", "country": "Казахстан", "country_code": "KZ", "latin_name": "Kuryk-port eksp. perev."},
+
+    # Россия (Туапсе и Автово)
+    {"name": "Автово (перев.)", "code": "035404", "country": "Россия", "country_code": "RU", "latin_name": "Avtovo (perev.)"},
+    {"name": "Туапсе-Сортировочная (перев.)", "code": "533600", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (perev.)"},
+    {"name": "Туапсе-Сортировочная (слив.)", "code": "533507", "country": "Россия", "country_code": "RU", "latin_name": "Tuapse-Sortirovochnaya (sliv.)"},
+
+    # Грузия (Поти и паромы)
+    {"name": "Поти", "code": "572107", "country": "Грузия", "country_code": "GE", "latin_name": "Poti"},
+    {"name": "Поти (эксп.)", "code": "576201", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (exp.)"},
+    {"name": "Поти (порт, эксп.)", "code": "572200", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (port, exp.)"},
+    {"name": "Поти (паромная-эксп. на Керчь)", "code": "576409", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp., Kerch)"},
+    {"name": "Поти (паром эксп. на Кавказ)", "code": "576108", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp., Kavkaz)"},
+    {"name": "Поти (паром, эксп. на Констанцу)", "code": "572605", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp. Konstantsa)"},
+    {"name": "Поти (паром, эксп. на Паромная)", "code": "572304", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp. Paromnaya)"},
+    {"name": "Поти (паром, эксп. на Варну)", "code": "572003", "country": "Грузия", "country_code": "GE", "latin_name": "Poti (parom, exp.Varna)"},
+
+    # Кыргызстан
+    {"name": "Санкт-Петербург-Тов.-Московский", "code": "031808", "country": "Россия", "country_code": "RU", "latin_name": "Sankt-Peterburg-Tov.-Moskovskiy"},
+    {"name": "Санкт-Петербург-Товарный-Витебский", "code": "033502", "country": "Россия", "country_code": "RU", "latin_name": "Sankt-Peterburg-Tovarnyy-Vitebskiy"},
+    {"name": "Москва-Товарная-Курская", "code": "191509", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kurskaya"},
+    {"name": "Москва-Товарная-Павелецкая", "code": "193504", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Paveletskaya"},
+    {"name": "Москва-Товарная-Рязанская", "code": "194009", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Ryazanskaya"},
+    {"name": "Москва-Товарная-Смоленская", "code": "198207", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Smolenskaya"},
+    {"name": "Москва-Товарная-Киевская", "code": "198002", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kievskaya"},
+    {"name": "Гатчина-Товарная-Балтийская", "code": "034007", "country": "Россия", "country_code": "RU", "latin_name": "Gatchina-Tovarnaya-Baltiyskaya"},
+
+    # Туркменистан
+    {"name": "Туркменбаши I", "code": "754505", "country": "Туркменистан", "country_code": "TM", "latin_name": "Turkmenbashi I"},
+    {"name": "Туркменбаши I (паром)", "code": "754806", "country": "Туркменистан", "country_code": "TM", "latin_name": "Turkmenbashi I (parom)"},
+    {"name": "Туркменбаши I (эксп.)", "code": "754609", "country": "Туркменистан", "country_code": "TM", "latin_name": "Turkmenbashi I (eksp.)"},
+    {"name": "Туркменбаши I (эксп., перев.)", "code": "877508", "country": "Туркменистан", "country_code": "TM", "latin_name": "Turkmenbashi I (eksp., perev.)"},
+    {"name": "Туркменбаши I (эксп.паром на Актау-Порт)", "code": "757005", "country": "Туркменистан", "country_code": "TM", "latin_name": "Turkmenbashi I (eksp.parom na Aktau-Port)"},
+    {"name": "Туркменбаши II", "code": "754702", "country": "Туркменистан", "country_code": "TM", "latin_name": "Turkmenbashi II"},
+    {"name": "Туркменбаши II (эксп.)", "code": "877103", "country": "Туркменистан", "country_code": "TM", "latin_name": "Turkmenbashi II (eksp.)"},
 
     # УЗБЕКИСТАН (Переименования с 23.03.2026)
     {"name": "Туртгул", "code": "739609", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Turtgul"},
@@ -452,17 +482,11 @@ def fix_ocr_and_case(text: str) -> str:
     if not text:
         return ""
     
-    # 1. Исправляем битые суффиксы (еКзр.}, эКзР, эксп.)*)
     text = re.sub(r'\(\s*[еeE]\s*[КкKk]\s*[з3]\s*[рpP]\s*\.?\s*[\)\}\*]?', '(эксп.)', text, flags=re.IGNORECASE)
     text = re.sub(r'\(\s*экз[рr]\.?\s*[\)\}\*]?', '(эксп.)', text, flags=re.IGNORECASE)
-    
-    # 2. Убираем мусорные символы в начале и конце строки
     text = re.sub(r'^[\*\]\}\)\|]+|[\*\]\}\)\|]+$', '', text).strip()
-    
-    # 3. Заменяем разные виды тире на стандартный дефис
     text = text.replace('—', '-').replace('–', '-').replace('−', '-')
     
-    # 4. Умный регистр (Title Case), если вся строка капсом
     if text.isupper() and len(text) > 3:
         words = text.title().split()
         abbreviations = ["I", "II", "III", "IV", "Рзд", "Эксп", "Перев", "Сорт", "Бп", "Пп", "Оп"]
@@ -499,6 +523,7 @@ def make_record(country_code, code, ru, lat, border_code=""):
     ru = clean_station_name(ru)
     lat = clean_station_name(lat)
     
+    # Более надежная очистка от двойных скобок
     ru = re.sub(r'\(\s*[^)]*\s*\)', '', ru).strip()
     
     ru_lower = ru.lower()
@@ -760,7 +785,6 @@ def main():
     merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
     merged.extend(MANUAL_ADDITIONS)
     
-    # ДОБАВЛЯЕМ RAILWAY И К РУЧНЫМ СТАНЦИЯМ, ЕСЛИ ЕГО ТАМ НЕТ
     for m in merged:
         if "railway" not in m or not m["railway"]:
             m["railway"] = get_railway(m["code"])
