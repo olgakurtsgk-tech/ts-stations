@@ -8768,6 +8768,14 @@
     "latin_name": "Peremetnaya"
   },
   {
+    "name": "Петропавловск (эксп.)",
+    "code": "688708",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "railway": "Казахстанская",
+    "latin_name": "Petropavlovsk (eksp.)"
+  },
+  {
     "name": "Пешковский",
     "code": "684707",
     "country": "Казахстан",
