@@ -408,9 +408,10 @@ MANUAL_ADDITIONS = [
     {"name": "Собир Рахимов", "code": "723040", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Sobir Rakhimov"},
     {"name": "Жалойир", "code": "723403", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Zhaloyir"},
     {"name": "Тошкент", "code": "722400", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Toshkent"},
-        # Россия (Петропавловск - принудительно верная дорога)
+        # Петропавловск (Россия и Казахстан)
     {"name": "Петропавловск", "code": "820001", "country": "Россия", "country_code": "RU", "railway": "Южно-Уральская", "latin_name": "Petropavlovsk"},
     {"name": "Петропавловск (эксп.)", "code": "820105", "country": "Россия", "country_code": "RU", "railway": "Южно-Уральская", "latin_name": "Petropavlovsk (eksp.)"},
+    {"name": "Петропавловск (эксп.)", "code": "688708", "country": "Казахстан", "country_code": "KZ", "railway": "Казахстанская", "latin_name": "Petropavlovsk (eksp.)"},
 ]
 
 # ============================================================
