@@ -211,6 +211,22 @@ MANUAL_ADDITIONS = [
     {"name": "Москва-Товарная-Киевская", "code": "198002", "country": "Россия", "country_code": "RU", "latin_name": "Moskva-Tovarnaya-Kievskaya"},
     {"name": "Гатчина-Товарная-Балтийская", "code": "034007", "country": "Россия", "country_code": "RU", "latin_name": "Gatchina-Tovarnaya-Baltiyskaya"},
 
+    # --- ДОБАВЛЕНО СЕГОДНЯ (Азербайджан: Баку, Алят; Казахстан: Курык) ---
+    {"name": "Баку-Товарная", "code": "547105", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Baku-Tovarnaya"},
+    {"name": "Баку-Товарная (на терминал)", "code": "547603", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Baku-Tovarnaya (na terminal)"},
+    {"name": "Баку-Торговая Пристань", "code": "547302", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Baku-Torgovaya Pristan"},
+    {"name": "Баку-Торговая Пристань (перев.)", "code": "547209", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Baku-Torgovaya Pristan (perev.)"},
+    {"name": "Баку-Торговая Пристань (эксп.)", "code": "547406", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Baku-Torgovaya Pristan (eksp.)"},
+    {"name": "Алят", "code": "548502", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Alat"},
+    {"name": "Алят (эксп. на Актау-Порт)", "code": "549204", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Alat (eksp. na Aktau-Port)"},
+    {"name": "Алят (эксп. на Курык)", "code": "553002", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Alat (eksp. na Kuryk)"},
+    {"name": "Алят (эксп. на Туркменбаши I)", "code": "548803", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Alat (eksp. na Turkmenbashi I)"},
+    {"name": "Алят-Новая", "code": "548703", "country": "Азербайджан", "country_code": "AZ", "latin_name": "Alat-Novaya"},
+    {"name": "Курык-Порт", "code": "691607", "country": "Казахстан", "country_code": "KZ", "latin_name": "Kuryk-port"},
+    {"name": "Курык-Порт эксп.", "code": "693602", "country": "Казахстан", "country_code": "KZ", "latin_name": "Kuryk-port eksp."},
+    {"name": "Курык-Порт эксп. паром", "code": "693807", "country": "Казахстан", "country_code": "KZ", "latin_name": "Kuryk-port eksp. parom"},
+    {"name": "Курык-Порт эксп. перев.", "code": "693706", "country": "Казахстан", "country_code": "KZ", "latin_name": "Kuryk-port eksp. perev."},
+
     # УЗБЕКИСТАН (Переименования с 23.03.2026)
     {"name": "Туртгул", "code": "739609", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Turtgul"},
     {"name": "Хужайли", "code": "737603", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Khuzhayli"},
@@ -509,7 +525,7 @@ def make_record(country_code, code, ru, lat, border_code=""):
         "code": normalize_code(code), 
         "country": COUNTRIES[country_code], 
         "country_code": country_code, 
-        "railway": get_railway(normalize_code(code)), # ДОБАВЛЕНО АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ
+        "railway": get_railway(normalize_code(code)),
         "latin_name": lat
     }
     if border_code and normalize_code(border_code): 
