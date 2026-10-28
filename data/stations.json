@@ -8272,36 +8272,12 @@
     "latin_name": "Kurort-Borovoe"
   },
   {
-    "name": "Курык-Порт",
+    "name": "Курык-порт (порт)",
     "code": "691607",
     "country": "Казахстан",
     "country_code": "KZ",
-    "latin_name": "Kuryk-port",
-    "railway": "Приволжская"
-  },
-  {
-    "name": "Курык-Порт эксп.",
-    "code": "693602",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kuryk-port eksp.",
-    "railway": "Приволжская"
-  },
-  {
-    "name": "Курык-Порт эксп. паром",
-    "code": "693807",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kuryk-port eksp. parom",
-    "railway": "Приволжская"
-  },
-  {
-    "name": "Курык-Порт эксп. перев.",
-    "code": "693706",
-    "country": "Казахстан",
-    "country_code": "KZ",
-    "latin_name": "Kuryk-port eksp. perev.",
-    "railway": "Приволжская"
+    "railway": "Приволжская",
+    "latin_name": "Kuryk-port"
   },
   {
     "name": "Кушмурун",
@@ -8604,7 +8580,7 @@
     "code": "668600",
     "country": "Казахстан",
     "country_code": "KZ",
-    "railway": "Куйбышевская",
+    "railway": "Казахстанская",
     "latin_name": "Nikel"
   },
   {
@@ -8732,7 +8708,7 @@
     "code": "696102",
     "country": "Казахстан",
     "country_code": "KZ",
-    "railway": "Приволжская",
+    "railway": "Казахстанская",
     "latin_name": "Pavlodar"
   },
   {
@@ -8740,7 +8716,7 @@
     "code": "696403",
     "country": "Казахстан",
     "country_code": "KZ",
-    "railway": "Приволжская",
+    "railway": "Казахстанская",
     "latin_name": "Pavlodar-Port"
   },
   {
@@ -8748,7 +8724,7 @@
     "code": "696303",
     "country": "Казахстан",
     "country_code": "KZ",
-    "railway": "Приволжская",
+    "railway": "Казахстанская",
     "latin_name": "Pavlodar-Severnyjj"
   },
   {
@@ -8756,7 +8732,7 @@
     "code": "696206",
     "country": "Казахстан",
     "country_code": "KZ",
-    "railway": "Приволжская",
+    "railway": "Казахстанская",
     "latin_name": "Pavlodar-Yuzhnyjj"
   },
   {
@@ -27704,28 +27680,28 @@
     "railway": "Дальневосточная"
   },
   {
-    "name": "Забайкальск (Эксп. (эксп.)",
+    "name": "Забайкальск (эксп.ДСВН)",
     "code": "946905",
     "country": "Россия",
     "country_code": "RU",
-    "railway": "Дальневосточная",
-    "latin_name": "Zabaikalsk (Eksp.) Dsvn"
+    "latin_name": "Zabaykalsk (eksp.DSVN)",
+    "railway": "Дальневосточная"
   },
   {
-    "name": "Забайкальск (Эксп. (эксп.)",
+    "name": "Забайкальск (эксп.ЗЧ)",
     "code": "947109",
     "country": "Россия",
     "country_code": "RU",
-    "railway": "Дальневосточная",
-    "latin_name": "Zabaikalsk (Eksp.) Zch"
+    "latin_name": "Zabaykalsk (eksp.ZCH)",
+    "railway": "Дальневосточная"
   },
   {
-    "name": "Забайкальск (Эксп. (эксп.)",
+    "name": "Забайкальск (эксп.КЖД)",
     "code": "947005",
     "country": "Россия",
     "country_code": "RU",
-    "railway": "Дальневосточная",
-    "latin_name": "Zabaikalsk (Eksp.) Kjd"
+    "latin_name": "Zabaykalsk (eksp.KZHD)",
+    "railway": "Дальневосточная"
   },
   {
     "name": "Забойщик",
@@ -39300,7 +39276,7 @@
     "code": "820001",
     "country": "Россия",
     "country_code": "RU",
-    "railway": "Западно-Сибирская",
+    "railway": "Южно-Уральская",
     "latin_name": "Petropavlovsk"
   },
   {
@@ -39308,7 +39284,7 @@
     "code": "820105",
     "country": "Россия",
     "country_code": "RU",
-    "railway": "Западно-Сибирская",
+    "railway": "Южно-Уральская",
     "latin_name": "Petropavlovsk (Eksp."
   },
   {
@@ -52016,60 +51992,60 @@
     "latin_name": "Turkmenabat-"
   },
   {
-    "name": "Туркменбаши-1",
+    "name": "Туркменбаши I",
     "code": "754505",
     "country": "Туркменистан",
     "country_code": "TM",
-    "railway": "Забайкальская",
-    "latin_name": "Turkmenabashi-"
+    "latin_name": "Turkmenbashi I",
+    "railway": "Забайкальская"
   },
   {
-    "name": "Туркменбаши-1",
+    "name": "Туркменбаши I (паром)",
     "code": "754806",
     "country": "Туркменистан",
     "country_code": "TM",
-    "railway": "Забайкальская",
-    "latin_name": "Turkmenabashi-"
+    "latin_name": "Turkmenbashi I (parom)",
+    "railway": "Забайкальская"
   },
   {
-    "name": "Туркменбаши-1",
-    "code": "757005",
-    "country": "Туркменистан",
-    "country_code": "TM",
-    "railway": "Забайкальская",
-    "latin_name": "Turkmenabashi-"
-  },
-  {
-    "name": "Туркменбаши-1  на Алят",
+    "name": "Туркменбаши I (эксп.)",
     "code": "754609",
     "country": "Туркменистан",
     "country_code": "TM",
-    "railway": "Забайкальская",
-    "latin_name": "Turkmenabashi-"
+    "latin_name": "Turkmenbashi I (eksp.)",
+    "railway": "Забайкальская"
   },
   {
-    "name": "Туркменбаши-1  на перевалку",
+    "name": "Туркменбаши I (эксп., перев.)",
     "code": "877508",
     "country": "Туркменистан",
     "country_code": "TM",
-    "railway": "Красноярская",
-    "latin_name": "Turkmenabashi-"
+    "latin_name": "Turkmenbashi I (eksp., perev.)",
+    "railway": "Красноярская"
   },
   {
-    "name": "Туркменбаши-2",
+    "name": "Туркменбаши I (эксп.паром на Актау-Порт)",
+    "code": "757005",
+    "country": "Туркменистан",
+    "country_code": "TM",
+    "latin_name": "Turkmenbashi I (eksp.parom na Aktau-Port)",
+    "railway": "Забайкальская"
+  },
+  {
+    "name": "Туркменбаши II",
     "code": "754702",
     "country": "Туркменистан",
     "country_code": "TM",
-    "railway": "Забайкальская",
-    "latin_name": "Turkmenabashi-"
+    "latin_name": "Turkmenbashi II",
+    "railway": "Забайкальская"
   },
   {
-    "name": "Туркменбаши-2  на Иран",
+    "name": "Туркменбаши II (эксп.)",
     "code": "877103",
     "country": "Туркменистан",
     "country_code": "TM",
-    "railway": "Красноярская",
-    "latin_name": "Turkmenabashi-"
+    "latin_name": "Turkmenbashi II (eksp.)",
+    "railway": "Красноярская"
   },
   {
     "name": "Узбой",
