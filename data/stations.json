@@ -6392,12 +6392,52 @@
     "latin_name": "Aktasty"
   },
   {
-    "name": "Актау-Порт (порт)",
+    "name": "Актау",
     "code": "663503",
     "country": "Казахстан",
     "country_code": "KZ",
-    "railway": "Куйбышевская",
+    "railway": "Казахстанская",
+    "latin_name": "Aktau"
+  },
+  {
+    "name": "Актау-Порт",
+    "code": "710009",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "railway": "Казахстанская",
     "latin_name": "Aktau-Port"
+  },
+  {
+    "name": "Актау-Порт (перев., эксп.)",
+    "code": "663404",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "railway": "Казахстанская",
+    "latin_name": "Aktau-Port (perev., eksp.)"
+  },
+  {
+    "name": "Актау-Порт-Паром",
+    "code": "663804",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "railway": "Казахстанская",
+    "latin_name": "Aktau-Port-Parom"
+  },
+  {
+    "name": "Актау-Порт-Паром (эксп. на Туркменбаши I)",
+    "code": "689409",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "railway": "Казахстанская",
+    "latin_name": "Aktau-Port-Parom (eksp. na Turkmenbashi I)"
+  },
+  {
+    "name": "Актау-Порт-Паром (эксп.)",
+    "code": "689202",
+    "country": "Казахстан",
+    "country_code": "KZ",
+    "railway": "Казахстанская",
+    "latin_name": "Aktau-Port-Parom (eksp.)"
   },
   {
     "name": "Актобе I",
