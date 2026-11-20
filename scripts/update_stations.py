@@ -53,6 +53,7 @@ RAILWAY_PREFIXES = {
     "43": "Украинская", "44": "Украинская", "45": "Украинская", "46": "Украинская", "47": "Украинская", 
     "48": "Украинская", "49": "Украинская",
     "51": "Молдавская",
+    "52": "Северо-Кавказская", "53": "Северо-Кавказская", # Добавлены префиксы С-Кав
     "54": "Азербайджанская", "55": "Азербайджанская",
     "56": "Грузинская", "57": "Грузинская",
     "58": "Армянская",
@@ -72,22 +73,8 @@ RAILWAY_PREFIXES = {
 
 # ИСКЛЮЧЕНИЯ ДЛЯ ДОРОГ (Принудительно правильные)
 RAILWAY_OVERRIDES = {
-    "668600": "Казахстанская", # Никельтау
-    "696102": "Казахстанская", # Павлодар
-    "696403": "Казахстанская", # Павлодар-Порт
-    "696303": "Казахстанская", # Павлодар-Северный
-    "696206": "Казахстанская", # Павлодар-Южный
-    "820001": "Южно-Уральская", # Петропавловск
-    "820105": "Южно-Уральская", # Петропавловск (эксп.)
-    "688708": "Казахстанская", # Петропавловск (эксп.)
-    
-    # --- ИСПРАВЛЕНИЕ ДЛЯ АКТАУ (Мангистауское отделение) ---
-    "663503": "Казахстанская", # Актау
-    "710009": "Казахстанская", # Актау-Порт
-    "663404": "Казахстанская", # Актау-Порт (перев., эксп.)
-    "663804": "Казахстанская", # Актау-Порт-Паром
-    "689409": "Казахстанская", # Актау-Порт-Паром (эксп. на ...)
-    "689202": "Казахстанская", # Актау-Порт-Паром (эксп.)
+    "820001": "Южно-Уральская", # Петропавловск (Россия)
+    "820105": "Южно-Уральская", # Петропавловск (эксп.) (Россия)
 }
 
 def get_railway(code: str | None) -> str:
@@ -124,12 +111,12 @@ ACTIVE_COUNTRIES = {code: name for code, name in COUNTRIES.items() if code not i
 # ============================================================
 MANUAL_ADDITIONS = [
     # --- ИСПРАВЛЕНИЕ КОСЯКОВ ПО АКТАУ (Казахстан) ---
-    {"name": "Актау", "code": "663503", "country": "Казахстан", "country_code": "KZ", "railway": "Казахстанская", "latin_name": "Aktau"},
-    {"name": "Актау-Порт", "code": "710009", "country": "Казахстан", "country_code": "KZ", "railway": "Казахстанская", "latin_name": "Aktau-Port"},
-    {"name": "Актау-Порт (перев., эксп.)", "code": "663404", "country": "Казахстан", "country_code": "KZ", "railway": "Казахстанская", "latin_name": "Aktau-Port (perev., eksp.)"},
-    {"name": "Актау-Порт-Паром", "code": "663804", "country": "Казахстан", "country_code": "KZ", "railway": "Казахстанская", "latin_name": "Aktau-Port-Parom"},
-    {"name": "Актау-Порт-Паром (эксп. на Туркменбаши I)", "code": "689409", "country": "Казахстан", "country_code": "KZ", "railway": "Казахстанская", "latin_name": "Aktau-Port-Parom (eksp. na Turkmenbashi I)"},
-    {"name": "Актау-Порт-Паром (эксп.)", "code": "689202", "country": "Казахстан", "country_code": "KZ", "railway": "Казахстанская", "latin_name": "Aktau-Port-Parom (eksp.)"},
+    {"name": "Актау", "code": "663503", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktau"},
+    {"name": "Актау-Порт", "code": "710009", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktau-Port"},
+    {"name": "Актау-Порт (перев., эксп.)", "code": "663404", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktau-Port (perev., eksp.)"},
+    {"name": "Актау-Порт-Паром", "code": "663804", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktau-Port-Parom"},
+    {"name": "Актау-Порт-Паром (эксп. на Туркменбаши I)", "code": "689409", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktau-Port-Parom (eksp. na Turkmenbashi I)"},
+    {"name": "Актау-Порт-Паром (эксп.)", "code": "689202", "country": "Казахстан", "country_code": "KZ", "latin_name": "Aktau-Port-Parom (eksp.)"},
     
     # --- ВАШИ ПРОВЕРЕННЫЕ СТАНЦИИ ---
     {"name": "Лахти", "code": "001000", "country": "Финляндия", "country_code": "FI", "latin_name": "Lahti"},
@@ -424,10 +411,9 @@ MANUAL_ADDITIONS = [
     {"name": "Собир Рахимов", "code": "723040", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Sobir Rakhimov"},
     {"name": "Жалойир", "code": "723403", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Zhaloyir"},
     {"name": "Тошкент", "code": "722400", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Toshkent"},
-    # Петропавловск (Россия и Казахстан)
+    # Петропавловск (Россия)
     {"name": "Петропавловск", "code": "820001", "country": "Россия", "country_code": "RU", "railway": "Южно-Уральская", "latin_name": "Petropavlovsk"},
     {"name": "Петропавловск (эксп.)", "code": "820105", "country": "Россия", "country_code": "RU", "railway": "Южно-Уральская", "latin_name": "Petropavlovsk (eksp.)"},
-    {"name": "Петропавловск (эксп.)", "code": "688708", "country": "Казахстан", "country_code": "KZ", "railway": "Казахстанская", "latin_name": "Petropavlovsk (eksp.)"},
     # Гродеково (Дальневосточная)
     {"name": "Гродеково", "code": "989205", "country": "Россия", "country_code": "RU", "railway": "Дальневосточная", "latin_name": "Grodekovo"},
     {"name": "Гродеково (эксп. ЗЧ)", "code": "989402", "country": "Россия", "country_code": "RU", "railway": "Дальневосточная", "latin_name": "Grodekovo (eksp. ZCH)"},
@@ -570,12 +556,12 @@ def make_record(country_code, code, ru, lat, border_code=""):
     if not normalize_code(code) or not valid_name(ru) or not valid_name(lat): 
         return None
         
+    # Убрали автоматическое присвоение railway здесь, оно будет строго в main()
     rec = {
         "name": ru, 
         "code": normalize_code(code), 
         "country": COUNTRIES[country_code], 
         "country_code": country_code, 
-        "railway": get_railway(normalize_code(code)),
         "latin_name": lat
     }
     if border_code and normalize_code(border_code): 
@@ -810,9 +796,15 @@ def main():
     merged = [r for r in merged if (r["country_code"], r["code"]) not in manual_keys]
     merged.extend(MANUAL_ADDITIONS)
     
+    # --- ГЛАВНОЕ ИСПРАВЛЕНИЕ: ПРИМЕНЯЕМ ПРАВИЛО ТОЛЬКО ДЛЯ РОССИИ ---
     for m in merged:
-        if "railway" not in m or not m["railway"]:
-            m["railway"] = get_railway(m["code"])
+        if m.get("country_code") == "RU":
+            # Если это Россия, и дорога не задана вручную, берем из префиксов
+            if "railway" not in m or not m["railway"]:
+                m["railway"] = get_railway(m["code"])
+        else:
+            # Для ВСЕХ остальных стран принудительно удаляем поле railway
+            m.pop("railway", None)
 
     merged = sorted(merged, key=lambda r: (r["country_code"], r["name"]))
     
