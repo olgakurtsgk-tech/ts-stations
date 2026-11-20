@@ -53,12 +53,12 @@ RAILWAY_PREFIXES = {
     "43": "Украинская", "44": "Украинская", "45": "Украинская", "46": "Украинская", "47": "Украинская", 
     "48": "Украинская", "49": "Украинская",
     "51": "Молдавская",
-    "52": "Северо-Кавказская", "53": "Северо-Кавказская", # Добавлены префиксы С-Кав
+    "52": "Северо-Кавказская", "53": "Северо-Кавказская",
     "54": "Азербайджанская", "55": "Азербайджанская",
     "56": "Грузинская", "57": "Грузинская",
     "58": "Армянская",
-    "61": "Северо-Кавказская", "62": "Северо-Кавказская", "63": "Северо-Кавказская", "64": "Северо-Кавказская",
-    "65": "Куйбышевская", "66": "Куйбышевская", "67": "Куйбышевская", "68": "Куйбышевская",
+    "61": "Северо-Кавказская", "62": "Северо-Кавказская", 
+    "63": "Куйбышевская", "64": "Куйбышевская", "65": "Куйбышевская", "66": "Куйбышевская", "67": "Куйбышевская", "68": "Куйбышевская",
     "69": "Приволжская", "70": "Приволжская",
     "71": "Южно-Уральская", "72": "Южно-Уральская", "73": "Южно-Уральская", "74": "Южно-Уральская",
     "75": "Забайкальская",
@@ -411,9 +411,11 @@ MANUAL_ADDITIONS = [
     {"name": "Собир Рахимов", "code": "723040", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Sobir Rakhimov"},
     {"name": "Жалойир", "code": "723403", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Zhaloyir"},
     {"name": "Тошкент", "code": "722400", "country": "Узбекистан", "country_code": "UZ", "latin_name": "Toshkent"},
+    
     # Петропавловск (Россия)
     {"name": "Петропавловск", "code": "820001", "country": "Россия", "country_code": "RU", "railway": "Южно-Уральская", "latin_name": "Petropavlovsk"},
     {"name": "Петропавловск (эксп.)", "code": "820105", "country": "Россия", "country_code": "RU", "railway": "Южно-Уральская", "latin_name": "Petropavlovsk (eksp.)"},
+    
     # Гродеково (Дальневосточная)
     {"name": "Гродеково", "code": "989205", "country": "Россия", "country_code": "RU", "railway": "Дальневосточная", "latin_name": "Grodekovo"},
     {"name": "Гродеково (эксп. ЗЧ)", "code": "989402", "country": "Россия", "country_code": "RU", "railway": "Дальневосточная", "latin_name": "Grodekovo (eksp. ZCH)"},
@@ -421,6 +423,10 @@ MANUAL_ADDITIONS = [
 
     # --- ИСПРАВЛЕНИЕ НАЗВАНИЯ ДЛЯ БЕРЕЗА КАРТУЗСКАЯ (Беларусь) ---
     {"name": "Береза Картузская", "code": "133700", "country": "Беларусь", "country_code": "BY", "latin_name": "Bereza Kartuzskaya"},
+    
+    # --- ИСПРАВЛЕНИЕ РИМСКИХ ЦИФР ДЛЯ СЫЗРАНИ (Россия) ---
+    {"name": "Сызрань I", "code": "635607", "country": "Россия", "country_code": "RU", "latin_name": "Syzran I"},
+    {"name": "Сызрань II", "code": "635503", "country": "Россия", "country_code": "RU", "latin_name": "Syzran II"},
 ]
 
 # ============================================================
@@ -513,7 +519,8 @@ def fix_ocr_and_case(text: str) -> str:
 
 def clean_station_name(value: str) -> str:
     value = normalize_space(value)
-    value = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', value)
+    # ИСПРАВЛЕНИЕ: Теперь удаляем только АРАБСКИЕ цифры в начале, чтобы не стереть I, II и т.д.
+    value = re.sub(r'^\d{1,2}\s+', '', value)
     value = re.sub(r"^[|;:,]+|[|;:,]+$", "", value).strip()
     value = fix_ocr_and_case(value)
     return value
@@ -670,7 +677,8 @@ def parse_text_page(text: str, country_code: str) -> list[dict]:
             left = re.sub(r'.*\d{6}\s*', '', left)
             left = re.sub(r'\s+([,\.\)])', r'\1', left)
             left = re.sub(r'([\(])\s+', r'\1', left)
-            left = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', left)
+            # ИСПРАВЛЕНИЕ: Только арабские цифры в начале строки
+            left = re.sub(r'^\d{1,2}\s+', '', left)
 
             lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right)
             if lat_match:
@@ -709,7 +717,8 @@ def parse_words_page(words: list[tuple], country_code: str) -> list[dict]:
                     left = ru_match.group(1).strip()
                     left = re.sub(r'\s+([,\.\)])', r'\1', left)
                     left = re.sub(r'([\(])\s+', r'\1', left)
-                    left = re.sub(r'^[А-Яа-яЁёA-Za-z0-9]{1,2}\s+', '', left)
+                    # ИСПРАВЛЕНИЕ: Только арабские цифры в начале строки
+                    left = re.sub(r'^\d{1,2}\s+', '', left)
             
             lat_match = re.match(r'^([A-Za-z\s\-\(\)\.]+)', right)
             if not lat_match: continue
