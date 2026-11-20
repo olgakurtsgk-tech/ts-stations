@@ -418,6 +418,9 @@ MANUAL_ADDITIONS = [
     {"name": "Гродеково", "code": "989205", "country": "Россия", "country_code": "RU", "railway": "Дальневосточная", "latin_name": "Grodekovo"},
     {"name": "Гродеково (эксп. ЗЧ)", "code": "989402", "country": "Россия", "country_code": "RU", "railway": "Дальневосточная", "latin_name": "Grodekovo (eksp. ZCH)"},
     {"name": "Гродеково (эксп. КЖД)", "code": "989309", "country": "Россия", "country_code": "RU", "railway": "Дальневосточная", "latin_name": "Grodekovo (eksp. KZHD)"},
+
+    # --- ИСПРАВЛЕНИЕ НАЗВАНИЯ ДЛЯ БЕРЕЗА КАРТУЗСКАЯ (Беларусь) ---
+    {"name": "Береза Картузская", "code": "133700", "country": "Беларусь", "country_code": "BY", "latin_name": "Bereza Kartuzskaya"},
 ]
 
 # ============================================================
