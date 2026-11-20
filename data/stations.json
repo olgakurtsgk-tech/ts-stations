@@ -20984,8 +20984,8 @@
     "code": "543104",
     "country": "Россия",
     "country_code": "RU",
-    "latin_name": "Buinaksk",
-    "railway": "Азербайджанская"
+    "railway": "Северо-Кавказская",
+    "latin_name": "Buynaksk"
   },
   {
     "name": "Букачача",
@@ -25092,28 +25092,28 @@
     "railway": "Куйбышевская"
   },
   {
-    "name": "Жигулевское",
+    "name": "Жигулевское Море",
     "code": "636807",
     "country": "Россия",
     "country_code": "RU",
-    "latin_name": "Jigulevskoe More",
-    "railway": "Куйбышевская"
+    "railway": "Куйбышевская",
+    "latin_name": "Zhigulevskoe More"
   },
   {
     "name": "Жигулевское Море (перев.)",
     "code": "636900",
     "country": "Россия",
     "country_code": "RU",
-    "latin_name": "Jigulevskoe More (Perev.",
-    "railway": "Куйбышевская"
+    "railway": "Куйбышевская",
+    "latin_name": "Zhigulevskoe More (perev.)"
   },
   {
     "name": "Жигулевское Море (эксп.)",
     "code": "637000",
     "country": "Россия",
     "country_code": "RU",
-    "latin_name": "Jigulevskoe More (Eksp.",
-    "railway": "Куйбышевская"
+    "railway": "Куйбышевская",
+    "latin_name": "Zhigulevskoe More (eksp.)"
   },
   {
     "name": "Жилево",
@@ -47847,11 +47847,11 @@
     "latin_name": "Dangara NPZ"
   },
   {
-    "name": "Джаббор",
+    "name": "Джаббор Расулов",
     "code": "747709",
     "country": "Таджикистан",
     "country_code": "TJ",
-    "latin_name": "Djabbor Rasulov"
+    "latin_name": "Jabbor Rasulov"
   },
   {
     "name": "Джалолиддини",
