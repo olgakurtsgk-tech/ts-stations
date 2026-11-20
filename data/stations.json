@@ -1,12 +1,5 @@
 [
   {
-    "name": "(экс (эксп.)",
-    "code": "000251",
-    "country": "Афганистан",
-    "country_code": "AF",
-    "latin_name": "Hairatan ( Exp"
-  },
-  {
     "name": "Акина",
     "code": "000242",
     "country": "Афганистан",
@@ -61,6 +54,13 @@
     "country": "Афганистан",
     "country_code": "AF",
     "latin_name": "Torghundi ( Exp"
+  },
+  {
+    "name": "н (экс (эксп.)",
+    "code": "000251",
+    "country": "Афганистан",
+    "country_code": "AF",
+    "latin_name": "Hairatan ( Exp"
   },
   {
     "name": "Агдам",
@@ -17612,14 +17612,6 @@
     "latin_name": "Jaszczow"
   },
   {
-    "name": "(Рзд",
-    "code": "586608",
-    "country": "Россия",
-    "country_code": "RU",
-    "latin_name": "Karer",
-    "railway": "Армянская"
-  },
-  {
     "name": "АУР",
     "code": "963309",
     "country": "Россия",
@@ -17977,7 +17969,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Aktash",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Акулово",
@@ -18257,7 +18249,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Almetevskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Альмухамедово",
@@ -18833,7 +18825,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Aseevskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Асекеево",
@@ -19161,7 +19153,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Bazarnaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Байкаим",
@@ -19321,7 +19313,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Balasheika",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Балашиха",
@@ -19537,7 +19529,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Barysh",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Барятинская",
@@ -19625,7 +19617,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Bashmakovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Бежецк",
@@ -19649,7 +19641,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Bezvodovka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Безенчук",
@@ -19657,7 +19649,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Bezenchuk",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Безменово",
@@ -19777,7 +19769,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Belinskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Белка-Слободская",
@@ -19921,7 +19913,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Belyi Kliuch",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Белый",
@@ -20089,7 +20081,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Bessonovka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Бетлица",
@@ -20145,7 +20137,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Biklian",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Биклянь (эксп.)",
@@ -20153,7 +20145,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Biklian (Eksp.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Билимбай",
@@ -20849,7 +20841,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Briandino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Брянск-Восточный",
@@ -20897,7 +20889,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Bugulma",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Бугуруслан",
@@ -21025,7 +21017,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Bulychevo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Буранная",
@@ -21585,7 +21577,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Verda",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Верево",
@@ -21625,7 +21617,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Vernadovka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Вертуновская",
@@ -21737,7 +21729,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Verhniaia Terrasa",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Верхняя Терраса (эксп.)",
@@ -21745,7 +21737,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "VERHNIAIA TERRASA (eksp.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Верховье",
@@ -21809,7 +21801,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Veshkaima",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Вещево",
@@ -22033,7 +22025,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Vodinskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Водоканальная",
@@ -22065,7 +22057,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Voevodskoe",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Военный",
@@ -22625,7 +22617,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Vyry",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Выселки",
@@ -23113,7 +23105,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Glotovka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Глубокая",
@@ -23289,7 +23281,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Golcovka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Гонгота",
@@ -23457,7 +23449,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Grabovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Гражданская",
@@ -24209,7 +24201,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Dimitrovgrad",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Динская",
@@ -24545,7 +24537,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Dymka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Дьяконово",
@@ -24609,7 +24601,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Evlashevo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Евсино",
@@ -25097,7 +25089,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Jigulevsk",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Жигулевское",
@@ -25105,7 +25097,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Jigulevskoe More",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Жигулевское Море (перев.)",
@@ -25113,7 +25105,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Jigulevskoe More (Perev.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Жигулевское Море (эксп.)",
@@ -25121,7 +25113,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Jigulevskoe More (Eksp.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Жилево",
@@ -25345,7 +25337,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Zainsk",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Заколпье",
@@ -25553,7 +25545,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Zvezda",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Звездная",
@@ -25673,7 +25665,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Zemetchino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Зензеватка",
@@ -25897,7 +25889,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Zubova Poliana",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Зубцов",
@@ -26401,7 +26393,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Inza",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Инзер",
@@ -26817,7 +26809,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kadoshkino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Кадуй",
@@ -27193,7 +27185,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kanaevka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Каналстрой",
@@ -27681,7 +27673,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kashpir",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Каяла",
@@ -27801,7 +27793,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kenzino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Керамик",
@@ -28353,7 +28345,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kliuchiki",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Клявлино",
@@ -28361,7 +28353,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kliavlino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Клястица (эксп.)",
@@ -28370,6 +28362,14 @@
     "country_code": "RU",
     "latin_name": "Kliastica (Eksp.",
     "railway": "Московская"
+  },
+  {
+    "name": "Км (Рзд",
+    "code": "586608",
+    "country": "Россия",
+    "country_code": "RU",
+    "latin_name": "Karer",
+    "railway": "Армянская"
   },
   {
     "name": "Кневицы",
@@ -28449,7 +28449,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kovylkino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Когалым",
@@ -28505,7 +28505,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kozelkovskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Козельск",
@@ -29433,7 +29433,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Krasnaia Glinka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Красная",
@@ -29673,7 +29673,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Krasnyi Guliai",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Красный",
@@ -29865,7 +29865,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Krugloe Pole",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Круглое Поле (эксп.)",
@@ -29873,7 +29873,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Krugloe Pole (Eksp.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Крупенниково",
@@ -29953,7 +29953,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kriaj",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Ксеньевская",
@@ -30113,7 +30113,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kuzneck",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Кузнецово",
@@ -30137,7 +30137,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kuzovatovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Куйбас",
@@ -30257,7 +30257,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kulsharipovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Кума",
@@ -30513,7 +30513,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kurumoch",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Курундус",
@@ -30617,7 +30617,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Kuchury",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Куша",
@@ -30825,7 +30825,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Laishevka (Rzd",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Лаки",
@@ -31129,7 +31129,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Leonidovka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Леонтьево",
@@ -31401,7 +31401,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Lipiagi",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Лисий",
@@ -31841,7 +31841,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Lunino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Луостари",
@@ -32153,7 +32153,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Maina",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Макаров",
@@ -32897,7 +32897,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Minnibaevo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Минусинск",
@@ -33121,7 +33121,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Molvino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Молосковицы",
@@ -33217,7 +33217,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Morshansk",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Москаленки",
@@ -33777,7 +33777,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Naberejnye Chelny",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Навашино",
@@ -33873,7 +33873,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Naleika",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Наливная",
@@ -34425,7 +34425,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Nijnekamsk",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Нижнемальцево",
@@ -34473,7 +34473,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Nijnii Lomov",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Нижний",
@@ -34833,7 +34833,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Novokuibyshevskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Новолесная",
@@ -35049,7 +35049,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Novospasskoe",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Новотроицк",
@@ -35153,7 +35153,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Novye Polianki",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Новый",
@@ -35273,7 +35273,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Nochka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Ноябрьск",
@@ -35305,7 +35305,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Nurlat",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Нытва",
@@ -35489,7 +35489,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Obsharovka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Оверята",
@@ -35633,7 +35633,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Oktiabrsk",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Октябрьск (эксп.)",
@@ -35641,7 +35641,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Oktiabrsk (Eksp.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Окуловка",
@@ -36033,7 +36033,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Otvaga",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Отрада",
@@ -36345,7 +36345,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Patrikeevo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Пачелма",
@@ -36353,7 +36353,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Pachelma",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Паша",
@@ -36385,7 +36385,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Pashkovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Пашковская",
@@ -36417,7 +36417,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Penza I",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Пенза",
@@ -36425,7 +36425,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Penza III",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Пенза",
@@ -36433,7 +36433,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Penza III",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Пенза",
@@ -36441,7 +36441,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Penza IV",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Пензенская",
@@ -37025,7 +37025,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Pismianka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Питерка",
@@ -37257,7 +37257,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Pogruznaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Подберезье",
@@ -37545,7 +37545,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Polivanovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Политово",
@@ -37873,7 +37873,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Potma",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Похвистнево",
@@ -37937,7 +37937,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Pravaia Volga",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Правдинск",
@@ -38281,7 +38281,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Pronino",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Проня",
@@ -38561,7 +38561,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Piasha",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "РАЙ",
@@ -38841,7 +38841,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Racheika",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Ребриха",
@@ -39201,7 +39201,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Ruzaevka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Рукополь",
@@ -39793,7 +39793,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Saransk",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Сарапул",
@@ -40233,7 +40233,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Seliksa",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Селихин",
@@ -40601,7 +40601,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Simanscina",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Симонята",
@@ -40833,7 +40833,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Sobolekovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Советск",
@@ -40913,7 +40913,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Sovhoznyi (Rzd",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Сокол",
@@ -41145,7 +41145,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Sosedka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Сосновец",
@@ -41345,7 +41345,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Srednevoljskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Среднеилимская",
@@ -41697,7 +41697,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Studenec",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Студенческая",
@@ -41705,7 +41705,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Studencheskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Студеный",
@@ -41953,7 +41953,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Sura",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Сураж",
@@ -42172,20 +42172,20 @@
     "railway": "Свердловская"
   },
   {
-    "name": "Сызрань",
+    "name": "Сызрань I",
     "code": "635607",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Syzran I",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
-    "name": "Сызрань",
+    "name": "Сызрань II",
     "code": "635503",
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Syzran II",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Сызрань-Город",
@@ -42193,7 +42193,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Syzran-Gorod",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Сызрань-Город (перев.)",
@@ -42201,7 +42201,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Syzran-Gorod (Perev.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Сыктывкар",
@@ -42265,7 +42265,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Siuzium",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "ТЕЯ",
@@ -42665,7 +42665,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Tashla",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Таштагол",
@@ -42993,7 +42993,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Tihonovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Тихонький",
@@ -43089,7 +43089,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Tokmovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Токсово",
@@ -43145,7 +43145,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Toliatti",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Тольятти (эксп.)",
@@ -43153,7 +43153,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "TOLIATTI (eksp.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Томари",
@@ -43241,7 +43241,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Tomylovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Тоннельная",
@@ -43305,7 +43305,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Torbeevo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Торбино",
@@ -44201,7 +44201,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Ulianovsk I",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Ульяновск",
@@ -44209,7 +44209,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Ulianovsk III",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Ульяновск",
@@ -44217,7 +44217,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Ulianovsk III",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Ульяновск II (перев.)",
@@ -44225,7 +44225,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Ulianovsk II (Perev.",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Ульяновск-Центральный",
@@ -44233,7 +44233,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Ulianovsk-Centralnyi",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Уманская",
@@ -45233,7 +45233,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Himzavodskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Химическая",
@@ -45241,7 +45241,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Himicheskaia",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Химки",
@@ -45569,7 +45569,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Carevscina",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Царское",
@@ -45617,7 +45617,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Cilna",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Цимлянская",
@@ -45665,7 +45665,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Chaadaevka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Чагода",
@@ -45681,7 +45681,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Chagra",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Чайда",
@@ -45737,7 +45737,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Chapaevsk",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Чаплыжное",
@@ -45801,7 +45801,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Chelna",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Челновая",
@@ -45889,7 +45889,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Cherdakly",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Черемисиново",
@@ -46393,7 +46393,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Chufarovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Чухломинский",
@@ -46529,7 +46529,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Sharlovo",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Шарташ",
@@ -46737,7 +46737,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Shentala",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Шепелево",
@@ -47505,7 +47505,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Iakushka",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Якшанга",
@@ -47529,7 +47529,7 @@
     "country": "Россия",
     "country_code": "RU",
     "latin_name": "Ialga",
-    "railway": "Северо-Кавказская"
+    "railway": "Куйбышевская"
   },
   {
     "name": "Ялуторовск",
@@ -48083,6 +48083,13 @@
     "country": "Туркменистан",
     "country_code": "TM",
     "latin_name": "Aydyng"
+  },
+  {
+    "name": "Ак ёл",
+    "code": "751009",
+    "country": "Туркменистан",
+    "country_code": "TM",
+    "latin_name": "Ak yol"
   },
   {
     "name": "Акджагуйма",
@@ -49462,13 +49469,6 @@
     "country": "Туркменистан",
     "country_code": "TM",
     "latin_name": "Yashlyik"
-  },
-  {
-    "name": "ёл",
-    "code": "751009",
-    "country": "Туркменистан",
-    "country_code": "TM",
-    "latin_name": "yol"
   },
   {
     "name": "Абазовка",
