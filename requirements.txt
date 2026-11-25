@@ -1,2 +1,5 @@
+PyMuPDF
+requests
+beautifulsoup4
 pandas
 xlrd
